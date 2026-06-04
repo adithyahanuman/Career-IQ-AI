@@ -355,8 +355,13 @@
         org: validation.domain.org_name,
         lastLogin: firebase.firestore.FieldValue.serverTimestamp()
       };
-      if (name) userData.name = name;
-      else if (isSignup) userData.name = email.split('@')[0];
+      if (name) {
+        userData.name = name;
+        userData.displayName = name;
+      } else if (isSignup) {
+        userData.name = email.split('@')[0];
+        userData.displayName = email.split('@')[0];
+      }
       
       if (phone) userData.phone = phone;
 
