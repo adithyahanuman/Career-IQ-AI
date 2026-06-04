@@ -233,15 +233,29 @@
         Toast.show('Simulating Google Sign-In...', 'info');
         
         let uid = 'mock_google_user_' + btoa(email).substring(0, 10);
+        let name = email.split('@')[0];
+        let displayName = name;
+        let role = isAdminEmail(email) ? 'admin' : 'user';
         
         try {
+          const snap = await db.collection('users').doc(uid).get();
+          const existing = snap.exists ? snap.data() : null;
           const userDoc = {
-            email, name: email.split('@')[0],
+            email,
             domain: validation.domain.domain, org: validation.domain.org_name,
             lastLogin: firebase.firestore.FieldValue.serverTimestamp()
           };
+          if (existing) {
+            name = existing.name || name;
+            displayName = existing.displayName || displayName;
+            role = existing.role || role;
+          } else {
+            userDoc.name = name;
+            userDoc.displayName = displayName;
+          }
           if (isAdminEmail(email)) {
             userDoc.role = 'admin';
+            role = 'admin';
           }
           await db.collection('users').doc(uid).set(userDoc, { merge: true });
         } catch(e) {}
@@ -249,18 +263,18 @@
         currentSession = {
           user: {
             id: uid, uid: uid,
-            email, name: email.split('@')[0],
+            email, name, displayName,
             picture: null,
             domain: validation.domain.domain,
-            role: isAdminEmail(email) ? 'admin' : 'user',
+            role,
             verified: true
           }
         };
         Storage.set('session', currentSession);
         if (!_authResolved) { _authResolved = true; _authResolve(currentSession); }
         
-        let role = currentSession.user.role;
-        if (role === 'admin' || role === 'super_admin') {
+        const redirectRole = currentSession.user.role;
+        if (redirectRole === 'admin' || redirectRole === 'super_admin') {
           smoothRedirect(getBaseUrl() + '/admin/index.html', 'Welcome Admin! Loading dashboard…');
         } else {
           try {
@@ -299,11 +313,19 @@
 
       await AuditLog.add('LOGIN_SUCCESS', { context }, email, true);
       try {
+        const snap = await db.collection('users').doc(uid).get();
+        const existing = snap.exists ? snap.data() : null;
         const userDoc = {
-          email, name: result.user.displayName || email.split('@')[0],
+          email,
           domain: validation.domain.domain, org: validation.domain.org_name,
           lastLogin: firebase.firestore.FieldValue.serverTimestamp()
         };
+        if (!existing || !existing.name) {
+          userDoc.name = result.user.displayName || email.split('@')[0];
+        }
+        if (!existing || !existing.displayName) {
+          userDoc.displayName = result.user.displayName || email.split('@')[0];
+        }
         if (isAdminEmail(email)) {
           userDoc.role = 'admin';
         }

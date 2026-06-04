@@ -203,8 +203,8 @@ const OnboardingWizard = {
       return;
     }
 
-    const currentCard = document.getElementById(`stepCard${this.currentStep}`);
-    const nextCard = document.getElementById(`stepCard${n}`);
+    const currentCard = document.getElementById(`step${this.currentStep}`);
+    const nextCard = document.getElementById(`step${n}`);
 
     // Animate out current
     currentCard.classList.add('leaving');
@@ -245,7 +245,7 @@ const OnboardingWizard = {
 
   validateStep(n) {
     // Simple validation: check if required fields are filled
-    const card = document.getElementById(`stepCard${n}`);
+    const card = document.getElementById(`step${n}`);
     const requiredInputs = card.querySelectorAll('[required]');
     let isValid = true;
 
@@ -267,7 +267,7 @@ const OnboardingWizard = {
   },
 
   collectStepData(n) {
-    const card = document.getElementById(`stepCard${n}`);
+    const card = document.getElementById(`step${n}`);
     
     // Inputs & Selects & Textareas
     card.querySelectorAll('input:not([type="radio"]):not([type="checkbox"]):not(.chip-text-input), select, textarea').forEach(el => {
