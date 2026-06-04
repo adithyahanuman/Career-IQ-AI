@@ -453,7 +453,7 @@
       // 1. Instantly display user info from cached session if available (0ms loading lag)
       const cachedUser = Session.getUser();
       if (cachedUser) {
-        let displayName = cachedUser.name || cachedUser.email.split('@')[0];
+        let displayName = cachedUser.displayName || cachedUser.name || cachedUser.email.split('@')[0];
         displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
         
         document.getElementById('userNameDisplay').textContent = displayName;
@@ -472,14 +472,16 @@
       if (!isAllowed) return;
       
       const user = Session.getUser();
-      let displayName = user.name || user.email.split('@')[0];
+      let displayName = user.displayName || user.name || user.email.split('@')[0];
       let profileData = null;
 
       try {
         const profileSnap = await db.collection("user_profiles").doc(user.uid).get();
         if (profileSnap.exists) {
           profileData = profileSnap.data();
-          if (profileData.fullName) {
+          if (profileData.displayName) {
+            displayName = profileData.displayName;
+          } else if (profileData.fullName) {
             displayName = profileData.fullName;
           }
         }

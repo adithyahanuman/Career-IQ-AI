@@ -40,12 +40,14 @@
       const email = user.email || '';
       const domain = email.includes('@') ? email.split('@')[1] : null;
       let role = 'user';
-      let name = user.displayName || email.split('@')[0];
+      let displayName = user.displayName || email.split('@')[0];
+      let name = displayName;
       try {
         const snap = await db.collection('users').doc(user.uid).get();
         if (snap.exists) {
           if (snap.data().role) role = snap.data().role;
           if (snap.data().name) name = snap.data().name;
+          if (snap.data().displayName) displayName = snap.data().displayName;
         }
       } catch (e) { }
       currentSession = {
@@ -53,7 +55,7 @@
           id: user.uid, uid: user.uid,
           email: user.email,
           name: name,
-          displayName: name,
+          displayName: displayName,
           picture: user.photoURL,
           domain, role,
           verified: user.emailVerified
@@ -317,7 +319,7 @@
   };
 
   // ---- Email Auth ----
-  const handleEmailAuth = async (email, password, isSignup = false, name = '', phone = '') => {
+  const handleEmailAuth = async (email, password, isSignup = false, name = '', phone = '', displayName = '') => {
     const validation = await validateDomain(email);
     if (!validation.allowed) {
       window.location.href = getBaseUrl() + '/auth/access-denied.html?email=' + encodeURIComponent(email);
@@ -328,11 +330,10 @@
     if (isSignup) {
       cred = await auth.createUserWithEmailAndPassword(email, password);
       
-      if (name) {
-        try {
-          await cred.user.updateProfile({ displayName: name });
-        } catch(e) {}
-      }
+      const targetDisplayName = displayName || name || email.split('@')[0];
+      try {
+        await cred.user.updateProfile({ displayName: targetDisplayName });
+      } catch(e) {}
 
       const baseUrl = getBaseUrl();
       if (baseUrl.startsWith('http')) {
@@ -358,11 +359,11 @@
       };
       if (name) {
         userData.name = name;
-        userData.displayName = name;
       } else if (isSignup) {
         userData.name = email.split('@')[0];
-        userData.displayName = email.split('@')[0];
       }
+      
+      userData.displayName = displayName || name || email.split('@')[0];
       
       if (phone) userData.phone = phone;
 
