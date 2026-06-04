@@ -100,7 +100,7 @@ class ChipInput {
 
 const OnboardingWizard = {
   currentStep: 1,
-  totalSteps: 9,
+  totalSteps: 3,
   data: {},
   chipInputs: {},
   saveTimeout: null,
@@ -160,8 +160,10 @@ const OnboardingWizard = {
     // Pre-fill form from saved data
     setTimeout(() => this.populateForm(), 100);
 
-    // Initial check on industry max selections
-    this.updateIndustryCounter();
+    // Initial check on industry max selections (safe check)
+    if (typeof this.updateIndustryCounter === 'function') {
+      try { this.updateIndustryCounter(); } catch(e) {}
+    }
   },
 
   setupNavigation() {
@@ -244,8 +246,18 @@ const OnboardingWizard = {
   },
 
   validateStep(n) {
+    if (n === 3) {
+      if (!this.data.resumeName) {
+        CareerIQAuth.Toast.show('Please upload your CV / Resume to complete onboarding.', 'error');
+        const fileZone = document.getElementById('resumeUploadZone');
+        if (fileZone) fileZone.classList.add('error');
+        return false;
+      }
+      return true;
+    }
     // Simple validation: check if required fields are filled
     const card = document.getElementById(`step${n}`);
+    if (!card) return true;
     const requiredInputs = card.querySelectorAll('[required]');
     let isValid = true;
 
@@ -331,52 +343,100 @@ const OnboardingWizard = {
     try {
       const { db } = window.CareerIQAuth;
       await db.collection("user_profiles").doc(this.user.uid).set(this.data, { merge: true });
+
+      // Keep users collection and auth profile updated with name and displayName
+      const userUpdates = {};
+      if (this.data.fullName) userUpdates.name = this.data.fullName;
+      if (this.data.displayName) userUpdates.displayName = this.data.displayName;
+      if (this.data.phone) userUpdates.phone = this.data.phone;
+
+      if (Object.keys(userUpdates).length > 0) {
+        await db.collection("users").doc(this.user.uid).set(userUpdates, { merge: true });
+        
+        // Update firebase auth current user profile
+        const firebaseUser = firebase.auth().currentUser;
+        if (firebaseUser && this.data.displayName && firebaseUser.displayName !== this.data.displayName) {
+          try {
+            await firebaseUser.updateProfile({ displayName: this.data.displayName });
+          } catch(e) {}
+        }
+      }
     } catch(e) {
       console.error("Failed to save data to Firebase", e);
     }
   },
 
   setupComplexInputs() {
-    // 1. Chip Inputs
-    if (document.getElementById('techSkillsWrapper')) {
-      this.chipInputs['techSkills'] = new ChipInput('techSkillsWrapper', 'techSkillsHidden');
-    }
-    if (document.getElementById('softSkillsWrapper')) {
-      this.chipInputs['softSkills'] = new ChipInput('softSkillsWrapper', 'softSkillsHidden');
-    }
-    if (document.getElementById('workLocationsWrapper')) {
-      this.chipInputs['workLocations'] = new ChipInput('workLocationsWrapper', 'workLocationsHidden');
-    }
-    if (document.getElementById('motivatorsWrapper')) {
-      this.chipInputs['motivators'] = new ChipInput('motivatorsWrapper', 'motivatorsHidden');
-    }
+    // Resume Upload Zone Click & Drag-Drop Listeners
+    const fileZone = document.getElementById('resumeUploadZone');
+    const fileInput = document.getElementById('resumeFile');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const removeBtn = document.getElementById('btnRemoveFile');
 
-    // 2. Salary Slider formatting
-    const slider = document.getElementById('salarySlider');
-    const display = document.getElementById('salaryDisplayValue');
-    const currency = document.getElementById('salaryCurrency');
-    
-    if (slider && display && currency) {
-      const formatSalary = () => {
-        const val = parseInt(slider.value);
-        const cur = currency.value;
-        const symbols = { 'INR': '₹', 'USD': '$', 'GBP': '£', 'EUR': '€' };
-        display.textContent = `${symbols[cur]}${val.toLocaleString()}/year`;
-      };
-      slider.addEventListener('input', formatSalary);
-      currency.addEventListener('change', formatSalary);
-    }
-
-    // 3. Industry Max Selection logic
-    const indCheckboxes = document.querySelectorAll('input[name="industries"]');
-    if (indCheckboxes.length > 0) {
-      indCheckboxes.forEach(cb => {
-        cb.addEventListener('change', () => this.updateIndustryCounter());
+    if (fileZone && fileInput) {
+      fileZone.addEventListener('click', () => fileInput.click());
+      
+      // Drag over
+      fileZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileZone.classList.add('dragover');
       });
+      
+      // Drag leave
+      fileZone.addEventListener('dragleave', () => {
+        fileZone.classList.remove('dragover');
+      });
+
+      // Drop file
+      fileZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileZone.classList.remove('dragover');
+        if (e.dataTransfer.files.length > 0) {
+          fileInput.files = e.dataTransfer.files;
+          handleFileSelection(e.dataTransfer.files[0]);
+        }
+      });
+
+      fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+          handleFileSelection(fileInput.files[0]);
+        }
+      });
+      
+      const handleFileSelection = (file) => {
+        const sizeLimit = 5 * 1024 * 1024; // 5MB
+        if (file.size > sizeLimit) {
+          CareerIQAuth.Toast.show('File is too large (max 5MB)', 'error');
+          fileInput.value = '';
+          return;
+        }
+        
+        // Show file details
+        fileNameDisplay.textContent = file.name;
+        fileZone.classList.add('hidden');
+        fileInfo.classList.remove('hidden');
+        fileZone.classList.remove('error');
+        
+        // Store in data object
+        this.data.resumeName = file.name;
+        this.saveData();
+      };
+
+      if (removeBtn) {
+        removeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          fileInput.value = '';
+          fileZone.classList.remove('hidden');
+          fileInfo.classList.add('hidden');
+          delete this.data.resumeName;
+          this.saveData();
+        });
+      }
     }
 
-    // 4. Photo upload mock
-    const photoUpload = document.getElementById('photoUploadMock');
+    // Photo upload click handler
+    const photoUpload = document.getElementById('photoUploadBtn');
     if (photoUpload) {
       photoUpload.addEventListener('click', () => {
         CareerIQAuth.Toast.show('Photo upload will be available after onboarding.', 'info');
@@ -435,9 +495,17 @@ const OnboardingWizard = {
       }
     });
 
-    // Trigger formatting
-    const slider = document.getElementById('salarySlider');
-    if (slider) slider.dispatchEvent(new Event('input'));
+    // Restore resume upload visual if present
+    if (this.data.resumeName) {
+      const fileZone = document.getElementById('resumeUploadZone');
+      const fileInfo = document.getElementById('fileInfo');
+      const fileNameDisplay = document.getElementById('fileNameDisplay');
+      if (fileZone && fileInfo && fileNameDisplay) {
+        fileNameDisplay.textContent = this.data.resumeName;
+        fileZone.classList.add('hidden');
+        fileInfo.classList.remove('hidden');
+      }
+    }
   },
 
   renderSummary() {
