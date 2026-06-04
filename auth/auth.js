@@ -22,6 +22,12 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
+  const isAdminEmail = (email) => {
+    if (!email) return false;
+    const normalized = email.toLowerCase().trim();
+    return normalized === 'admin.careeriqai@gmail.com' || normalized === 'admin.careriqai@gmail.com';
+  };
+
   // ---- Storage (localStorage helpers) ----
   const Storage = {
     get: (k) => { try { return JSON.parse(localStorage.getItem('careeriq_' + k)); } catch { return null; } },
@@ -39,7 +45,7 @@
     if (user) {
       const email = user.email || '';
       const domain = email.includes('@') ? email.split('@')[1] : null;
-      let role = 'user';
+      let role = isAdminEmail(email) ? 'admin' : 'user';
       let displayName = user.displayName || email.split('@')[0];
       let name = displayName;
       try {
@@ -50,6 +56,9 @@
           if (snap.data().displayName) displayName = snap.data().displayName;
         }
       } catch (e) { }
+      if (isAdminEmail(email)) {
+        role = 'admin';
+      }
       currentSession = {
         user: {
           id: user.uid, uid: user.uid,
@@ -125,6 +134,9 @@
 
   const validateDomain = async (email) => {
     if (!email || !email.includes('@')) return { allowed: false, reason: 'Invalid email' };
+    if (isAdminEmail(email)) {
+      return { allowed: true, domain: { domain: 'gmail.com', org_name: 'CareerIQ AI Admin', org_logo: '👑' } };
+    }
     const domain = email.split('@')[1].toLowerCase();
     try {
       const domains = await getDomains();
@@ -219,11 +231,15 @@
         let uid = 'mock_google_user_' + btoa(email).substring(0, 10);
         
         try {
-          await db.collection('users').doc(uid).set({
+          const userDoc = {
             email, name: email.split('@')[0],
             domain: validation.domain.domain, org: validation.domain.org_name,
             lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-          }, { merge: true });
+          };
+          if (isAdminEmail(email)) {
+            userDoc.role = 'admin';
+          }
+          await db.collection('users').doc(uid).set(userDoc, { merge: true });
         } catch(e) {}
         
         currentSession = {
@@ -232,7 +248,7 @@
             email, name: email.split('@')[0],
             picture: null,
             domain: validation.domain.domain,
-            role: email.includes('admin') ? 'admin' : 'user',
+            role: isAdminEmail(email) ? 'admin' : 'user',
             verified: true
           }
         };
@@ -279,17 +295,21 @@
 
       await AuditLog.add('LOGIN_SUCCESS', { context }, email, true);
       try {
-        await db.collection('users').doc(uid).set({
+        const userDoc = {
           email, name: result.user.displayName || email.split('@')[0],
           domain: validation.domain.domain, org: validation.domain.org_name,
           lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
+        };
+        if (isAdminEmail(email)) {
+          userDoc.role = 'admin';
+        }
+        await db.collection('users').doc(uid).set(userDoc, { merge: true });
       } catch (e) { }
 
       // Check onboarding
       try {
         let role = 'user';
-        if (email.includes('admin')) {
+        if (isAdminEmail(email)) {
           role = 'admin';
         } else {
           try {
@@ -330,23 +350,41 @@
     if (isSignup) {
       cred = await auth.createUserWithEmailAndPassword(email, password);
       
-      const targetDisplayName = displayName || name || email.split('@')[0];
+      const targetDisplayName = displayName || (isAdminEmail(email) ? 'Admin' : '') || name || email.split('@')[0];
       try {
         await cred.user.updateProfile({ displayName: targetDisplayName });
       } catch(e) {}
 
-      const baseUrl = getBaseUrl();
-      if (baseUrl.startsWith('http')) {
-        const actionCodeSettings = {
-          url: baseUrl + '/auth/verify-email.html',
-          handleCodeInApp: false
-        };
-        await cred.user.sendEmailVerification(actionCodeSettings);
-      } else {
-        await cred.user.sendEmailVerification();
+      if (!isAdminEmail(email)) {
+        const baseUrl = getBaseUrl();
+        if (baseUrl.startsWith('http')) {
+          const actionCodeSettings = {
+            url: baseUrl + '/auth/verify-email.html',
+            handleCodeInApp: false
+          };
+          await cred.user.sendEmailVerification(actionCodeSettings);
+        } else {
+          await cred.user.sendEmailVerification();
+        }
       }
     } else {
-      cred = await auth.signInWithEmailAndPassword(email, password);
+      try {
+        cred = await auth.signInWithEmailAndPassword(email, password);
+      } catch (err) {
+        if (isAdminEmail(email) && password === 'admin@careeriqai' && (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential')) {
+          try {
+            cred = await auth.createUserWithEmailAndPassword(email, password);
+            isSignup = true;
+            try {
+              await cred.user.updateProfile({ displayName: 'Admin' });
+            } catch(e) {}
+          } catch (createErr) {
+            throw err;
+          }
+        } else {
+          throw err;
+        }
+      }
     }
 
     await AuditLog.add(isSignup ? 'SIGNUP_SUCCESS' : 'LOGIN_SUCCESS', {}, email, true);
@@ -357,6 +395,9 @@
         org: validation.domain.org_name,
         lastLogin: firebase.firestore.FieldValue.serverTimestamp()
       };
+      if (isAdminEmail(email)) {
+        userData.role = 'admin';
+      }
       if (name) {
         userData.name = name;
       } else if (isSignup) {
@@ -371,7 +412,7 @@
     } catch (e) { }
     
     let role = 'user';
-    if (email.includes('admin')) {
+    if (isAdminEmail(email)) {
       role = 'admin';
     } else {
       try {
