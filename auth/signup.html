@@ -138,9 +138,9 @@
         <!-- Signup Form -->
         <form id="signupForm" novalidate>
 
-          <!-- Display Name -->
+          <!-- Full Name -->
           <div class="form-group">
-            <label class="form-label" for="signupName">Display name <span class="required" aria-label="required">*</span></label>
+            <label class="form-label" for="signupName">Full name <span class="required" aria-label="required">*</span></label>
             <div class="input-wrapper">
               <span class="input-icon" aria-hidden="true">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -154,6 +154,27 @@
                 class="form-input"
                 placeholder="Arjun Mehta"
                 autocomplete="name"
+                aria-required="true"
+              />
+            </div>
+          </div>
+
+          <!-- Display Name -->
+          <div class="form-group">
+            <label class="form-label" for="signupDisplayName">Display name <span class="required" aria-label="required">*</span></label>
+            <div class="input-wrapper">
+              <span class="input-icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+              </span>
+              <input
+                type="text"
+                id="signupDisplayName"
+                name="displayName"
+                class="form-input"
+                placeholder="e.g. Arjun"
+                autocomplete="nickname"
                 aria-required="true"
               />
             </div>
@@ -388,18 +409,22 @@
       /* ---- Signup Form Submit ---- */
       document.getElementById('signupForm').addEventListener('submit', async function (e) {
         e.preventDefault();
-        var nameEl    = document.getElementById('signupName');
-        var phoneEl   = document.getElementById('signupPhone');
-        var emailEl   = document.getElementById('signupEmail');
-        var passEl    = document.getElementById('signupPassword');
-        var confirmEl = document.getElementById('signupConfirmPassword');
-        var termsEl   = document.getElementById('agreeTerms');
-        var btn       = document.getElementById('signupBtn');
-        var V         = CareerIQAuth.Validator;
-        var valid     = true;
+        var nameEl        = document.getElementById('signupName');
+        var displayNameEl = document.getElementById('signupDisplayName');
+        var phoneEl       = document.getElementById('signupPhone');
+        var emailEl       = document.getElementById('signupEmail');
+        var passEl        = document.getElementById('signupPassword');
+        var confirmEl     = document.getElementById('signupConfirmPassword');
+        var termsEl       = document.getElementById('agreeTerms');
+        var btn           = document.getElementById('signupBtn');
+        var V             = CareerIQAuth.Validator;
+        var valid         = true;
 
         var nameErr = V.validate('name', nameEl.value, [V.rules.required, V.rules.minLength(2)]);
         if (nameErr) { V.showError(nameEl, nameErr); valid = false; } else { V.clearError(nameEl); }
+
+        var dispErr = V.validate('displayName', displayNameEl.value, [V.rules.required, V.rules.minLength(2)]);
+        if (dispErr) { V.showError(displayNameEl, dispErr); valid = false; } else { V.clearError(displayNameEl); }
 
         var emailErr = V.validate('email', emailEl.value, [V.rules.required, V.rules.email]);
         if (emailErr) { V.showError(emailEl, emailErr); valid = false; } else { V.clearError(emailEl); }
@@ -425,7 +450,8 @@
             passEl.value,
             true,
             nameEl.value.trim(),
-            phoneEl ? phoneEl.value.trim() : ''
+            phoneEl ? phoneEl.value.trim() : '',
+            displayNameEl.value.trim()
           );
           if (result && result.ok) {
             CareerIQAuth.Toast.show('Account created successfully!', 'success');
@@ -446,7 +472,25 @@
           CareerIQAuth.Toast.show(msg, 'error');
         }
       });
-    });
+
+      /* ---- Blur validation ---- */
+      document.getElementById('signupName').addEventListener('blur', function () {
+        var V   = CareerIQAuth.Validator;
+        var err = V.validate('name', this.value, [V.rules.required, V.rules.minLength(2)]);
+        if (err) V.showError(this, err); else V.clearError(this);
+      });
+
+      document.getElementById('signupDisplayName').addEventListener('blur', function () {
+        var V   = CareerIQAuth.Validator;
+        var err = V.validate('displayName', this.value, [V.rules.required, V.rules.minLength(2)]);
+        if (err) V.showError(this, err); else V.clearError(this);
+      });
+
+      document.getElementById('signupEmail').addEventListener('blur', function () {
+        var V   = CareerIQAuth.Validator;
+        var err = V.validate('email', this.value, [V.rules.required, V.rules.email]);
+        if (err) V.showError(this, err); else V.clearError(this);
+      });
   </script>
 </body>
 </html>
