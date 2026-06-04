@@ -132,6 +132,20 @@ const OnboardingWizard = {
       } else {
         this.data = {};
       }
+
+      // Auto-copy data gathered during signup if not already set
+      if (!this.data.fullName) {
+        const userSnap = await db.collection("users").doc(this.user.uid).get();
+        if (userSnap.exists) {
+          const udata = userSnap.data();
+          this.data.fullName = udata.name || this.user.name || '';
+          this.data.displayName = udata.displayName || this.user.displayName || '';
+          if (udata.phone) this.data.phone = udata.phone;
+        } else {
+          this.data.fullName = this.user.name || '';
+          this.data.displayName = this.user.displayName || '';
+        }
+      }
     } catch(e) {
       console.error("Failed to load profile", e);
       this.data = {};
