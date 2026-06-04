@@ -342,26 +342,32 @@ const OnboardingWizard = {
     if (!this.user) return;
     try {
       const { db } = window.CareerIQAuth;
-      await db.collection("user_profiles").doc(this.user.uid).set(this.data, { merge: true });
 
-      // Keep users collection and auth profile updated with name and displayName
+      // ── Only store Step 1 (basic profile) + onboarding_complete flag in Firebase ──
+      // Step 2 (education/GPA) and Step 3 (CV/resume) are intentionally NOT stored
+      // here — they will be integrated with a separate database later.
+      const basicInfo = {};
+      if (this.data.fullName)            basicInfo.fullName        = this.data.fullName;
+      if (this.data.displayName)         basicInfo.displayName     = this.data.displayName;
+      if (this.data.phone)               basicInfo.phone           = this.data.phone;
+      if (this.data.onboarding_complete) basicInfo.onboarding_complete = true;
+
+      await db.collection("user_profiles").doc(this.user.uid).set(basicInfo, { merge: true });
+
+      // Keep users collection and Firebase Auth profile in sync with name/displayName
       const userUpdates = {};
-      if (this.data.fullName) userUpdates.name = this.data.fullName;
-      if (this.data.displayName) userUpdates.displayName = this.data.displayName;
-      if (this.data.phone) userUpdates.phone = this.data.phone;
+      if (basicInfo.fullName)    userUpdates.name        = basicInfo.fullName;
+      if (basicInfo.displayName) userUpdates.displayName = basicInfo.displayName;
+      if (basicInfo.phone)       userUpdates.phone       = basicInfo.phone;
 
       if (Object.keys(userUpdates).length > 0) {
         await db.collection("users").doc(this.user.uid).set(userUpdates, { merge: true });
-        
-        // Update firebase auth current user profile
         const firebaseUser = firebase.auth().currentUser;
-        if (firebaseUser && this.data.displayName && firebaseUser.displayName !== this.data.displayName) {
-          try {
-            await firebaseUser.updateProfile({ displayName: this.data.displayName });
-          } catch(e) {}
+        if (firebaseUser && basicInfo.displayName && firebaseUser.displayName !== basicInfo.displayName) {
+          try { await firebaseUser.updateProfile({ displayName: basicInfo.displayName }); } catch (e) {}
         }
       }
-    } catch(e) {
+    } catch (e) {
       console.error("Failed to save data to Firebase", e);
     }
   },
