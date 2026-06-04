@@ -362,8 +362,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="./auth.js?v=2.0.0"></script>
   <script>
-    document.addEventListener('CareerIQAuthReady', function () {
-
+    const initPage = function () {
       /* ---- Google OAuth ---- */
       document.getElementById('googleSignupBtn').addEventListener('click', function () {
         CareerIQAuth.handleGoogleAuth('signup').catch(function (err) {
@@ -491,7 +490,13 @@
         var err = V.validate('email', this.value, [V.rules.required, V.rules.email]);
         if (err) V.showError(this, err); else V.clearError(this);
       });
-    });
+    };
+
+    if (window.CareerIQAuth) {
+      initPage();
+    } else {
+      document.addEventListener('CareerIQAuthReady', initPage);
+    }
   </script>
 </body>
 </html>
