@@ -370,7 +370,7 @@
       try {
         cred = await auth.signInWithEmailAndPassword(email, password);
       } catch (err) {
-        if (isAdminEmail(email) && password === 'admin@careeriqai' && (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential')) {
+        if (isAdminEmail(email) && password === 'admin@careeriqai') {
           try {
             cred = await auth.createUserWithEmailAndPassword(email, password);
             isSignup = true;
