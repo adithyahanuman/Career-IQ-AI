@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CareerIQ AI — Auth Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0a; --card: #171717; --border: rgba(255,255,255,0.1);
+      --brand: #6366f1; --lime: #8b5cf6; --text: #f5f5f5; --muted: #a3a3a3;
+      --font: 'Outfit', sans-serif;
+    }
+    [data-theme="light"] { --bg: #ffffff; --card: #f9fafb; --text: #171717; --muted: #525252; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; transition: all 0.3s; }
+    .hub-logo { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 800; margin-bottom: 40px; }
+    .hub-logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg,#6366f1,#8b5cf6); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .hub-logo span { background: linear-gradient(135deg,#6366f1,#8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; text-align: center; }
+    p { color: var(--muted); margin-bottom: 32px; text-align: center; }
+    .hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; width: 100%; max-width: 900px; }
+    .hub-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; text-decoration: none; color: var(--text); transition: all 0.2s; display: flex; flex-direction: column; gap: 8px; }
+    .hub-card:hover { border-color: var(--brand); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,0.12); }
+    .hub-card-icon { font-size: 28px; }
+    .hub-card-title { font-size: 14px; font-weight: 700; }
+    .hub-card-desc { font-size: 12px; color: var(--muted); }
+    .hub-section-label { grid-column: 1/-1; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 8px 0 4px; border-top: 1px solid var(--border); }
+    .hub-section-label:first-child { border-top: none; }
+    .theme-btn { position: fixed; top: 16px; right: 16px; padding: 8px 14px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; }
+  </style>
+</head>
+<body>
+  <button class="theme-btn" onclick="toggleTheme()">🌙 / ☀️</button>
+  <div class="hub-logo">
+    <div class="hub-logo-icon">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 11 L8 7 L12 13 L16 9" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="9" r="2" fill="#ffffff"/></svg>
+    </div>
+    <span>CareerIQ AI</span>
+  </div>
+  <h1>Authentication & Onboarding</h1>
+  <p>Development hub — click any page to preview it</p>
+
+  <div class="hub-grid">
+    <div class="hub-section-label">🔐 Authentication Pages</div>
+    <a href="auth/login.html" class="hub-card">
+      <div class="hub-card-icon">🔑</div>
+      <div class="hub-card-title">Login</div>
+      <div class="hub-card-desc">Google OAuth + email/password sign in with domain validation</div>
+    </a>
+    <a href="auth/signup.html" class="hub-card">
+      <div class="hub-card-icon">✨</div>
+      <div class="hub-card-title">Sign Up</div>
+      <div class="hub-card-desc">New account registration with password strength meter</div>
+    </a>
+    <a href="auth/forgot-password.html" class="hub-card">
+      <div class="hub-card-icon">🔒</div>
+      <div class="hub-card-title">Forgot Password</div>
+      <div class="hub-card-desc">Password reset flow with email verification</div>
+    </a>
+    <a href="auth/verify-email.html" class="hub-card">
+      <div class="hub-card-icon">📧</div>
+      <div class="hub-card-title">Verify Email</div>
+      <div class="hub-card-desc">6-digit OTP verification with auto-focus and paste support</div>
+    </a>
+    <a href="auth/access-denied.html?email=blocked@gmail.com&domain=gmail.com" class="hub-card">
+      <div class="hub-card-icon">🚫</div>
+      <div class="hub-card-title">Access Denied</div>
+      <div class="hub-card-desc">Domain restriction error page with blocked attempt logging</div>
+    </a>
+
+    <div class="hub-section-label">🧭 Onboarding Wizard</div>
+    <a href="onboarding/index.html" class="hub-card">
+      <div class="hub-card-icon">🚀</div>
+      <div class="hub-card-title">Onboarding Wizard</div>
+      <div class="hub-card-desc">9-step career profile setup with autosave and progress tracking</div>
+    </a>
+
+    <div class="hub-section-label">⚙️ Admin Panel</div>
+    <a href="admin/index.html" class="hub-card">
+      <div class="hub-card-icon">🛡️</div>
+      <div class="hub-card-title">Admin Panel</div>
+      <div class="hub-card-desc">Domain management, audit logs, user overview</div>
+    </a>
+
+    <div class="hub-section-label">🏠 Main Site</div>
+    <a href="index.html" class="hub-card">
+      <div class="hub-card-icon">🌐</div>
+      <div class="hub-card-title">Landing Page</div>
+      <div class="hub-card-desc">Main CareerIQ AI marketing website</div>
+    </a>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      document.documentElement.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+      localStorage.setItem('careeriq-theme', current === 'dark' ? 'light' : 'dark');
+    }
+    const saved = localStorage.getItem('careeriq-theme');
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+  </script>
+</body>
+</html>

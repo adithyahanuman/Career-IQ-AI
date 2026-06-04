@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — CareerIQ AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./auth/auth.css" />
+  <style>
+    /* Custom Dashboard Overrides */
+    body {
+      background: #0b0d12;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Outfit', sans-serif;
+      margin: 0;
+    }
+    
+    /* Top Navbar */
+    .dash-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px;
+      background: #11131a;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .logo-box {
+      width: 32px;
+      height: 32px;
+      background: #0ea5e9;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .logo-box svg {
+      width: 18px;
+      height: 18px;
+      stroke: #ffffff;
+    }
+    
+    .brand-text {
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+    }
+    
+    .brand-text span {
+      color: #0ea5e9;
+    }
+    
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .user-info {
+      text-align: right;
+    }
+    
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+    
+    .user-email {
+      font-size: 12px;
+      color: #8b949e;
+    }
+    
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #0ea5e9;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-left: 1px solid rgba(255,255,255,0.1);
+      padding-left: 24px;
+    }
+    
+    .theme-toggle-btn {
+      background: transparent;
+      border: none;
+      color: #8b949e;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+    
+    .theme-toggle-btn:hover {
+      color: #ffffff;
+    }
+    
+    .btn-logout {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    
+    .btn-logout:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.3);
+    }
+    
+    /* Main Content */
+    .main-container {
+      flex: 1;
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* Welcome Card */
+    .welcome-card {
+      background: linear-gradient(145deg, #161b22, #11141a);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    
+    .welcome-card::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 300px;
+      height: 100%;
+      background: radial-gradient(circle at right, rgba(14,165,233,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    
+    .welcome-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #0ea5e9;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+    
+    .welcome-title {
+      font-size: 36px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 8px 0;
+      line-height: 1.2;
+    }
+    
+    .welcome-title span {
+      color: #0ea5e9;
+    }
+    
+    .welcome-subtitle {
+      font-size: 15px;
+      color: #8b949e;
+      margin-bottom: 28px;
+    }
+    
+    .btn-continue {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #0ea5e9;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.1s;
+    }
+    
+    .btn-continue:hover {
+      background: #0284c7;
+      transform: translateY(-1px);
+    }
+    
+    /* Stats Row */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    
+    .stat-card {
+      background: #14171f;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .stat-icon-wrapper {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(14, 165, 233, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    
+    .stat-icon-wrapper svg {
+      width: 20px;
+      height: 20px;
+      stroke: #0ea5e9;
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: #0ea5e9;
+      margin-bottom: 4px;
+      line-height: 1;
+    }
+    
+    .stat-label {
+      font-size: 13px;
+      color: #8b949e;
+      font-weight: 500;
+    }
+    
+    /* Coming Soon Card */
+    .coming-soon-card {
+      background: #14171f;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 28px 32px;
+    }
+    
+    .cs-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .cs-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0;
+    }
+    
+    .cs-badge {
+      background: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 12px;
+      letter-spacing: 0.5px;
+    }
+    
+    .cs-desc {
+      font-size: 14px;
+      color: #8b949e;
+      line-height: 1.6;
+      margin: 0;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .nav-right {
+        gap: 16px;
+      }
+      .user-info {
+        display: none;
+      }
+      .dash-nav {
+        padding: 16px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="dash-nav">
+    <div class="nav-left">
+      <div class="logo-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+          <polyline points="2 17 12 22 22 17"></polyline>
+          <polyline points="2 12 12 17 22 12"></polyline>
+        </svg>
+      </div>
+      <div class="brand-text">Career <span>IQ AI</span></div>
+    </div>
+    
+    <div class="nav-right">
+      <div class="user-profile">
+        <div class="user-info">
+          <div class="user-name" id="userNameDisplay">Loading...</div>
+          <div class="user-email" id="userEmailDisplay">loading@user.com</div>
+        </div>
+        <div class="user-avatar" id="userAvatar">?</div>
+      </div>
+      
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle theme">
+          <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button id="logoutBtn" class="btn-logout">Log Out</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main-container">
+    
+    <!-- Welcome Card -->
+    <div class="welcome-card">
+      <div class="welcome-eyebrow">Welcome Back</div>
+      <h1 class="welcome-title">Hello, <span id="welcomeNameDisplay">User</span>! 👋</h1>
+      <p class="welcome-subtitle">Ready to continue your career journey?</p>
+      
+      <a href="onboarding/index.html?edit=true" class="btn-continue">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+        Continue Onboarding
+      </a>
+      
+      <a href="admin/index.html" class="btn-continue" style="background:#f59e0b; margin-left: 12px; display: none;" id="adminLink">
+        Admin Panel
+      </a>
+    </div>
+    
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <!-- Profile Complete -->
+      <div class="stat-card">
+        <div class="stat-icon-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <div class="stat-value">0%</div>
+        <div class="stat-label">Profile Complete</div>
+      </div>
+      
+      <!-- Hours Practiced -->
+      <div class="stat-card">
+        <div class="stat-icon-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="stat-value">0</div>
+        <div class="stat-label">Hours Practiced</div>
+      </div>
+      
+      <!-- Skills Verified -->
+      <div class="stat-card">
+        <div class="stat-icon-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+        </div>
+        <div class="stat-value">0</div>
+        <div class="stat-label">Skills Verified</div>
+      </div>
+    </div>
+    
+    <!-- Coming Soon Card -->
+    <div class="coming-soon-card">
+      <div class="cs-header">
+        <h2 class="cs-title">Your AI Career Dashboard</h2>
+        <span class="cs-badge">Coming Soon</span>
+      </div>
+      <p class="cs-desc">
+        Your full CareerIQ AI dashboard is being built! Soon you'll have access to personalized career roadmaps, AI skill assessments, job market insights, and a dedicated AI career coach. Start by completing your onboarding profile.
+      </p>
+    </div>
+    
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="./auth/auth.js"></script>
+  <script>
+    const initApp = async () => {
+      const { Session, ProtectedRoute, db } = window.CareerIQAuth;
+      
+      // 1. Instantly display user info from cached session if available (0ms loading lag)
+      const cachedUser = Session.getUser();
+      if (cachedUser) {
+        let displayName = cachedUser.name || cachedUser.email.split('@')[0];
+        displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+        
+        document.getElementById('userNameDisplay').textContent = displayName;
+        document.getElementById('welcomeNameDisplay').textContent = displayName;
+        document.getElementById('userEmailDisplay').textContent = cachedUser.email;
+        document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
+        
+        if (cachedUser.role === 'admin' || cachedUser.role === 'super_admin') {
+          const adminBtn = document.getElementById('adminLink');
+          if (adminBtn) adminBtn.style.display = 'inline-flex';
+        }
+      }
+      
+      // 2. Perform security/redirect guard asynchronously
+      const isAllowed = await ProtectedRoute.guard({ permission: 'dashboard', redirectTo: 'auth/login.html' });
+      if (!isAllowed) return;
+      
+      const user = Session.getUser();
+      let displayName = user.name || user.email.split('@')[0];
+      let profileData = null;
+
+      try {
+        const profileSnap = await db.collection("user_profiles").doc(user.uid).get();
+        if (profileSnap.exists) {
+          profileData = profileSnap.data();
+          if (profileData.fullName) {
+            displayName = profileData.fullName;
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching user profile:", err);
+      }
+      
+      // Capitalize the first letter of the display name
+      if (displayName) {
+        displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+      }
+      
+      // Update DOM with final verified profile data
+      document.getElementById('userNameDisplay').textContent = displayName;
+      document.getElementById('welcomeNameDisplay').textContent = displayName;
+      document.getElementById('userEmailDisplay').textContent = user.email;
+      document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
+
+      // Interactive Dashboard Updates based on Profile
+      if (profileData && profileData.onboarding_complete) {
+        // Profile Complete
+        document.querySelector('.stats-grid .stat-card:nth-child(1) .stat-value').textContent = '100%';
+        
+        // Skills Verified
+        if (profileData.techSkills && profileData.techSkills.length > 0) {
+          document.querySelector('.stats-grid .stat-card:nth-child(3) .stat-value').textContent = profileData.techSkills.length.toString();
+        }
+
+        // Welcome Subtitle
+        document.querySelector('.welcome-subtitle').textContent = `Ready to conquer your goals as a ${profileData.jobTitle || 'Career Explorer'}?`;
+        
+        // Button Change
+        const btnContinue = document.querySelector('.btn-continue');
+        if (btnContinue && btnContinue.id !== 'adminLink') {
+          btnContinue.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            Edit Profile
+          `;
+        }
+      }
+
+      // Show admin link if admin
+      if (user.role === 'admin' || user.role === 'super_admin') {
+        const adminBtn = document.getElementById('adminLink');
+        if (adminBtn) adminBtn.style.display = 'inline-flex';
+      }
+
+      // Logout handler
+      document.getElementById('logoutBtn').addEventListener('click', async () => {
+        await Session.destroy();
+        window.location.href = 'index.html';
+      });
+      
+      // Theme toggle handler (if implemented in auth.js Theme)
+      const themeBtn = document.getElementById('themeToggle');
+      if (themeBtn && window.CareerIQAuth.Theme) {
+        themeBtn.addEventListener('click', () => {
+          window.CareerIQAuth.Theme.toggle();
+        });
+      }
+    };
+
+    if (window.CareerIQAuth) {
+      initApp();
+    } else {
+      document.addEventListener('CareerIQAuthReady', initApp);
+    }
+  </script>
+</body>
+</html>
+

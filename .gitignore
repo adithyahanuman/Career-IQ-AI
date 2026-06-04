@@ -1,0 +1,10 @@
+# Ignore dependency directories
+node_modules/
+
+# Ignore temporary utility/scratch files
+fix_*.js
+recover.js
+*.txt
+.DS_Store
+Thumbs.db
+.sixth/
