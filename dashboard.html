@@ -579,7 +579,7 @@
           const uid = window.CareerIQAuth.Session.getUser().uid;
           
           const origText = uploadResumeBtn.innerHTML;
-          uploadResumeBtn.innerHTML = 'Extracting...';
+          uploadResumeBtn.innerHTML = 'Uploading...';
           uploadResumeBtn.disabled = true;
           
           try {
@@ -592,10 +592,10 @@
               resumeExtractedAt: new Date().toISOString()
             }, { merge: true });
             
-            alert(`Successfully extracted and saved text from ${file.name}!`);
+            alert(`Resume "${file.name}" uploaded successfully!`);
           } catch (err) {
             console.error(err);
-            alert(`Failed to extract text: ${err.message}`);
+            alert(`Failed to upload resume: ${err.message}`);
           } finally {
             uploadResumeBtn.innerHTML = origText;
             uploadResumeBtn.disabled = false;

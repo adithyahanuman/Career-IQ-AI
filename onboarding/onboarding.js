@@ -458,7 +458,7 @@ const OnboardingWizard = {
       const fileNameDisplay = document.getElementById('fileNameDisplay');
       if (fileZone && fileInfo && fileNameDisplay) {
         const label = this.data.resumeText
-          ? this.data.resumeName + ' (Text extracted ✓)'
+          ? this.data.resumeName + ' ✅ Uploaded'
           : this.data.resumeName;
         fileNameDisplay.textContent = label;
         fileZone.classList.add('hidden');
@@ -532,7 +532,7 @@ const OnboardingWizard = {
     }
 
     // Show "extracting" state immediately
-    fileNameDisplay.textContent = file.name + ' (Extracting text...)';
+    fileNameDisplay.textContent = file.name + ' (Uploading...)';
     fileZone.classList.add('hidden');
     fileInfo.classList.remove('hidden');
     fileZone.classList.remove('error');
@@ -550,22 +550,22 @@ const OnboardingWizard = {
         if (result && result.raw_text && result.raw_text.trim().length > 0) {
           this.data.resumeText        = result.raw_text;
           this.data.resumeExtractedAt = new Date().toISOString();
-          fileNameDisplay.textContent = file.name + ' (Text extracted ✓)';
-          CareerIQAuth.Toast.show('Resume text extracted successfully!', 'success');
+          fileNameDisplay.textContent = file.name + ' ✅ Uploaded';
+          CareerIQAuth.Toast.show('Resume uploaded successfully!', 'success');
           console.log('[Onboarding] Extraction done. Characters:', result.raw_text.length);
         } else {
-          fileNameDisplay.textContent = file.name + ' (No text found)';
-          CareerIQAuth.Toast.show('Could not extract text — file may be image-based.', 'warning');
+          fileNameDisplay.textContent = file.name + ' ✅ Uploaded';
+          CareerIQAuth.Toast.show('Resume uploaded (no text found — may be image-based).', 'warning');
           console.warn('[Onboarding] Extraction returned empty text.');
         }
       } else {
         console.error('[Onboarding] window.ResumeExtractor is not defined!');
-        CareerIQAuth.Toast.show('Extractor not loaded — resume name saved only.', 'warning');
+        CareerIQAuth.Toast.show('Extractor not loaded — resume saved by name only.', 'warning');
         fileNameDisplay.textContent = file.name;
       }
     } catch (err) {
       console.error('[Onboarding] Extraction error:', err);
-      CareerIQAuth.Toast.show('Extraction failed: ' + err.message, 'error');
+      CareerIQAuth.Toast.show('Upload failed: ' + err.message, 'error');
       fileNameDisplay.textContent = file.name;
     } finally {
       if (submitBtn) submitBtn.disabled = false;
