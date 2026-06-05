@@ -413,8 +413,8 @@ const OnboardingWizard = {
         fileZone.classList.remove('error');
         
         try {
-          if (typeof ResumeExtractor !== 'undefined') {
-            const extracted = await ResumeExtractor.extractFromFile(file);
+          if (window.ResumeExtractor) {
+            const extracted = await window.ResumeExtractor.extractFromFile(file);
             this.data.resumeText = extracted.raw_text;
             this.data.resumeExtractedAt = new Date().toISOString();
             fileNameDisplay.textContent = file.name + ' (Extracted)';

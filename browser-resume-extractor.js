@@ -252,3 +252,5 @@ const ResumeExtractor = (function() {
     }
   };
 })();
+
+window.ResumeExtractor = ResumeExtractor;
