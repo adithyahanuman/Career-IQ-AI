@@ -8,35 +8,50 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./auth/auth.css" />
   <style>
-    /* Custom Dashboard Overrides */
+    /* Custom Dashboard Layout & Sidebar Overrides */
     body {
       background: var(--bg-primary);
       color: var(--text-primary);
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       font-family: 'Outfit', sans-serif;
       margin: 0;
       transition: background 0.3s, color 0.3s;
+      overflow-x: hidden;
     }
     
-    /* Top Navbar */
-    .dash-nav {
+    /* Layout Container */
+    .app-layout {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 32px;
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border);
-      transition: background 0.3s, border-color 0.3s;
+      width: 100%;
+      min-height: 100vh;
+      position: relative;
     }
-    
-    .nav-left {
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: 260px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      flex-shrink: 0;
+    }
+
+    .sidebar-brand {
       display: flex;
       align-items: center;
       gap: 12px;
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
     }
-    
+
     .logo-box {
       width: 32px;
       height: 32px;
@@ -63,38 +78,71 @@
     .brand-text span {
       color: #0ea5e9;
     }
-    
-    .nav-right {
+
+    .sidebar-menu {
+      flex: 1;
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow-y: auto;
+    }
+
+    .menu-item {
       display: flex;
       align-items: center;
-      gap: 24px;
-    }
-    
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    
-    .user-info {
-      text-align: right;
-    }
-    
-    .user-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 2px;
-    }
-    
-    .user-email {
-      font-size: 12px;
+      gap: 12px;
+      padding: 12px 16px;
       color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      border: 1px solid transparent;
     }
-    
+
+    .menu-item svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2;
+      transition: stroke 0.2s;
+    }
+
+    .menu-item:hover {
+      background: var(--bg-glass-hover);
+      color: var(--text-primary);
+    }
+
+    .menu-item.active {
+      background: rgba(14, 165, 233, 0.08);
+      border-color: rgba(14, 165, 233, 0.15);
+      color: #0ea5e9;
+      font-weight: 600;
+    }
+
+    .menu-item.active svg {
+      stroke: #0ea5e9;
+    }
+
+    /* Sidebar Footer / User Section */
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .sidebar-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
     .user-avatar {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       background: #0ea5e9;
       color: #ffffff;
@@ -103,58 +151,134 @@
       justify-content: center;
       font-weight: 700;
       font-size: 16px;
+      box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2);
+    }
+
+    .user-meta {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
     
-    .nav-actions {
+    .user-email {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .sidebar-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-logout-sidebar {
+      flex: 1;
       display: flex;
       align-items: center;
-      gap: 16px;
-      border-left: 1px solid var(--border);
-      padding-left: 24px;
+      justify-content: center;
+      gap: 6px;
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
     }
     
+    .btn-logout-sidebar:hover {
+      background: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
     .theme-toggle-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
+      border: 1px solid var(--border-strong);
       background: transparent;
-      border: none;
       color: var(--text-secondary);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 4px;
-      transition: color 0.2s;
+      transition: all 0.2s;
     }
     
     .theme-toggle-btn:hover {
       color: var(--text-primary);
-    }
-    
-    .btn-logout {
-      background: transparent;
-      border: 1px solid var(--border-strong);
-      color: var(--text-primary);
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.2s;
-    }
-    
-    .btn-logout:hover {
       background: var(--bg-glass-hover);
-      border-color: var(--border-strong);
     }
-    
-    /* Main Content */
+
+    /* Main Container & Top Nav bar */
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    /* Mobile Header */
+    .mobile-header {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .menu-toggle {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .main-container {
       flex: 1;
-      padding: 40px 20px;
-      max-width: 900px;
+      padding: 40px;
+      max-width: 1000px;
       margin: 0 auto;
       width: 100%;
       box-sizing: border-box;
+    }
+
+    /* Tab Page Views */
+    .page-view {
+      display: none;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .page-view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     /* Welcome Card */
@@ -274,13 +398,14 @@
       font-weight: 500;
     }
     
-    /* Coming Soon Card */
+    /* Premium AI Cards */
     .coming-soon-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 28px 32px;
       transition: background 0.3s, border-color 0.3s;
+      position: relative;
     }
     
     .cs-header {
@@ -316,148 +441,269 @@
       margin: 0;
     }
     
-    /* Responsive */
+    /* Overlay for menu collapse on mobile */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 95;
+    }
+
+    /* Responsive Layout Adaptations */
     @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        position: fixed;
+        left: -260px;
+        height: 100vh;
+        z-index: 100;
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+
+      .sidebar-overlay.open {
+        display: block;
+      }
+
+      .mobile-header {
+        display: flex;
+      }
+
+      .main-container {
+        padding: 20px;
+      }
+
       .stats-grid {
         grid-template-columns: 1fr;
-      }
-      .nav-right {
-        gap: 16px;
-      }
-      .user-info {
-        display: none;
-      }
-      .dash-nav {
-        padding: 16px 20px;
       }
     }
   </style>
 </head>
 <body>
 
-  <nav class="dash-nav">
-    <div class="nav-left">
-      <div class="logo-box">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-          <polyline points="2 17 12 22 22 17"></polyline>
-          <polyline points="2 12 12 17 22 12"></polyline>
-        </svg>
-      </div>
-      <div class="brand-text">Career <span>IQ AI</span></div>
-    </div>
-    
-    <div class="nav-right">
-      <div class="user-profile">
-        <div class="user-info">
-          <div class="user-name" id="userNameDisplay">Loading...</div>
-          <div class="user-email" id="userEmailDisplay">loading@user.com</div>
-        </div>
-        <div class="user-avatar" id="userAvatar">?</div>
-      </div>
-      
-      <div class="nav-actions">
-        <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle theme">
-          <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-          <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-        </button>
-        <button id="logoutBtn" class="btn-logout">Log Out</button>
-      </div>
-    </div>
-  </nav>
+  <div class="app-layout">
+    <!-- Overlay for mobile navigation -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <div class="main-container">
-    
-    <!-- Welcome Card -->
-    <div class="welcome-card">
-      <div class="welcome-eyebrow">Welcome Back</div>
-      <h1 class="welcome-title">Hello, <span id="welcomeNameDisplay">User</span>! 👋</h1>
-      <p class="welcome-subtitle">Ready to continue your career journey?</p>
-      
-      <a href="onboarding/index.html?edit=true" class="btn-continue">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
-        Complete Profile
-      </a>
-      
-      <a href="admin/index.html" class="btn-continue" style="background:#f59e0b; margin-left: 12px; display: none;" id="adminLink">
-        Admin Panel
-      </a>
-      
-      <button id="uploadResumeBtn" class="btn-continue" style="background: transparent; color: var(--text-primary); border: 1px solid var(--border); margin-left: 12px; cursor: pointer;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="17 8 12 3 7 8"></polyline>
-          <line x1="12" y1="3" x2="12" y2="15"></line>
-        </svg>
-        Upload Resume
-      </button>
-      <input type="file" id="resumeFileInput" accept=".pdf,.doc,.docx" style="display: none;" />
-    </div>
-    
-    <!-- Stats Grid -->
-    <div class="stats-grid">
-      <!-- Profile Complete -->
-      <div class="stat-card">
-        <div class="stat-icon-wrapper">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
           </svg>
         </div>
-        <div class="stat-value">0%</div>
-        <div class="stat-label">Profile Complete</div>
+        <div class="brand-text">Career <span>IQ AI</span></div>
       </div>
-      
-      <!-- Hours Practiced -->
-      <div class="stat-card">
-        <div class="stat-icon-wrapper">
+
+      <nav class="sidebar-menu">
+        <a href="#home" class="menu-item active" data-target="home">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          Home
+        </a>
+        <a href="#dashboard" class="menu-item" data-target="dashboard">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"/></svg>
+          Dashboard
+        </a>
+        <a href="#resume-analysis" class="menu-item" data-target="resume-analysis">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Resume Analysis
+        </a>
+        <a href="#benchmarking" class="menu-item" data-target="benchmarking">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          Benchmarking
+        </a>
+        <a href="#goals" class="menu-item" data-target="goals">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Goals
+        </a>
+        <a href="#settings" class="menu-item" data-target="settings">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Settings
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <div class="user-meta">
+            <div class="user-name" id="userNameDisplay">Loading...</div>
+            <div class="user-email" id="userEmailDisplay">loading@user.com</div>
+          </div>
+        </div>
+        <div class="sidebar-actions">
+          <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle theme">
+            <svg class="sun-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42m12.72-12.72l1.42-1.42"/></svg>
+            <svg class="moon-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          </button>
+          <button id="logoutBtn" class="btn-logout-sidebar">Log Out</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Content Area -->
+    <div class="content-area">
+      <!-- Mobile Header -->
+      <header class="mobile-header">
+        <div class="logo-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
           </svg>
         </div>
-        <div class="stat-value">0</div>
-        <div class="stat-label">Hours Practiced</div>
-      </div>
-      
-      <!-- GPA / CGPA -->
-      <div class="stat-card">
-        <div class="stat-icon-wrapper">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-            <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path>
-          </svg>
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation Menu">
+          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </header>
+
+      <main class="main-container">
+        
+        <!-- PAGE VIEW: HOME -->
+        <div class="page-view active" id="page-home">
+          <!-- Welcome Card -->
+          <div class="welcome-card">
+            <div class="welcome-eyebrow">Welcome Back</div>
+            <h1 class="welcome-title">Hello, <span id="welcomeNameDisplay">User</span>! 👋</h1>
+            <p class="welcome-subtitle">Ready to continue your career journey?</p>
+            
+            <a href="onboarding/index.html?edit=true" class="btn-continue">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+              Complete Profile
+            </a>
+            
+            <a href="admin/index.html" class="btn-continue" style="background:#f59e0b; margin-left: 12px; display: none;" id="adminLink">
+              Admin Panel
+            </a>
+            
+            <button id="uploadResumeBtn" class="btn-continue" style="background: transparent; color: var(--text-primary); border: 1px solid var(--border); margin-left: 12px; cursor: pointer;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              Upload Resume
+            </button>
+            <input type="file" id="resumeFileInput" accept=".pdf,.doc,.docx" style="display: none;" />
+          </div>
+          
+          <!-- Stats Grid -->
+          <div class="stats-grid">
+            <!-- Profile Complete -->
+            <div class="stat-card">
+              <div class="stat-icon-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </div>
+              <div class="stat-value">0%</div>
+              <div class="stat-label">Profile Complete</div>
+            </div>
+            
+            <!-- Hours Practiced -->
+            <div class="stat-card">
+              <div class="stat-icon-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              <div class="stat-value">0</div>
+              <div class="stat-label">Hours Practiced</div>
+            </div>
+            
+            <!-- GPA / CGPA -->
+            <div class="stat-card">
+              <div class="stat-icon-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                  <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path>
+                </svg>
+              </div>
+              <div class="stat-value" id="gpaDisplay">N/A</div>
+              <div class="stat-label">GPA / CGPA</div>
+            </div>
+          </div>
         </div>
-        <div class="stat-value" id="gpaDisplay">N/A</div>
-        <div class="stat-label">GPA / CGPA</div>
-      </div>
+
+        <!-- PAGE VIEW: DASHBOARD -->
+        <div class="page-view" id="page-dashboard">
+          <div class="coming-soon-card">
+            <div class="cs-header">
+              <h2 class="cs-title">Your AI Career Dashboard</h2>
+              <span class="cs-badge">Active</span>
+            </div>
+            <p class="cs-desc">
+              Interact with all system processes, analytics integrations, and live pipeline status displays here. Detailed statistics on platform usage, your course tracking, and career readiness scores will automatically show up here.
+            </p>
+          </div>
+        </div>
+
+        <!-- PAGE VIEW: RESUME ANALYSIS -->
+        <div class="page-view" id="page-resume-analysis">
+          <div class="coming-soon-card">
+            <div class="cs-header">
+              <h2 class="cs-title">Resume Analysis</h2>
+              <span class="cs-badge">Preview</span>
+            </div>
+            <p class="cs-desc">
+              Your parsed resume sections and real-time ATS scoring matrices will appear here soon. Get visual suggestions, format improvements, and key skill extraction metrics for your next application.
+            </p>
+          </div>
+        </div>
+
+        <!-- PAGE VIEW: BENCHMARKING -->
+        <div class="page-view" id="page-benchmarking">
+          <div class="coming-soon-card">
+            <div class="cs-header">
+              <h2 class="cs-title">Benchmarking</h2>
+              <span class="cs-badge">Upcoming</span>
+            </div>
+            <p class="cs-desc">
+              Compare your experience, educational metrics, and technology skill set against verified hiring criteria for leading technical roles in our allowed organizations list.
+            </p>
+          </div>
+        </div>
+
+        <!-- PAGE VIEW: GOALS -->
+        <div class="page-view" id="page-goals">
+          <div class="coming-soon-card">
+            <div class="cs-header">
+              <h2 class="cs-title">Career Goals</h2>
+              <span class="cs-badge">Upcoming</span>
+            </div>
+            <p class="cs-desc">
+              Define target jobs, plan structured practice hours, and receive step-by-step milestones to scale your industry expertise effectively.
+            </p>
+          </div>
+        </div>
+
+        <!-- PAGE VIEW: SETTINGS -->
+        <div class="page-view" id="page-settings">
+          <div class="coming-soon-card">
+            <div class="cs-header">
+              <h2 class="cs-title">Account Settings</h2>
+              <span class="cs-badge">Configure</span>
+            </div>
+            <p class="cs-desc">
+              Manage security credentials, adjust display names, synchronize notification rules, and update profile settings.
+            </p>
+          </div>
+        </div>
+
+      </main>
     </div>
-    
-    <!-- Coming Soon Card -->
-    <div class="coming-soon-card">
-      <div class="cs-header">
-        <h2 class="cs-title">Your AI Career Dashboard</h2>
-        <span class="cs-badge">Coming Soon</span>
-      </div>
-      <p class="cs-desc">
-        Your full CareerIQ AI dashboard is being built! Soon you'll have access to personalized career roadmaps, AI skill assessments, job market insights, and a dedicated AI career coach. Start by completing your profile setup.
-      </p>
-    </div>
-    
   </div>
 
   <!-- Firebase SDK -->
@@ -474,6 +720,78 @@
     const initApp = async () => {
       const { Session, ProtectedRoute, db } = window.CareerIQAuth;
       
+      // Setup Navigation and Toggle actions
+      const menuItems = document.querySelectorAll('.menu-item');
+      const pageViews = document.querySelectorAll('.page-view');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      const menuToggle = document.getElementById('menuToggle');
+
+      // Sidebar Tab Switching Logic
+      const switchTab = (targetId) => {
+        menuItems.forEach(item => {
+          if(item.dataset.target === targetId) {
+            item.classList.add('active');
+          } else {
+            item.classList.remove('active');
+          }
+        });
+
+        pageViews.forEach(view => {
+          if(view.id === `page-${targetId}`) {
+            view.classList.add('active');
+          } else {
+            view.classList.remove('active');
+          }
+        });
+        
+        // Auto-close sidebar on mobile after clicking
+        sidebar.classList.remove('open');
+        sidebarOverlay.classList.remove('open');
+      };
+
+      menuItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = item.dataset.target;
+          if (target) {
+            window.location.hash = target;
+            switchTab(target);
+          }
+        });
+      });
+
+      // Handle Hash Navigation on load / hash change
+      const handleHashChange = () => {
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+          const matchedView = document.getElementById(`page-${hash}`);
+          if (matchedView) {
+            switchTab(hash);
+            return;
+          }
+        }
+        switchTab('home'); // Default fallback
+      };
+
+      window.addEventListener('hashchange', handleHashChange);
+      handleHashChange();
+
+      // Mobile Menu Toggle Listeners
+      if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+          sidebar.classList.add('open');
+          sidebarOverlay.classList.add('open');
+        });
+      }
+
+      if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', () => {
+          sidebar.classList.remove('open');
+          sidebarOverlay.classList.remove('open');
+        });
+      }
+
       // 1. Instantly display user info from cached session if available (0ms loading lag)
       const cachedUser = Session.getUser();
       if (cachedUser) {
@@ -588,6 +906,7 @@
             
             // Save to Firebase Firestore
             await db.collection("user_profiles").doc(uid).set({
+              resumeName: file.name,
               resumeText: extracted.raw_text,
               resumeExtractedAt: new Date().toISOString()
             }, { merge: true });
@@ -603,8 +922,6 @@
           }
         });
       }
-      
-
     };
 
     if (window.CareerIQAuth) {

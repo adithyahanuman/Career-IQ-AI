@@ -116,6 +116,16 @@ const AdminPanel = {
         panel.classList.remove('active');
       }
     });
+
+    // Chart.js cannot render on a hidden canvas (0x0 dimensions).
+    // Re-draw the uploads chart whenever the dashboard tab becomes visible.
+    if (tabName === 'dashboard') {
+      if (this.uploadsChart) {
+        this.uploadsChart.destroy();
+        this.uploadsChart = null;
+      }
+      requestAnimationFrame(() => this.renderUploadsChart());
+    }
   },
 
   setupListeners() {
@@ -130,11 +140,41 @@ const AdminPanel = {
       }, err => console.error('Error listening to domains:', err))
     );
 
-    // 2. Users
-    this.fetchUsersStatic();
+    // 2. Users (Real-time listener)
+    this.unsubscribers.push(
+      db.collection('users').onSnapshot(snap => {
+        let fetchedUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        // Sort in memory by lastLogin (handle missing fields safely)
+        fetchedUsers.sort((a, b) => {
+          let t1 = a.lastLogin ? (a.lastLogin.toMillis ? a.lastLogin.toMillis() : new Date(a.lastLogin).getTime()) : 0;
+          let t2 = b.lastLogin ? (b.lastLogin.toMillis ? b.lastLogin.toMillis() : new Date(b.lastLogin).getTime()) : 0;
+          return t2 - t1;
+        });
+        this.users = fetchedUsers;
+        this.renderUsersTable(document.getElementById('userSearch')?.value || '');
+        this.renderStats();
+      }, err => console.error('Error listening to users:', err))
+    );
 
-    // 3. Usage stats (loaded on demand & on init)
-    this.loadUsageStats();
+    // 3. Usage stats — Real-time listener on user_profiles.
+    //    Every time a user uploads a resume this fires automatically.
+    this.unsubscribers.push(
+      db.collection('user_profiles').onSnapshot(snap => {
+        this.usageProfiles = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        // Update dashboard stat card (Resume Uploads count) and usage tab
+        this.renderStats();
+        this.renderUsageStats();
+        // Refresh the chart only when the dashboard tab is currently visible
+        // to avoid rendering on a hidden (0x0) canvas.
+        if (this.currentTab === 'dashboard') {
+          if (this.uploadsChart) {
+            this.uploadsChart.destroy();
+            this.uploadsChart = null;
+          }
+          requestAnimationFrame(() => this.renderUploadsChart());
+        }
+      }, err => console.error('Error listening to user profiles:', err))
+    );
   },
 
   async fetchUsersStatic() {
@@ -179,7 +219,7 @@ const AdminPanel = {
 
   renderUsageStats() {
     const profiles   = this.usageProfiles || [];
-    const withResume = profiles.filter(p => !!p.resumeName);
+    const withResume = profiles.filter(p => !!p.resumeName || !!p.resumeText);
     const completed  = profiles.filter(p => !!p.onboarding_complete);
 
     // Most recent upload timestamp
@@ -214,14 +254,16 @@ const AdminPanel = {
     if (empty) empty.style.display = 'none';
 
     const sorted = [...profiles].sort((a, b) => {
-      if (!!b.resumeName !== !!a.resumeName) return !!b.resumeName ? 1 : -1;
+      const hasA = !!a.resumeName || !!a.resumeText;
+      const hasB = !!b.resumeName || !!b.resumeText;
+      if (hasB !== hasA) return hasB ? 1 : -1;
       const da  = a.resumeExtractedAt ? new Date(a.resumeExtractedAt).getTime() : 0;
       const db2 = b.resumeExtractedAt ? new Date(b.resumeExtractedAt).getTime() : 0;
       return db2 - da;
     });
 
     tbody.innerHTML = sorted.map(p => {
-      const hasResume  = !!p.resumeName;
+      const hasResume  = !!p.resumeName || !!p.resumeText;
       const isComplete = !!p.onboarding_complete;
       const uploadDate = p.resumeExtractedAt ? this.formatDate(p.resumeExtractedAt) : '—';
       const resumeBadge = hasResume
@@ -359,7 +401,8 @@ const AdminPanel = {
     const domains  = this.domains  || [];
     const users    = this.users    || [];
     const profiles = this.usageProfiles || [];
-    const withResume = profiles.filter(p => !!p.resumeName).length;
+    // Count any profile that has either a resumeName OR resume text (matches renderUsageStats logic)
+    const withResume = profiles.filter(p => !!p.resumeName || !!p.resumeText).length;
 
     const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
     set('statTotalUsers',    users.length);
