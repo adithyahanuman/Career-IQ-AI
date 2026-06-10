@@ -116,7 +116,7 @@ const OnboardingWizard = {
         this.data = profileSnap.data();
         // If already completed and not in edit mode, go to dashboard
         if (!isEditing && this.data.onboarding_complete) {
-          window.location.href = '../dashboard.html';
+          window.location.href = '../dashboard/index.html';
           return;
         }
       } else {
@@ -208,7 +208,7 @@ const OnboardingWizard = {
         } catch (err) {
           console.warn('[Onboarding] Could not save skip state:', err);
         }
-        setTimeout(() => { window.location.href = '../dashboard.html'; }, 800);
+        setTimeout(() => { window.location.href = '../dashboard/index.html'; }, 800);
       });
     }
   },
@@ -863,7 +863,7 @@ const OnboardingWizard = {
     await this.saveData();
 
     CareerIQAuth.Toast.show('Profile created successfully! Redirecting...', 'success');
-    setTimeout(() => { window.location.href = '../dashboard.html'; }, 1500);
+    setTimeout(() => { window.location.href = '../dashboard/index.html'; }, 1500);
   }
 };
 

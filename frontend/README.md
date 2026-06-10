@@ -15,8 +15,7 @@ frontend/
 │   ├── dashboard/       # Resume analysis dashboard
 │   ├── onboarding/      # User onboarding flow
 │   ├── index.html       # Main landing page
-│   ├── auth-hub.html    # Auth navigation hub
-│   └── dashboard.html   # Dashboard page
+│   └── auth-hub.html    # Auth navigation hub
 ├── src/
 │   ├── app.js           # Main frontend JavaScript
 │   └── styles.css       # Shared styles

@@ -260,11 +260,11 @@
           try {
             const profileSnap = await db.collection('user_profiles').doc(uid).get();
             const hasCompleted = profileSnap.exists && profileSnap.data().onboarding_complete;
-            const dest = getBaseUrl() + '/' + (hasCompleted ? 'dashboard.html' : 'onboarding/index.html');
+            const dest = getBaseUrl() + '/' + (hasCompleted ? 'dashboard/index.html' : 'onboarding/index.html');
             const msg = hasCompleted ? 'Welcome back! Loading dashboard…' : 'Setting up your profile…';
             smoothRedirect(dest, msg);
           } catch(err) {
-            smoothRedirect(getBaseUrl() + '/dashboard.html', 'Loading your dashboard…');
+            smoothRedirect(getBaseUrl() + '/dashboard/index.html', 'Loading your dashboard…');
           }
         }
       };
@@ -331,11 +331,11 @@
 
         const profileSnap = await db.collection('user_profiles').doc(uid).get();
         const hasCompleted = profileSnap.exists && profileSnap.data().onboarding_complete;
-        const dest = getBaseUrl() + '/' + (hasCompleted ? 'dashboard.html' : 'onboarding/index.html');
+        const dest = getBaseUrl() + '/' + (hasCompleted ? 'dashboard/index.html' : 'onboarding/index.html');
         const msg = hasCompleted ? 'Welcome back! Loading dashboard…' : 'Setting up your profile…';
         smoothRedirect(dest, msg);
       } catch (e) {
-        smoothRedirect(getBaseUrl() + '/dashboard.html', 'Loading your dashboard…');
+        smoothRedirect(getBaseUrl() + '/dashboard/index.html', 'Loading your dashboard…');
       }
     } catch (err) {
       if (err.code === 'auth/operation-not-supported-in-this-environment') {

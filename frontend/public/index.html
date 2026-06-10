@@ -872,7 +872,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="auth/auth.js?v=2.0.1"></script>
-  <script src="app.js"></script>
+  <script src="../src/app.js"></script>
   <script>
     const initApp = () => {
       const session = window.CareerIQAuth.Session.get();
@@ -881,7 +881,7 @@
       document.querySelectorAll('#navGetStarted, .get-started-btn, [data-action="get-started"]').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.preventDefault();
-          window.location.href = session ? 'dashboard.html' : 'auth/signup.html';
+          window.location.href = session ? 'dashboard/index.html' : 'auth/signup.html';
         });
       });
 
@@ -890,7 +890,7 @@
       if (loginBtn) {
         if (session) {
           loginBtn.textContent = 'Dashboard';
-          loginBtn.href = 'dashboard.html';
+          loginBtn.href = 'dashboard/index.html';
         } else {
           loginBtn.textContent = 'Log In';
           loginBtn.href = 'auth/login.html';
