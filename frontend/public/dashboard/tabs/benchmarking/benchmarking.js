@@ -1,471 +1,367 @@
 /**
- * benchmarking.js
- * All logic for the Benchmarking dashboard tab.
+ * benchmarking.js  (v2)
+ * Personal role-fit benchmarking tab.
+ * – Auto-loads on tab open (uses cached result if available).
+ * – Shows top 10 by default; search + "Show all" toggle.
+ * – Click any card to expand strength / improvement detail.
  */
 
 'use strict';
 
 (function () {
-    // ── State ─────────────────────────────────────────────────────────────────
-    let selectedCandidates = new Set(); // student IDs
-    let jobRoles           = [];
-    let allCandidates      = [];
-    let currentResults     = null;
-    let currentView        = 'heatmap'; // 'heatmap' | 'cards'
-
     const API_BASE = window.API_BASE || 'http://localhost:5000/api';
+    const TOP_N    = 10;
 
-    // ── Auth helper ───────────────────────────────────────────────────────────
-    async function getAuthHeaders() {
-        if (window.firebase && firebase.auth().currentUser) {
-            const token = await firebase.auth().currentUser.getIdToken();
-            return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
-        }
-        // fallback for dev
-        const token = localStorage.getItem('authToken') || '';
-        return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+    let allResults  = [];   // sorted by fit_score DESC
+    let showAll     = false;
+    let searchQuery = '';
+    let courseTier  = '';
+    let runDate     = '';
+
+    // ── Auth ──────────────────────────────────────────────────────────────────
+    async function authHeaders() {
+        try {
+            if (window.firebase && firebase.auth().currentUser) {
+                const t = await firebase.auth().currentUser.getIdToken();
+                return { 'Content-Type': 'application/json', Authorization: `Bearer ${t}` };
+            }
+        } catch (_) {}
+        const t = localStorage.getItem('authToken') || '';
+        return { 'Content-Type': 'application/json', Authorization: `Bearer ${t}` };
     }
 
-    // ── DOM helpers ───────────────────────────────────────────────────────────
-    function $(id) { return document.getElementById(id); }
-
-    // ── Colour helpers ────────────────────────────────────────────────────────
+    // ── Score helpers ─────────────────────────────────────────────────────────
     function scoreClass(grade) {
         const map = {
-            'A+': 'score-a-plus', 'A': 'score-a', 'A−': 'score-a-minus', 'A-': 'score-a-minus',
-            'B+': 'score-b-plus', 'B': 'score-b', 'B−': 'score-b-minus', 'B-': 'score-b-minus',
-            'C+': 'score-c-plus', 'C': 'score-c', 'C−': 'score-c-minus', 'C-': 'score-c-minus',
-            'D': 'score-d', 'F': 'score-f',
+            'A+':'sc-a-plus','A':'sc-a','A−':'sc-a-minus','A-':'sc-a-minus',
+            'B+':'sc-b-plus','B':'sc-b','B−':'sc-b-minus','B-':'sc-b-minus',
+            'C+':'sc-c-plus','C':'sc-c','C−':'sc-c-minus','C-':'sc-c-minus',
+            'D':'sc-d','F':'sc-f',
         };
-        return map[grade] || 'score-f';
+        return map[grade] || 'sc-f';
     }
 
     function gradeColor(grade) {
         if (!grade) return '#6b7280';
-        const g = grade.toUpperCase().replace('−', '-');
+        const g = grade.replace('−','-');
         if (g.startsWith('A')) return '#34d399';
-        if (g === 'B+' || g === 'B') return '#818cf8';
+        if (g === 'B+') return '#60a5fa';
+        if (g === 'B')  return '#818cf8';
         if (g === 'B-') return '#a78bfa';
         if (g.startsWith('C')) return '#fbbf24';
-        if (g === 'D') return '#f87171';
+        if (g === 'D')  return '#f87171';
         return '#fca5a5';
     }
 
-    function initials(name) {
-        return (name || '?').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+    function barColor(score) {
+        if (score >= 85) return '#34d399';
+        if (score >= 75) return '#60a5fa';
+        if (score >= 65) return '#818cf8';
+        if (score >= 55) return '#fbbf24';
+        if (score >= 45) return '#fb923c';
+        return '#f87171';
     }
 
-    // ── Fetch candidates ──────────────────────────────────────────────────────
-    async function loadCandidates() {
-        const listEl = $('benchCandidateList');
-        listEl.innerHTML = '<div style="padding:12px;color:var(--text-secondary);font-size:13px;">Loading candidates…</div>';
-        try {
-            const headers = await getAuthHeaders();
-            const res = await fetch(`${API_BASE}/benchmark/candidates`, { headers });
-            const json = await res.json();
-            allCandidates = json.data || [];
-            renderCandidateList();
-        } catch (e) {
-            listEl.innerHTML = '<div style="color:#f87171;padding:12px;font-size:12px;">Failed to load candidates. Make sure you are logged in.</div>';
-        }
+    function podiumEmoji(rank) {
+        return ['🥇','🥈','🥉'][rank] || '';
     }
 
-    function renderCandidateList() {
-        const listEl = $('benchCandidateList');
-        if (!allCandidates.length) {
-            listEl.innerHTML = '<div style="padding:12px;color:var(--text-secondary);font-size:13px;">No analysed resumes found.</div>';
-            return;
-        }
-        listEl.innerHTML = allCandidates.map(c => {
-            const score = c.overall_score || c.ats_score || '—';
-            const grade = c.grade || '';
-            const color = gradeColor(grade);
-            const isSel = selectedCandidates.has(c.id);
-            return `
-            <div class="bench-candidate-item${isSel ? ' selected' : ''}"
-                 data-id="${c.id}" onclick="window.benchToggleCandidate('${c.id}')">
-                <div class="bench-candidate-check">
-                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-                        <path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+    function tierLabel(tier) {
+        return { btech:'B.Tech', mtech:'M.Tech', phd:'PhD' }[tier] || 'B.Tech';
+    }
+
+    // ── Render ────────────────────────────────────────────────────────────────
+    const root = () => document.getElementById('page-benchmarking');
+
+    function setRoot(html) {
+        const el = root();
+        if (el) el.innerHTML = `<div class="bench-tab">${html}</div>`;
+    }
+
+    // State: loading
+    function showLoading(message = 'Scoring all roles against your resume…') {
+        setRoot(`
+            <div class="bench-header">
+                <div class="bench-header-left">
+                    <h2>Role Fit Benchmarking</h2>
+                    <p>AI-powered fit score across all placement roles for your course.</p>
                 </div>
-                <div class="bench-candidate-info">
-                    <div class="bench-candidate-name">${c.name || 'Unknown'}</div>
-                    <div class="bench-candidate-meta">${c.email || ''}</div>
+                <span class="bench-badge">⚡ AI Powered</span>
+            </div>
+            <div class="bench-state-box">
+                <div class="bench-state-icon">⚡</div>
+                <p class="bench-state-title">Analysing Your Profile</p>
+                <p class="bench-state-sub">${message}</p>
+                <div class="bench-loading-bar"></div>
+                <p style="font-size:12px;color:var(--text-secondary);margin:0;">This takes 15–30 seconds — sit tight!</p>
+            </div>`);
+    }
+
+    // State: no resume
+    function showNoResume() {
+        setRoot(`
+            <div class="bench-header">
+                <div class="bench-header-left">
+                    <h2>Role Fit Benchmarking</h2>
+                    <p>AI-powered fit score across all placement roles for your course.</p>
                 </div>
-                ${score !== '—' ? `<div class="bench-candidate-score" style="background:${color}18;color:${color};">${score}${grade ? ' · ' + grade : ''}</div>` : ''}
-            </div>`;
-        }).join('');
-        updateSummary();
+                <span class="bench-badge">⚡ AI Powered</span>
+            </div>
+            <div class="bench-state-box">
+                <div class="bench-state-icon">📄</div>
+                <p class="bench-state-title">No Analysed Resume Found</p>
+                <p class="bench-state-sub">Upload and analyse your resume first from the <strong>Resume Analysis</strong> tab. Once done, come back here to see your role-fit scores.</p>
+            </div>`);
     }
 
-    window.benchToggleCandidate = function (id) {
-        if (selectedCandidates.has(id)) selectedCandidates.delete(id);
-        else selectedCandidates.add(id);
-        renderCandidateList();
-    };
-
-    // ── Job Roles ─────────────────────────────────────────────────────────────
-    const PRESET_ROLES = [
-        'Frontend Developer', 'Backend Developer', 'Full Stack Developer',
-        'ML Engineer', 'Data Analyst', 'DevOps Engineer', 'Mobile Developer',
-        'Product Manager', 'Research Intern', 'UI/UX Designer',
-    ];
-
-    function renderRoleTags() {
-        const tagsEl = $('benchRoleTags');
-        tagsEl.innerHTML = jobRoles.map((r, i) => `
-            <span class="bench-role-tag">
-                ${r}
-                <button onclick="window.benchRemoveRole(${i})" title="Remove">×</button>
-            </span>`).join('');
-        updateSummary();
-    }
-
-    window.benchRemoveRole = function (i) {
-        jobRoles.splice(i, 1);
-        renderRoleTags();
-    };
-
-    function addRole(role) {
-        const r = role.trim();
-        if (!r || jobRoles.includes(r) || jobRoles.length >= 10) return;
-        jobRoles.push(r);
-        renderRoleTags();
-    }
-
-    function renderPresets() {
-        const el = $('benchPresets');
-        el.innerHTML = PRESET_ROLES.map(r =>
-            `<span class="bench-preset-chip" onclick="window.benchAddPreset('${r}')">${r}</span>`
-        ).join('');
-    }
-
-    window.benchAddPreset = function (r) { addRole(r); };
-
-    // ── Summary & Run ─────────────────────────────────────────────────────────
-    function updateSummary() {
-        const sumEl  = $('benchSummaryText');
-        const runBtn = $('benchRunBtn');
-        const c = selectedCandidates.size;
-        const r = jobRoles.length;
-        sumEl.innerHTML = `<strong>${c}</strong> candidate${c !== 1 ? 's' : ''} × <strong>${r}</strong> role${r !== 1 ? 's' : ''} = <strong>${c * r}</strong> score${c * r !== 1 ? 's' : ''}`;
-        runBtn.disabled = c === 0 || r === 0;
-    }
-
-    // ── Run benchmark ─────────────────────────────────────────────────────────
-    async function runBenchmark() {
-        const btn   = $('benchRunBtn');
-        const errEl = $('benchError');
-        errEl.style.display = 'none';
-
-        btn.classList.add('loading');
-        btn.disabled = true;
-
-        try {
-            const headers = await getAuthHeaders();
-            const res = await fetch(`${API_BASE}/benchmark/run`, {
-                method: 'POST',
-                headers,
-                body: JSON.stringify({
-                    candidate_ids: [...selectedCandidates],
-                    job_roles:     jobRoles,
-                }),
-            });
-            const json = await res.json();
-            if (!res.ok) throw new Error(json.message || 'Benchmark failed.');
-            currentResults = json.data;
-            renderResults(currentResults);
-            // Load session history
-            loadHistory();
-        } catch (e) {
-            errEl.textContent = e.message;
-            errEl.style.display = 'block';
-        } finally {
-            btn.classList.remove('loading');
-            btn.disabled = false;
-            updateSummary();
-        }
-    }
-
-    // ── Render Results ────────────────────────────────────────────────────────
-    function renderResults(session) {
-        const resultsEl = $('benchResultsSection');
-        if (!resultsEl) return;
-        resultsEl.style.display = '';
-
-        const results = session.results || [];
-        if (!results.length) {
-            resultsEl.innerHTML = `<div class="bench-empty">
-                <div class="bench-empty-icon">📊</div>
-                <div class="bench-empty-title">No results yet</div>
-                <div class="bench-empty-sub">Run a benchmark to see scores.</div>
-            </div>`;
-            return;
-        }
-
-        // Derive unique candidates and roles from results
-        const candidatesMap = {};
-        const rolesSet = new Set();
-        results.forEach(r => {
-            candidatesMap[r.student_id] = r.student_name;
-            rolesSet.add(r.role_name);
-        });
-        const candidates = Object.entries(candidatesMap); // [[id, name], ...]
-        const roles = [...rolesSet];
-
-        // Build lookup: student_id → role → result
-        const lookup = {};
-        results.forEach(r => {
-            if (!lookup[r.student_id]) lookup[r.student_id] = {};
-            lookup[r.student_id][r.role_name] = r;
-        });
-
-        const runDate = session.created_at ? new Date(session.created_at).toLocaleString() : '';
-        const total   = results.length;
-
-        resultsEl.innerHTML = `
-            <div class="bench-results-header">
-                <div>
-                    <h3 class="bench-results-title">📊 Benchmark Results</h3>
-                    <div class="bench-results-meta">${total} scores · ${runDate}</div>
+    // State: error
+    function showError(msg) {
+        setRoot(`
+            <div class="bench-header">
+                <div class="bench-header-left">
+                    <h2>Role Fit Benchmarking</h2>
+                    <p>AI-powered fit score across all placement roles for your course.</p>
                 </div>
-                <div style="display:flex;gap:10px;align-items:center;">
-                    <div class="bench-view-toggle">
-                        <button class="bench-view-btn active" id="benchViewHeatmap" onclick="window.benchSetView('heatmap')">🔥 Heatmap</button>
-                        <button class="bench-view-btn" id="benchViewCards" onclick="window.benchSetView('cards')">🃏 Cards</button>
-                    </div>
+                <div class="bench-header-right">
+                    <button class="bench-refresh-btn" onclick="window.benchRun()">
+                        <span class="bench-refresh-icon">🔄</span>
+                        <div class="bench-spin"></div>
+                        Retry
+                    </button>
                 </div>
             </div>
-            <div id="benchResultsBody"></div>`;
-
-        renderHeatmap(candidates, roles, lookup);
+            <div class="bench-error-box">⚠️ ${msg}</div>`);
     }
 
-    window.benchSetView = function (view) {
-        currentView = view;
-        $('benchViewHeatmap').classList.toggle('active', view === 'heatmap');
-        $('benchViewCards').classList.toggle('active', view === 'cards');
-        if (!currentResults) return;
-        const results = currentResults.results || [];
-        const candidatesMap = {};
-        const rolesSet = new Set();
-        results.forEach(r => { candidatesMap[r.student_id] = r.student_name; rolesSet.add(r.role_name); });
-        const candidates = Object.entries(candidatesMap);
-        const roles = [...rolesSet];
-        const lookup = {};
-        results.forEach(r => {
-            if (!lookup[r.student_id]) lookup[r.student_id] = {};
-            lookup[r.student_id][r.role_name] = r;
-        });
-        if (view === 'heatmap') renderHeatmap(candidates, roles, lookup);
-        else renderCards(results);
-    };
+    // State: results
+    function renderResults() {
+        const filtered = allResults.filter(r =>
+            !searchQuery || r.role_name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
-    // ── Heatmap view ──────────────────────────────────────────────────────────
-    function renderHeatmap(candidates, roles, lookup) {
-        const bodyEl = $('benchResultsBody');
-        const roleHeaders = roles.map(r =>
-            `<th title="${r}">${r.length > 18 ? r.substring(0, 16) + '…' : r}</th>`
-        ).join('');
+        const top3    = allResults.slice(0, 3);
+        const visible = showAll ? filtered : filtered.slice(0, TOP_N);
+        const hiddenCount = filtered.length - TOP_N;
 
-        const rows = candidates.map(([sid, name]) => {
-            const cells = roles.map(role => {
-                const r = lookup[sid]?.[role];
-                if (!r) return `<td><span class="bench-score-pill score-f">—</span></td>`;
-                const cls = scoreClass(r.grade);
-                return `<td class="bench-score-cell">
-                    <span class="bench-score-pill ${cls}"
-                          onmouseenter="window.benchShowTip(event,'${sid}','${role.replace(/'/g, "\\'")}')"
-                          onmouseleave="window.benchHideTip()">
-                        <span class="bench-score-num">${r.fit_score}</span>
-                        <span class="bench-score-grade">${r.grade}</span>
-                    </span>
-                </td>`;
-            }).join('');
-
-            return `<tr>
-                <td>
-                    <div class="bench-candidate-cell">
-                        <div class="bench-avatar">${initials(name)}</div>
-                        <span class="bench-name-cell">${name}</span>
-                    </div>
-                </td>
-                ${cells}
-            </tr>`;
-        }).join('');
-
-        bodyEl.innerHTML = `
-            <div class="bench-heatmap-wrap">
-                <table class="bench-heatmap-table">
-                    <thead><tr><th>Candidate</th>${roleHeaders}</tr></thead>
-                    <tbody>${rows}</tbody>
-                </table>
+        // Header
+        const headerHtml = `
+            <div class="bench-header">
+                <div class="bench-header-left">
+                    <h2>Role Fit Benchmarking</h2>
+                    <p>Your AI fit scores across all ${tierLabel(courseTier)} placement roles — ${runDate}.</p>
+                </div>
+                <div class="bench-header-right">
+                    ${courseTier ? `<span class="bench-course-tag">${tierLabel(courseTier)}</span>` : ''}
+                    <button class="bench-refresh-btn" id="benchRefreshBtn" onclick="window.benchRefresh()">
+                        <span class="bench-refresh-icon">🔄</span>
+                        <div class="bench-spin"></div>
+                        Refresh
+                    </button>
+                </div>
             </div>`;
+
+        // Podium top 3
+        const podiumHtml = top3.length >= 3 ? `
+            <div>
+                <p class="bench-roles-section-label" style="margin-bottom:12px;">🏆 Top Matches</p>
+                <div class="bench-podium">
+                    ${top3.slice(0,3).map((r, i) => {
+                        const color = gradeColor(r.grade);
+                        return `
+                        <div class="bench-podium-card rank-${i+1}" style="border-color:${color}22;">
+                            <div class="bench-podium-rank">${podiumEmoji(i)}</div>
+                            <div class="bench-podium-role">${r.role_name}</div>
+                            <div class="bench-podium-score-row">
+                                <div class="bench-podium-score" style="color:${color};">${r.fit_score}</div>
+                                <div class="bench-podium-grade" style="color:${color};">${r.grade}</div>
+                            </div>
+                            ${r.major_strength ? `<div class="bench-podium-strength">💪 ${r.major_strength}</div>` : ''}
+                        </div>`;
+                    }).join('')}
+                </div>
+            </div>` : '';
+
+        // Controls bar
+        const controlsHtml = `
+            <div class="bench-controls">
+                <div class="bench-search-wrap">
+                    <svg class="bench-search-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                    </svg>
+                    <input class="bench-search" id="benchSearchInput"
+                           placeholder="Search roles…"
+                           value="${searchQuery}"
+                           oninput="window.benchSearch(this.value)" />
+                </div>
+                <span class="bench-count-badge">${filtered.length} roles</span>
+                ${!showAll && hiddenCount > 0 ? `
+                <button class="bench-show-all-btn" id="benchShowAllBtn" onclick="window.benchToggleAll()">
+                    Show all ${filtered.length} roles ↓
+                </button>` : ''}
+                ${showAll && filtered.length > TOP_N ? `
+                <button class="bench-show-all-btn active" id="benchShowAllBtn" onclick="window.benchToggleAll()">
+                    Show top ${TOP_N} only ↑
+                </button>` : ''}
+            </div>`;
+
+        // Role grid (ranks 4+ or all if showing all)
+        const startRank = showAll && top3.length >= 3 ? 1 : (top3.length >= 3 ? 4 : 1);
+        const gridResults = showAll ? filtered : filtered.slice(0, TOP_N);
+        const gridStartOffset = (!showAll && top3.length >= 3) ? 3 : 0;
+
+        const gridLabel = top3.length >= 3
+            ? (showAll ? 'All Roles' : `Roles #4–${Math.min(TOP_N, filtered.length)}`)
+            : 'All Roles';
+
+        const gridHtml = `
+            <div>
+                <p class="bench-roles-section-label" style="margin-bottom:12px;">📋 ${gridLabel}</p>
+                <div class="bench-role-grid" id="benchRoleGrid">
+                    ${gridResults.slice(gridStartOffset).map((r, i) => roleCardHtml(r, gridStartOffset + i + 1)).join('')}
+                </div>
+                ${!showAll && hiddenCount > 0 ? `
+                <div style="text-align:center;margin-top:16px;">
+                    <button class="bench-show-all-btn" onclick="window.benchToggleAll()" style="margin:auto;">
+                        + Show ${hiddenCount} more roles
+                    </button>
+                </div>` : ''}
+            </div>`;
+
+        setRoot(headerHtml + podiumHtml + controlsHtml + gridHtml);
+
+        // Re-attach search focus
+        const inp = document.getElementById('benchSearchInput');
+        if (inp && searchQuery) { inp.focus(); inp.setSelectionRange(9999,9999); }
     }
 
-    // ── Cards view ────────────────────────────────────────────────────────────
-    function renderCards(results) {
-        const bodyEl = $('benchResultsBody');
-        const cards = results.map(r => {
-            const cls   = scoreClass(r.grade);
-            const color = gradeColor(r.grade);
-            return `
-            <div class="bench-detail-card">
-                <div class="bench-card-header">
+    function roleCardHtml(r, rank) {
+        const cls   = scoreClass(r.grade);
+        const color = gradeColor(r.grade);
+        const bColor = barColor(r.fit_score);
+        const pct   = r.fit_score;
+        const id    = `brc-${r.role_name.replace(/\W/g,'_')}`;
+        return `
+        <div class="bench-role-card" id="${id}" onclick="window.benchExpandCard('${id}')">
+            <div class="bench-role-card-main">
+                <div class="bench-role-rank-badge">#${rank}</div>
+                <div class="bench-role-info">
+                    <div class="bench-role-name">${r.role_name}</div>
+                </div>
+                <div class="bench-score-bar-wrap">
+                    <div class="bench-score-bar" style="width:${pct}%;background:${bColor};"></div>
+                </div>
+                <div class="bench-score-pill ${cls}">
+                    <span class="bench-score-num">${r.fit_score}</span>
+                    <span class="bench-score-grade">${r.grade}</span>
+                </div>
+            </div>
+            <div class="bench-role-detail">
+                ${r.major_strength ? `
+                <div class="bench-detail-item">
+                    <div class="bench-detail-dot" style="background:#34d399;"></div>
                     <div>
-                        <div class="bench-card-name">${r.student_name}</div>
-                        <div class="bench-card-role">${r.role_name}</div>
+                        <div class="bench-detail-label" style="color:#34d399;">Strength</div>
+                        <div class="bench-detail-text">${r.major_strength}</div>
                     </div>
-                    <div class="bench-card-score-ring ${cls}" style="border-color:${color}40;">
-                        <span class="bench-card-score-val" style="color:${color};">${r.fit_score}</span>
-                        <span class="bench-card-grade-val" style="color:${color};">${r.grade}</span>
+                </div>` : ''}
+                ${r.improvement_suggestion ? `
+                <div class="bench-detail-item">
+                    <div class="bench-detail-dot" style="background:#fbbf24;"></div>
+                    <div>
+                        <div class="bench-detail-label" style="color:#fbbf24;">To Improve</div>
+                        <div class="bench-detail-text">${r.improvement_suggestion}</div>
                     </div>
-                </div>
-                <div class="bench-card-body">
-                    ${r.major_strength ? `
-                    <div class="bench-insight">
-                        <div class="bench-insight-icon" style="background:rgba(16,185,129,0.12);color:#34d399;">💪</div>
-                        <div>
-                            <div class="bench-insight-label" style="color:#34d399;">Strength</div>
-                            <div class="bench-insight-text">${r.major_strength}</div>
-                        </div>
-                    </div>` : ''}
-                    ${r.improvement_suggestion ? `
-                    <div class="bench-insight">
-                        <div class="bench-insight-icon" style="background:rgba(251,191,36,0.12);color:#fbbf24;">🎯</div>
-                        <div>
-                            <div class="bench-insight-label" style="color:#fbbf24;">To Improve</div>
-                            <div class="bench-insight-text">${r.improvement_suggestion}</div>
-                        </div>
-                    </div>` : ''}
-                </div>
-            </div>`;
-        }).join('');
-
-        bodyEl.innerHTML = `<div class="bench-cards-grid">${cards}</div>`;
+                </div>` : ''}
+            </div>
+        </div>`;
     }
 
-    // ── Tooltip ───────────────────────────────────────────────────────────────
-    let _tipLookup = {};
-
-    window.benchShowTip = function (evt, sid, role) {
-        if (!currentResults) return;
-        const results = currentResults.results || [];
-        const r = results.find(x => x.student_id === sid && x.role_name === role);
-        if (!r) return;
-        const tip = $('benchTooltip');
-        if (!tip) return;
-        tip.innerHTML = `
-            <div class="bench-tt-title">${r.student_name} — ${r.role_name}</div>
-            <div class="bench-tt-row">Score: <strong>${r.fit_score} (${r.grade})</strong></div>
-            ${r.major_strength ? `<div class="bench-tt-row">💪 <strong>Strength:</strong> ${r.major_strength}</div>` : ''}
-            ${r.improvement_suggestion ? `<div class="bench-tt-row">🎯 <strong>Improve:</strong> ${r.improvement_suggestion}</div>` : ''}`;
-        tip.classList.add('visible');
-        moveTip(evt);
+    // ── Interactions ──────────────────────────────────────────────────────────
+    window.benchExpandCard = function (id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.toggle('expanded');
     };
 
-    window.benchHideTip = function () {
-        const tip = $('benchTooltip');
-        if (tip) tip.classList.remove('visible');
+    window.benchSearch = function (q) {
+        searchQuery = q;
+        renderResults();
     };
 
-    function moveTip(evt) {
-        const tip = $('benchTooltip');
-        if (!tip) return;
-        const x = evt.clientX + 14;
-        const y = evt.clientY - 10;
-        tip.style.left = Math.min(x, window.innerWidth - 300) + 'px';
-        tip.style.top  = Math.min(y, window.innerHeight - 200) + 'px';
+    window.benchToggleAll = function () {
+        showAll = !showAll;
+        renderResults();
+    };
+
+    // ── API calls ─────────────────────────────────────────────────────────────
+    async function loadData(forceRefresh = false) {
+        showLoading(forceRefresh
+            ? 'Re-running AI analysis across all roles…'
+            : 'Scoring all roles against your resume…');
+
+        try {
+            const headers = await authHeaders();
+            const endpoint = forceRefresh
+                ? `${API_BASE}/benchmark/my-role-fit/refresh`
+                : `${API_BASE}/benchmark/my-role-fit`;
+            const method = forceRefresh ? 'POST' : 'GET';
+
+            const res  = await fetch(endpoint, { method, headers });
+            const json = await res.json();
+
+            if (!res.ok) {
+                if (res.status === 422) { showNoResume(); return; }
+                throw new Error(json.message || 'Benchmark failed.');
+            }
+
+            const data = json.data;
+            allResults  = (data.results || []).sort((a, b) => b.fit_score - a.fit_score);
+            courseTier  = data.course_tier || '';
+            runDate     = data.updated_at || data.created_at
+                ? new Date(data.updated_at || data.created_at).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
+                : '';
+
+            showAll     = false;
+            searchQuery = '';
+            renderResults();
+        } catch (err) {
+            if (err.message && err.message.toLowerCase().includes('no analysed resume')) {
+                showNoResume();
+            } else {
+                showError(err.message || 'Something went wrong. Please try again.');
+            }
+        }
     }
 
-    document.addEventListener('mousemove', e => {
-        const tip = $('benchTooltip');
-        if (tip && tip.classList.contains('visible')) moveTip(e);
+    window.benchRun     = () => loadData(false);
+    window.benchRefresh = () => loadData(true);
+
+    // ── Init on tab visibility ────────────────────────────────────────────────
+    function init() {
+        // Only run when tab is actually visible
+        const tab = document.getElementById('page-benchmarking');
+        if (!tab) return;
+        if (allResults.length > 0) { renderResults(); return; } // already loaded
+        loadData(false);
+    }
+
+    // Hook into dashboard tab switching
+    const origShowTab = window.showTab;
+    window.showTab = function (tabName) {
+        if (origShowTab) origShowTab(tabName);
+        if (tabName === 'benchmarking') init();
+    };
+
+    // Also init immediately if the benchmarking tab is already active
+    document.addEventListener('DOMContentLoaded', () => {
+        const active = document.querySelector('.page-view.active, .page-view[style*="block"]');
+        if (active && active.id === 'page-benchmarking') init();
+
+        // Listen for menu item clicks as fallback
+        document.querySelectorAll('[data-target="benchmarking"]').forEach(el => {
+            el.addEventListener('click', () => setTimeout(init, 50));
+        });
     });
 
-    // ── History ───────────────────────────────────────────────────────────────
-    async function loadHistory() {
-        const histEl = $('benchHistoryList');
-        if (!histEl) return;
-        try {
-            const headers = await getAuthHeaders();
-            const res = await fetch(`${API_BASE}/benchmark/sessions`, { headers });
-            const json = await res.json();
-            const sessions = json.data || [];
-            if (!sessions.length) {
-                histEl.innerHTML = '<div style="color:var(--text-secondary);font-size:12px;padding:8px;">No previous runs yet.</div>';
-                return;
-            }
-            histEl.innerHTML = sessions.slice(0, 8).map(s => {
-                const roles = Array.isArray(s.job_roles) ? s.job_roles : JSON.parse(s.job_roles || '[]');
-                const candidates = Array.isArray(s.candidate_ids) ? s.candidate_ids : JSON.parse(s.candidate_ids || '[]');
-                const date = new Date(s.created_at).toLocaleDateString();
-                const dotColor = s.status === 'done' ? '#34d399' : s.status === 'error' ? '#f87171' : '#fbbf24';
-                return `
-                <div class="bench-history-item" onclick="window.benchLoadSession('${s.id}')">
-                    <div class="bench-history-dot" style="background:${dotColor};"></div>
-                    <div class="bench-history-info">
-                        <div class="bench-history-roles">${roles.slice(0, 3).join(', ')}${roles.length > 3 ? ` +${roles.length - 3}` : ''}</div>
-                        <div class="bench-history-meta">${candidates.length} candidate${candidates.length !== 1 ? 's' : ''} · ${date}</div>
-                    </div>
-                </div>`;
-            }).join('');
-        } catch (e) {
-            histEl.innerHTML = '';
-        }
-    }
-
-    window.benchLoadSession = async function (id) {
-        try {
-            const headers = await getAuthHeaders();
-            const res  = await fetch(`${API_BASE}/benchmark/sessions/${id}`, { headers });
-            const json = await res.json();
-            if (json.success) {
-                currentResults = json.data;
-                renderResults(currentResults);
-                document.getElementById('benchResultsSection').scrollIntoView({ behavior: 'smooth' });
-            }
-        } catch (e) {
-            console.error('Failed to load session:', e);
-        }
-    };
-
-    // ── Init ──────────────────────────────────────────────────────────────────
-    function initBenchmarking() {
-        renderPresets();
-        loadCandidates();
-        loadHistory();
-        updateSummary();
-
-        // Role input — add on Enter
-        const inp = $('benchRoleInput');
-        if (inp) {
-            inp.addEventListener('keydown', e => {
-                if (e.key === 'Enter') { addRole(inp.value); inp.value = ''; }
-            });
-        }
-
-        const addBtn = $('benchRoleAddBtn');
-        if (addBtn) {
-            addBtn.addEventListener('click', () => {
-                if (!inp) return;
-                addRole(inp.value);
-                inp.value = '';
-            });
-        }
-
-        const runBtn = $('benchRunBtn');
-        if (runBtn) runBtn.addEventListener('click', runBenchmark);
-    }
-
-    // Wait for the tab to become visible (dashboard.js calls tab init functions)
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initBenchmarking);
-    } else {
-        initBenchmarking();
-    }
-
-    // Expose for re-init when tab is re-shown
-    window.initBenchmarking = initBenchmarking;
+    window.initBenchmarking = init;
 })();
