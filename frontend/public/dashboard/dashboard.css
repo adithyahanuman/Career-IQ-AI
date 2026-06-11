@@ -47,8 +47,9 @@
             .logo-box {
                 width: 32px;
                 height: 32px;
-                background: linear-gradient(135deg, var(--brand), var(--brand-dark));
-                border-radius: 8px;
+                background: var(--brand-dark);
+                border: 1px solid var(--border);
+                border-radius: 6px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -65,6 +66,14 @@
                 font-weight: 800;
                 color: var(--text-primary);
                 letter-spacing: -0.5px;
+            }
+
+            .brand-text {
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--text-primary);
+                letter-spacing: -0.3px;
+                font-family: var(--font-sans);
             }
 
             .brand-text span {
@@ -620,11 +629,7 @@
             /* ── Dashboard Light Mode ── */
             [data-theme="light"] .mobile-header {
                 background: var(--bg-card);
-                border-bottom-color: rgba(175, 198, 255, 0.12);
-            }
-                font-size: 15px;
-                color: var(--text-secondary);
-                margin-bottom: 28px;
+                border-bottom-color: var(--border);
             }
 
             .welcome-actions {
@@ -812,25 +817,26 @@
                 }
             }
 
-            /* ── Dashboard Light Mode ── */
+            /* ── Dashboard Light Mode overrides ── */
+            [data-theme="light"] .sidebar {
+                background: var(--bg-secondary);
+                border-right-color: var(--border);
+            }
             [data-theme="light"] .mobile-header {
                 background: var(--bg-card);
-                border-bottom-color: rgba(175, 198, 255, 0.12);
-            }
-            [data-theme="light"] .sidebar-overlay {
-                background: rgba(15, 20, 23, 0.4);
+                border-bottom-color: var(--border);
             }
             [data-theme="light"] .content-area {
-                background: #1b2023;
+                background: var(--bg-primary);
             }
-            [data-theme="light"] .upload-spinner {
-                border-color: rgba(175, 198, 255, 0.25);
+            [data-theme="light"] .sidebar-overlay {
+                background: rgba(26, 28, 30, 0.35);
             }
             [data-theme="light"] .stat-card {
-                box-shadow: 0 2px 12px rgba(175, 198, 255, 0.08);
+                box-shadow: var(--shadow-md);
             }
-            [data-theme="light"] .page-view {
-                color: var(--text-primary);
+            [data-theme="light"] .welcome-card::after {
+                background: radial-gradient(circle at right, rgba(0, 94, 208, 0.06) 0%, transparent 70%);
             }
 
             /* =========================================================

@@ -849,6 +849,24 @@
         <script src="placementiq.js"></script>
         <!-- Benchmarking Tab JS -->
         <script src="tabs/benchmarking/benchmarking.js"></script>
+        <!-- Theme toggle handler -->
+        <script>
+            (function() {
+                // Apply saved theme on load
+                var savedTheme = localStorage.getItem('careeriq_theme') || 'dark';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+
+                var btn = document.getElementById('themeToggle');
+                if (btn) {
+                    btn.addEventListener('click', function() {
+                        var current = document.documentElement.getAttribute('data-theme');
+                        var next = current === 'dark' ? 'light' : 'dark';
+                        document.documentElement.setAttribute('data-theme', next);
+                        localStorage.setItem('careeriq_theme', next);
+                    });
+                }
+            })();
+        </script>
     </body>
     <!-- Benchmark tooltip (shared, outside scroll container) -->
     <div class="bench-tooltip" id="benchTooltip"></div>
