@@ -32,8 +32,7 @@ const getMyStatus = async (req, res, next) => {
 };
 
 // ── POST /api/benchmark/my-role-fit/refresh  ─────────────────────────────────
-// Follows the SAME smart order as GET: hash match → any done session → AI.
-// AI is only called when there is NO done session in the DB at all.
+// User explicitly requested a refresh. Bypass the cache and force a fresh AI run.
 const refreshMyRoleFit = async (req, res, next) => {
   try {
     const data = await benchmarkService.refreshMyRoleFit(req.user.id);

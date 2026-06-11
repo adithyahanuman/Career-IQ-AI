@@ -178,11 +178,8 @@ const getMyRoleFit = async (studentId) => {
 };
 
 /**
- * Refresh (button press) — smarter logic:
- *   1. Compute current resume hash
- *   2. Done session with SAME hash  → return DB data (resume unchanged, no AI needed)
- *   3. Done session with DIFF hash  → resume changed → cancel running, re-run AI
- *   4. No done session at all       → run AI
+ * Refresh (button press) — User explicitly requested a refresh.
+ * Bypass the cache and force a fresh AI run so the user can get new data.
  */
 const refreshMyRoleFit = async (studentId) => {
   // ── Fetch student row ──────────────────────────────────────────────────────
@@ -216,17 +213,7 @@ const refreshMyRoleFit = async (studentId) => {
   // ── Compute current resume hash ────────────────────────────────────────────
   const rawText     = await _fetchRawText(studentRow.firebase_uid);
   const currentHash = sha256(rawText);
-  console.log(`[benchmark:refresh] hash=${currentHash.slice(0, 12)}…`);
-
-  // ── Same hash → resume unchanged → return DB data without AI ──────────────
-  const exactMatch = await _getLatestDoneSession(studentId, currentHash);
-  if (exactMatch) {
-    console.log('[benchmark:refresh] Same resume — returning DB data, no AI needed');
-    return { ...exactMatch, status: 'done', cache: 'hash_match' };
-  }
-
-  // ── Different hash or no session → resume changed → re-run AI ─────────────
-  console.log('[benchmark:refresh] Resume changed or no data — running AI');
+  console.log(`[benchmark:refresh] Force refresh requested for hash=${currentHash.slice(0, 12)}…`);
 
   // Cancel any in-progress session first
   await query(
