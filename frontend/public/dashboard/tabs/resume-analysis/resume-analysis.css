@@ -140,8 +140,8 @@
                                 gap: 8px;
                                 background: linear-gradient(
                                     135deg,
-                                    #6366f1,
-                                    #0ea5e9
+                                    var(--brand),
+                                    var(--brand)
                                 );
                                 color: #fff;
                                 font-weight: 600;

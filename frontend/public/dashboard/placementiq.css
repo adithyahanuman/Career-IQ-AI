@@ -22,14 +22,14 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #6366f1;
+    background: var(--brand);
     margin-left: auto;
     flex-shrink: 0;
 }
 
 .menu-notif-badge {
     margin-left: auto;
-    background: #6366f1;
+    background: var(--brand);
     color: #fff;
     font-size: 10px;
     font-weight: 700;
@@ -63,7 +63,7 @@
 }
 
 .piq-welcome-title span {
-    color: #6366f1;
+    color: var(--brand);
 }
 
 .piq-welcome-sub {
@@ -83,7 +83,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: #6366f1;
+    background: var(--brand);
     color: #fff;
     font-weight: 600;
     font-size: 14px;
@@ -93,7 +93,7 @@
     cursor: pointer;
     text-decoration: none;
     transition: all 0.2s ease;
-    font-family: "Outfit", sans-serif;
+    font-family: var(--font-sans);
 }
 
 .piq-upload-btn:hover {
@@ -105,7 +105,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(135deg, #6366f1, #0ea5e9);
+    background: linear-gradient(135deg, var(--brand), var(--brand));
     color: #fff;
     font-weight: 600;
     font-size: 14px;
@@ -114,7 +114,7 @@
     border: none;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: "Outfit", sans-serif;
+    font-family: var(--font-sans);
 }
 
 .piq-analyze-btn:hover {
@@ -174,7 +174,7 @@
 
 .piq-gauge-fill {
     fill: none;
-    stroke: #6366f1;
+    stroke: var(--brand);
     stroke-width: 8;
     stroke-linecap: round;
     stroke-dasharray: 314;
@@ -216,7 +216,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #6366f1;
+    color: var(--brand);
     margin-bottom: 8px;
 }
 
@@ -245,7 +245,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: linear-gradient(135deg, var(--brand), var(--brand-dark));
     color: #fff;
     font-weight: 600;
     font-size: 14px;
@@ -254,7 +254,7 @@
     border: none;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: "Outfit", sans-serif;
+    font-family: var(--font-sans);
 }
 
 .piq-btn-primary:hover {
@@ -275,7 +275,7 @@
     border: 1px solid var(--border);
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: "Outfit", sans-serif;
+    font-family: var(--font-sans);
 }
 
 .piq-btn-ghost:hover {
@@ -330,7 +330,7 @@
 
 .piq-icon-blue {
     background: rgba(99,102,241,0.12);
-    color: #6366f1;
+    color: var(--brand);
 }
 
 .piq-icon-yellow {
@@ -389,7 +389,7 @@
 .piq-view-all {
     font-size: 13px;
     font-weight: 600;
-    color: #6366f1;
+    color: var(--brand);
     text-decoration: none;
     white-space: nowrap;
     flex-shrink: 0;
@@ -439,7 +439,7 @@
     width: 28px;
     height: 28px;
     border-radius: 6px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: linear-gradient(135deg, var(--brand), var(--brand-dark));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -449,7 +449,7 @@
 .piq-role-match {
     font-size: 16px;
     font-weight: 800;
-    color: #6366f1;
+    color: var(--brand);
 }
 
 .piq-role-name {
@@ -472,7 +472,7 @@
     padding: 2px 8px;
     border-radius: 4px;
     background: rgba(99,102,241,0.08);
-    color: #6366f1;
+    color: var(--brand);
     border: 1px solid rgba(99,102,241,0.15);
 }
 
@@ -486,7 +486,7 @@
 .piq-role-bar-fill {
     height: 100%;
     border-radius: 2px;
-    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    background: linear-gradient(90deg, var(--brand), var(--brand-dark));
     transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -645,7 +645,7 @@
 .piq-improvement-gain {
     font-size: 12px;
     font-weight: 700;
-    color: #6366f1;
+    color: var(--brand);
     background: rgba(99,102,241,0.1);
     padding: 2px 8px;
     border-radius: 4px;
@@ -678,7 +678,7 @@
 .piq-updated-badge {
     font-size: 11px;
     font-weight: 600;
-    color: #6366f1;
+    color: var(--brand);
     background: rgba(99,102,241,0.08);
     padding: 4px 10px;
     border-radius: 6px;
@@ -733,7 +733,7 @@
 
 .piq-icon-violet {
     background: rgba(99,102,241,0.12);
-    color: #6366f1;
+    color: var(--brand);
 }
 
 .piq-growth-panel-title {
@@ -758,7 +758,7 @@
 
 .piq-badge-violet {
     background: rgba(99,102,241,0.1);
-    color: #6366f1;
+    color: var(--brand);
     border-color: rgba(99,102,241,0.2);
 }
 
@@ -856,7 +856,7 @@
     padding: 2px 7px;
     border-radius: 4px;
     background: rgba(99,102,241,0.08);
-    color: #6366f1;
+    color: var(--brand);
     border: 1px solid rgba(99,102,241,0.15);
 }
 
@@ -1014,7 +1014,7 @@
 
 .piq-road-step:hover .piq-road-title,
 .piq-road-step.piq-road-open .piq-road-title {
-    color: #6366f1;
+    color: var(--brand);
 }
 
 /* Expand panel — collapsed by default */
@@ -1057,7 +1057,7 @@
 /* Active/open step gets a left accent */
 .piq-road-step.piq-road-open {
     background: rgba(99,102,241,0.04);
-    border-left: 2px solid #6366f1;
+    border-left: 2px solid var(--brand);
     padding-left: 6px;
 }
 
@@ -1140,7 +1140,7 @@
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: linear-gradient(135deg, var(--brand), var(--brand-dark));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1180,7 +1180,7 @@
     cursor: pointer;
     text-align: left;
     transition: all 0.2s;
-    font-family: "Outfit", sans-serif;
+    font-family: var(--font-sans);
 }
 
 .piq-ai-prompt:hover {
@@ -1190,7 +1190,7 @@
 }
 
 .piq-ai-prompt svg {
-    color: #6366f1;
+    color: var(--brand);
     flex-shrink: 0;
 }
 
@@ -1207,13 +1207,13 @@
     padding: 10px 14px;
     font-size: 13px;
     color: var(--text-primary);
-    font-family: "Outfit", sans-serif;
+    font-family: var(--font-sans);
     outline: none;
     transition: border-color 0.2s;
 }
 
 .piq-ai-input:focus {
-    border-color: #6366f1;
+    border-color: var(--brand);
 }
 
 .piq-ai-input::placeholder {
@@ -1225,7 +1225,7 @@
     width: 38px;
     height: 38px;
     border-radius: 8px;
-    background: #6366f1;
+    background: var(--brand);
     color: #fff;
     border: none;
     cursor: pointer;
@@ -1260,7 +1260,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #6366f1;
+    color: var(--brand);
     margin-bottom: 4px;
 }
 
@@ -1284,7 +1284,7 @@
     font-weight: 600;
     color: var(--text-primary);
     cursor: pointer;
-    font-family: "Outfit", sans-serif;
+    font-family: var(--font-sans);
     transition: all 0.2s;
 }
 

@@ -5,7 +5,7 @@
                 min-height: 100vh;
                 display: flex;
                 flex-direction: row;
-                font-family: "Outfit", sans-serif;
+                font-family: var(--font-sans);
                 margin: 0;
                 transition:
                     background 0.3s,
@@ -47,7 +47,7 @@
             .logo-box {
                 width: 32px;
                 height: 32px;
-                background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                background: linear-gradient(135deg, var(--brand), var(--brand-dark));
                 border-radius: 8px;
                 display: flex;
                 align-items: center;
@@ -68,7 +68,7 @@
             }
 
             .brand-text span {
-                color: #6366f1;
+                color: var(--brand);
             }
 
             .sidebar-menu {
@@ -110,12 +110,12 @@
             .menu-item.active {
                 background: rgba(99, 102, 241, 0.08);
                 border-color: rgba(99, 102, 241, 0.15);
-                color: #6366f1;
+                color: var(--brand);
                 font-weight: 600;
             }
 
             .menu-item.active svg {
-                stroke: #6366f1;
+                stroke: var(--brand);
             }
 
             /* Sidebar Footer / User Section */
@@ -146,7 +146,7 @@
                 width: 38px;
                 height: 38px;
                 border-radius: 50%;
-                background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                background: linear-gradient(135deg, var(--brand), var(--brand-dark));
                 color: #ffffff;
                 display: flex;
                 align-items: center;
@@ -409,7 +409,7 @@
                 font-size: 11px;
                 font-weight: 700;
                 text-transform: uppercase;
-                color: #0ea5e9;
+                color: var(--brand);
                 letter-spacing: 1px;
                 margin-bottom: 12px;
             }
@@ -423,7 +423,7 @@
             }
 
             .welcome-title span {
-                color: #0ea5e9;
+                color: var(--brand);
             }
 
             .welcome-subtitle {
@@ -443,7 +443,7 @@
                 display: inline-flex;
                 align-items: center;
                 gap: 8px;
-                background: #0ea5e9;
+                background: var(--brand);
                 color: #ffffff;
                 font-weight: 600;
                 font-size: 15px;
@@ -456,7 +456,7 @@
             }
 
             .btn-continue:hover {
-                background: #0284c7;
+                background: var(--brand-dark);
                 transform: translateY(-1px);
             }
 
@@ -494,13 +494,13 @@
             .stat-icon-wrapper svg {
                 width: 20px;
                 height: 20px;
-                stroke: #6366f1;
+                stroke: var(--brand);
             }
 
             .stat-value {
                 font-size: 32px;
                 font-weight: 800;
-                color: #6366f1;
+                color: var(--brand);
                 margin-bottom: 4px;
                 line-height: 1;
             }
@@ -638,7 +638,7 @@
                 display: inline-flex;
                 align-items: center;
                 gap: 8px;
-                background: #0ea5e9;
+                background: var(--brand);
                 color: #ffffff;
                 font-weight: 600;
                 font-size: 15px;
@@ -651,7 +651,7 @@
             }
 
             .btn-continue:hover {
-                background: #0284c7;
+                background: var(--brand-dark);
                 transform: translateY(-1px);
             }
 
@@ -689,13 +689,13 @@
             .stat-icon-wrapper svg {
                 width: 20px;
                 height: 20px;
-                stroke: #6366f1;
+                stroke: var(--brand);
             }
 
             .stat-value {
                 font-size: 32px;
                 font-weight: 800;
-                color: #6366f1;
+                color: var(--brand);
                 margin-bottom: 4px;
                 line-height: 1;
             }
@@ -856,7 +856,7 @@
             }
             .road-path {
                 fill: none;
-                stroke: #0ea5e9;
+                stroke: var(--brand);
                 stroke-width: 3;
                 stroke-dasharray: 14 7;
                 filter: drop-shadow(0 0 10px rgba(14, 165, 233, 0.4));
@@ -872,7 +872,7 @@
                 padding: 30px;
                 position: relative;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-                border-top: 3px solid var(--phase-color, #0ea5e9);
+                border-top: 3px solid var(--phase-color, var(--brand));
                 transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
                 /* Animation starting state */
                 opacity: 0;
@@ -893,7 +893,7 @@
                 font-size: 0.8rem;
                 font-weight: 700;
                 text-transform: uppercase;
-                color: var(--phase-color, #0ea5e9);
+                color: var(--phase-color, var(--brand));
                 margin-bottom: 8px;
                 letter-spacing: 1px;
             }
