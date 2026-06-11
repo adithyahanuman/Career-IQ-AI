@@ -71,9 +71,12 @@ const getMyRoleFit = async (studentId, force = false) => {
   const jobRoles = getRolesForCourse(eduText);
 
   // ── 4. Build the resume payload for the AI ─────────────────────────────────
+  // raw_text = original resume text (primary source)
+  // analysis = structured 13-section JSON (supporting signal)
   const resumePayload = [{
-    id:   studentRow.id,
-    name: studentRow.full_name,
+    id:       studentRow.id,
+    name:     studentRow.full_name,
+    raw_text: studentRow.resume_text || '',
     analysis: {
       skills:              studentRow.skills_analysis           ?? {},
       projects:            studentRow.projects_analysis         ?? {},
@@ -219,7 +222,7 @@ const createSession = async ({ createdBy, candidateIds, jobRoles }) => {
     const resumeRows = await Promise.all(
       candidateIds.map(sid =>
         query(
-          `SELECT r.id, s.full_name AS name,
+          `SELECT r.id, s.full_name AS name, r.resume_text,
                   r.skills_analysis, r.projects_analysis, r.experience_analysis,
                   r.education_analysis, r.certifications_analysis, r.overall_analysis,
                   r.confidence_analysis, r.action_plan_analysis
@@ -232,6 +235,7 @@ const createSession = async ({ createdBy, candidateIds, jobRoles }) => {
 
     const validResumes = resumeRows.filter(Boolean).map(r => ({
       id: r.id, name: r.name,
+      raw_text: r.resume_text || '',
       analysis: {
         skills: r.skills_analysis ?? {}, projects: r.projects_analysis ?? {},
         experience: r.experience_analysis ?? {}, education: r.education_analysis ?? {},

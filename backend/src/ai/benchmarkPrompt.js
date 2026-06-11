@@ -1,24 +1,37 @@
 'use strict';
 
 /**
- * ai/prompts.js  – benchmark prompt addition
- * (append to existing prompts module)
+ * ai/benchmarkPrompt.js
+ *
+ * Builds the AI prompt for role-fit benchmarking.
+ * Each resume entry supplies BOTH:
+ *   • raw_text  – the original plain-text extracted from the PDF (ground truth)
+ *   • analysis  – the structured 13-section JSON produced by the resume analyser
+ *
+ * The AI is instructed to use raw_text as the primary source of facts and
+ * use analysis as a pre-computed signal layer.
  */
 
 /**
- * Build the benchmarking prompt.
- *
- * @param {Array<{id:string, name:string, analysis:object}>} resumes
+ * @param {Array<{id:string, name:string, raw_text:string, analysis:object}>} resumes
  * @param {string[]} jobRoles
  * @returns {string}
  */
 const benchmarkCandidates = (resumes, jobRoles) => `You are an expert technical recruiter specializing in student and early-career hiring.
 
 You will receive:
-- \`resumes\`: array of objects, each with \`id\`, \`name\`, and \`analysis\` (parsed resume analysis JSON)
+- \`resumes\`: array of objects, each with:
+    - \`id\`         – candidate identifier
+    - \`name\`       – candidate full name
+    - \`raw_text\`   – full plain-text content of the resume (PRIMARY source of truth)
+    - \`analysis\`   – structured JSON from an AI resume analyser (use as supporting signal)
 - \`job_roles\`: array of job role strings
 
 Score EVERY candidate against EVERY job role independently.
+
+IMPORTANT: \`raw_text\` is your primary source. Read it directly for skills, projects,
+experience, and education. Use \`analysis\` fields to cross-check and speed up scoring,
+but raw_text overrides whenever there is a conflict.
 
 ---
 
@@ -34,7 +47,7 @@ Compute a \`fit_score\` (0–100) for each candidate-role pair using these weigh
 - 0–6 pts: Under 30% match; fundamentally misaligned stack
 
 Boost +3 if candidate has advanced/rare skills highly valued for this role (e.g., CUDA for ML, WebGL for graphics)
-Penalty −5 if candidate lists skills with zero project/experience evidence (bare keyword listing)
+Penalty −5 if candidate lists skills with zero project/experience evidence in raw_text (bare keyword listing)
 
 ### 2. Project Relevance — 25 points
 - 21–25 pts: 2+ projects directly in the role's domain with measurable outcomes
@@ -56,7 +69,7 @@ Boost +2 if project involved collaboration (team project, hackathon win)
 Boost +2 if experience is at a known/reputable company or research lab
 
 ### 4. Education & Coursework — 10 points
-- 9–10 pts: Directly relevant major (CS/CE for dev, Stats/Math for data) + strong GPA (3.5+)
+- 9–10 pts: Directly relevant major (CS/CE for dev, Stats/Math for data) + strong GPA (3.5+ or 8+ CGPA)
 - 7–8 pts: Relevant major with average GPA, OR adjacent major with strong GPA
 - 5–6 pts: Adjacent major (IT, IS, Physics) OR relevant major with low GPA
 - 3–4 pts: Unrelated major but self-taught evidence exists
@@ -79,17 +92,22 @@ Boost +2 if hackathon winner or competitive programming rank in relevant domain
 
 Apply these overrides based on detected role type:
 
-| Role Type Keywords | Skills | Projects | Experience | Education | Certs |
+| Role Type Keywords         | Skills | Projects | Experience | Education | Certs |
 |---|---|---|---|---|---|
-| Frontend, UI, Web Dev | 35 | 30 | 15 | 10 | 10 |
-| Backend, API, Systems | 35 | 25 | 20 | 10 | 10 |
-| Data Analyst, BI | 30 | 25 | 20 | 15 | 10 |
-| ML, AI, Deep Learning | 35 | 25 | 15 | 15 | 10 |
-| DevOps, Cloud, Infra | 30 | 20 | 25 | 10 | 15 |
-| Research, Thesis | 25 | 20 | 15 | 30 | 10 |
-| Full Stack | 35 | 28 | 17 | 10 | 10 |
-| Mobile (iOS/Android) | 35 | 30 | 15 | 10 | 10 |
-| PM, Product | 20 | 25 | 30 | 10 | 15 |
+| Frontend, UI, Web Dev      | 35     | 30       | 15         | 10        | 10    |
+| Backend, API, Systems      | 35     | 25       | 20         | 10        | 10    |
+| Data Analyst, BI           | 30     | 25       | 20         | 15        | 10    |
+| ML, AI, Deep Learning      | 35     | 25       | 15         | 15        | 10    |
+| DevOps, Cloud, Infra       | 30     | 20       | 25         | 10        | 15    |
+| Research, Thesis           | 25     | 20       | 15         | 30        | 10    |
+| Full Stack                 | 35     | 28       | 17         | 10        | 10    |
+| Mobile (iOS/Android)       | 35     | 30       | 15         | 10        | 10    |
+| PM, Product                | 20     | 25       | 30         | 10        | 15    |
+| Embedded, Firmware, VLSI   | 35     | 25       | 20         | 15        | 5     |
+| Electrical, Power          | 25     | 20       | 25         | 20        | 10    |
+| Mechanical, Manufacturing  | 20     | 25       | 30         | 15        | 10    |
+| Civil, Structural          | 20     | 25       | 30         | 15        | 10    |
+| Chemical, Process          | 20     | 20       | 30         | 20        | 10    |
 
 If role type is ambiguous, use default weights (35/25/20/10/10).
 Normalize adjusted weights to always sum to 100.
@@ -98,29 +116,30 @@ Normalize adjusted weights to always sum to 100.
 
 ## GRADE THRESHOLDS
 
-| Score | Grade |
+| Score  | Grade |
 |---|---|
-| 90–100 | A+ |
-| 85–89 | A |
-| 80–84 | A− |
-| 75–79 | B+ |
-| 70–74 | B |
-| 65–69 | B− |
-| 60–64 | C+ |
-| 55–59 | C |
-| 50–54 | C− |
-| 40–49 | D |
-| 0–39 | F |
+| 90–100 | A+    |
+| 85–89  | A     |
+| 80–84  | A−    |
+| 75–79  | B+    |
+| 70–74  | B     |
+| 65–69  | B−    |
+| 60–64  | C+    |
+| 55–59  | C     |
+| 50–54  | C−    |
+| 40–49  | D     |
+| 0–39   | F     |
 
 ---
 
 ## SCORING RULES
 
-1. Score is evidence-based only — every point must trace to something in the analysis JSON.
-2. Do not penalize for being a student. Score relative to the student talent pool.
-3. If \`analysis_confidence\` in the analysis is below 60, cap the maximum score at 75 and note it.
-4. Skills listed with no supporting project or experience evidence get half weight.
-5. Scores are independent — a candidate's score for Role A does not affect their score for Role B.
+1. Score is evidence-based only — every point must trace to something in raw_text or analysis.
+2. raw_text is ground truth. If a skill appears in raw_text but not in analysis.skills, still count it.
+3. Do not penalize for being a student. Score relative to the student talent pool.
+4. If analysis.analysis_confidence is below 60, cap the maximum score at 75.
+5. Skills listed with no supporting project or experience evidence in raw_text get half weight.
+6. Scores are independent — a candidate's score for Role A does not affect their score for Role B.
 
 ---
 
