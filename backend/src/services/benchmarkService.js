@@ -55,12 +55,14 @@ async function _fetchRawText(firebaseUid) {
 /**
  * Load the most-recent done session for a student.
  * Optionally filter by resume_text_hash.
+ * Optionally validate against currentJobRoles (invalidates cache if roles changed).
  *
  * @param {string}      studentId
  * @param {string|null} [hash]   – if provided, only return sessions with this hash
+ * @param {string[]|null} [currentJobRoles] - if provided, ensures roles match exactly
  * @returns {object|null}
  */
-async function _getLatestDoneSession(studentId, hash = null) {
+async function _getLatestDoneSession(studentId, hash = null, currentJobRoles = null) {
   let sql = `SELECT * FROM benchmark_sessions
              WHERE  created_by = $1 AND status = 'done'`;
   const params = [studentId];
@@ -75,6 +77,18 @@ async function _getLatestDoneSession(studentId, hash = null) {
   const { rows: [session] } = await query(sql, params);
   if (!session) return null;
 
+  // Cache invalidation: if the required job roles changed, this session is stale
+  if (currentJobRoles) {
+    const sessionRoles = Array.isArray(session.job_roles)
+      ? session.job_roles
+      : JSON.parse(session.job_roles || '[]');
+    
+    if (JSON.stringify(sessionRoles) !== JSON.stringify(currentJobRoles)) {
+      console.log('[benchmark] Cache MISMATCH: Job roles configuration changed. Invalidating cache.');
+      return null;
+    }
+  }
+
   const { rows: results } = await query(
     `SELECT * FROM benchmark_results WHERE session_id = $1 ORDER BY fit_score DESC`,
     [session.id],
@@ -84,19 +98,25 @@ async function _getLatestDoneSession(studentId, hash = null) {
 }
 
 /**
- * Extract a plain degree/course string from the student row.
+ * Extract a plain degree/course string.
+ * Priority: 1. Resume's education_analysis, 2. Profile course, 3. Profile branch
  */
 function _extractDegreeText(row) {
-  if (row.course) return row.course;
-  if (row.branch) return row.branch;
   try {
     const edu = row.education_analysis;
     if (edu) {
-      const d = edu.degree || edu.degrees?.[0]?.degree || edu.institution?.degree || '';
+      // Look in the new structure (education_entries) or old structures
+      const d = edu.education_entries?.[0]?.degree || 
+                edu.degree || 
+                edu.degrees?.[0]?.degree || 
+                edu.institution?.degree;
       if (d) return d;
     }
   } catch (_) {}
-  return 'B.Tech';
+
+  if (row.course) return row.course;
+  if (row.branch) return row.branch;
+  return 'B.Tech'; // safe default
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -108,8 +128,9 @@ function _extractDegreeText(row) {
  *
  * Follows this order every time (load or refresh):
  *   1. Fetch current Firestore raw text → compute hash
- *   2. Done session with SAME hash → return it (resume unchanged, no AI)
- *   3. Nothing in DB with this hash → run AI, store hash, return fresh data
+ *   2. Detect course and target roles
+ *   3. Done session with SAME hash AND SAME roles → return it (no AI)
+ *   4. Nothing in DB matching both → run AI, store hash, return fresh data
  *
  * @param {string}  studentId
  */
@@ -145,10 +166,15 @@ const getMyRoleFit = async (studentId) => {
   // ── Step 2: get current resume text + hash ─────────────────────────────────
   const rawText    = await _fetchRawText(studentRow.firebase_uid);
   const currentHash = sha256(rawText);
-  console.log(`[benchmark] resume hash for uid=${studentRow.firebase_uid}: ${currentHash.slice(0, 12)}…`);
+  
+  // ── Step 3: detect current roles expected for this student ─────────────────
+  const eduText       = _extractDegreeText(studentRow);
+  const tier          = detectCourseTier(eduText);
+  const currentJobRoles = getRolesForCourse(eduText);
+  console.log(`[benchmark] uid=${studentRow.firebase_uid} tier=${tier} hash=${currentHash.slice(0, 12)}…`);
 
-  // ── Step 3: done session with SAME hash → return immediately (no AI) ───────
-  const exactMatch = await _getLatestDoneSession(studentId, currentHash);
+  // ── Step 4: done session with SAME hash AND SAME roles → return immediately ─
+  const exactMatch = await _getLatestDoneSession(studentId, currentHash, currentJobRoles);
   if (exactMatch) {
     console.log('[benchmark] Cache HIT (hash match) — returning DB data');
     return { ...exactMatch, status: 'done', cache: 'hash_match' };
@@ -166,7 +192,7 @@ const getMyRoleFit = async (studentId) => {
   }
 
   // ── Step 6: nothing at all → run AI ───────────────────────────────────────
-  return _runAI(studentId, studentRow, rawText, currentHash);
+  return _runAI(studentId, studentRow, rawText, currentHash, currentJobRoles, tier);
 };
 
 /**
@@ -200,10 +226,7 @@ const getLatestSession = (studentId) => _getLatestDoneSession(studentId, null);
 // AI EXECUTION  (private — only called when DB has no done session)
 // ─────────────────────────────────────────────────────────────────────────────
 
-async function _runAI(studentId, studentRow, rawText, resumeHash) {
-  const eduText  = _extractDegreeText(studentRow);
-  const tier     = detectCourseTier(eduText);
-  const jobRoles = getRolesForCourse(eduText);
+async function _runAI(studentId, studentRow, rawText, resumeHash, jobRoles, tier) {
 
   const resumePayload = [{
     id:       studentRow.id,
