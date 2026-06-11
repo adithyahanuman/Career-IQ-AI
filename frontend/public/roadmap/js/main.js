@@ -125,7 +125,7 @@ function initRoadmap() {
         text.setAttribute('x', cx);
         text.setAttribute('y', cy + 6); // slight optical adjustment
         text.setAttribute('text-anchor', 'middle');
-        text.setAttribute('fill', '#fff');
+        text.setAttribute('fill', '#dfe3e7');
         text.setAttribute('font-size', '18px');
         text.textContent = phase.icon;
         text.style.opacity = '0';

@@ -5,7 +5,7 @@
    ===================================================== */
 
 // ── Helper: map colors / icons to phase index ─────────
-const _PHASE_COLORS = ['var(--violet)', 'var(--cyan)', 'var(--amber)', 'var(--green)', '#ef4444', '#3b82f6'];
+const _PHASE_COLORS = ['var(--violet)', 'var(--cyan)', 'var(--amber)', 'var(--green)', '#ffb4ab', '#afc6ff'];
 const _PHASE_ICONS  = ['🚀', '⚡', '🛠️', '🔥', '🎯', '🏆'];
 
 // ── Try to load AI data from localStorage ─────────────

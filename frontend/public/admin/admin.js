@@ -272,7 +272,7 @@ const AdminPanel = {
       const uploadCount = p.resumeUploadCount || (hasResume ? 1 : 0);
       const resumeBadge = hasResume
         ? `<span class="status-badge status-active">✅ Uploaded (${uploadCount})</span>`
-        : `<span class="status-badge" style="background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.2);">Not uploaded</span>`;
+        : `<span class="status-badge" style="background:rgba(255, 180, 171, 0.1);color:var(--red);border:1px solid rgba(255, 180, 171, 0.2);">Not uploaded</span>`;
       const completeBadge = isComplete
         ? `<span class="status-badge status-active">Complete</span>`
         : `<span class="status-badge" style="background:rgba(255,255,255,0.05);color:var(--text-muted);">Pending</span>`;
@@ -341,8 +341,8 @@ const AdminPanel = {
     const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
     const gridColor   = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
     const labelColor  = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)';
-    const brandColor  = 'rgba(212,245,0,0.85)';
-    const brandFill   = isDark ? 'rgba(212,245,0,0.12)' : 'rgba(150,200,0,0.12)';
+    const brandColor  = 'rgba(175, 198, 255, 0.85)';
+    const brandFill   = isDark ? 'rgba(175, 198, 255, 0.12)' : 'rgba(175, 198, 255, 0.12)';
 
     this.uploadsChart = new Chart(canvas, {
       type: 'line',
@@ -351,10 +351,10 @@ const AdminPanel = {
         datasets: [{
           label: 'Uploads',
           data,
-          borderColor: 'rgba(212,245,0,0.9)',
+          borderColor: 'rgba(175, 198, 255, 0.9)',
           borderWidth: 2.5,
-          pointBackgroundColor: 'rgba(212,245,0,1)',
-          pointBorderColor: isDark ? '#0e1a05' : '#fff',
+          pointBackgroundColor: 'rgba(175, 198, 255, 1)',
+          pointBorderColor: isDark ? '#002d6c' : '#dfe3e7',
           pointBorderWidth: 2,
           pointRadius: 5,
           pointHoverRadius: 7,
@@ -369,11 +369,11 @@ const AdminPanel = {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: isDark ? '#1a2a0a' : '#fff',
-            borderColor: 'rgba(212,245,0,0.3)',
+            backgroundColor: isDark ? '#1b2023' : '#1b2023',
+            borderColor: 'rgba(175, 198, 255, 0.3)',
             borderWidth: 1,
-            titleColor: isDark ? '#d4f500' : '#333',
-            bodyColor: isDark ? '#ccc' : '#555',
+            titleColor: '#afc6ff',
+            bodyColor: '#c5c6ca',
             padding: 10,
             callbacks: {
               label: ctx => ` ${ctx.parsed.y} upload${ctx.parsed.y !== 1 ? 's' : ''}`

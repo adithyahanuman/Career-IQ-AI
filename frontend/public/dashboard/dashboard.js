@@ -330,27 +330,27 @@
         RA_CHARTS[id] = new Chart(canvas.getContext('2d'), config);
         return RA_CHARTS[id];
       }
-      const RA_PALETTE = ['#4f8ef7','#22d3a5','#fbbf24','#f87171','#a78bfa','#38bdf8','#34d399','#fb923c','#e879f9'];
+      const RA_PALETTE = ['#afc6ff','#afc6ff','#ffb3b0','#ffb4ab','#d9e2ff','#afc6ff','#c6c6c9','#ffb3b0','#e05456'];
       const RA_SECTION_META = [
-        { key:'contact',          label:'Contact',          icon:'📇', max:2,  accent:'#4f8ef7' },
-        { key:'summary',          label:'Summary',          icon:'📝', max:2,  accent:'#a78bfa' },
-        { key:'experience',       label:'Experience',       icon:'💼', max:20, accent:'#fbbf24' },
-        { key:'education',        label:'Education',        icon:'🎓', max:20, accent:'#22d3a5' },
-        { key:'skills',           label:'Skills',           icon:'⚡', max:20, accent:'#4f8ef7' },
-        { key:'projects',         label:'Projects',         icon:'🚀', max:20, accent:'#22d3a5' },
-        { key:'formatting',       label:'Formatting',       icon:'📄', max:6,  accent:'#94a3b8' },
-        { key:'certifications',   label:'Certs',            icon:'🏅', max:20, accent:'#fbbf24' },
-        { key:'extracurriculars', label:'Extracurriculars', icon:'🌐', max:20, accent:'#a78bfa' },
+        { key:'contact',          label:'Contact',          icon:'📇', max:2,  accent:'#afc6ff' },
+        { key:'summary',          label:'Summary',          icon:'📝', max:2,  accent:'#d9e2ff' },
+        { key:'experience',       label:'Experience',       icon:'💼', max:20, accent:'#ffb3b0' },
+        { key:'education',        label:'Education',        icon:'🎓', max:20, accent:'#afc6ff' },
+        { key:'skills',           label:'Skills',           icon:'⚡', max:20, accent:'#afc6ff' },
+        { key:'projects',         label:'Projects',         icon:'🚀', max:20, accent:'#afc6ff' },
+        { key:'formatting',       label:'Formatting',       icon:'📄', max:6,  accent:'#c5c6ca' },
+        { key:'certifications',   label:'Certs',            icon:'🏅', max:20, accent:'#ffb3b0' },
+        { key:'extracurriculars', label:'Extracurriculars', icon:'🌐', max:20, accent:'#d9e2ff' },
       ];
       function raGaugeColor(s) {
-        if (s>=80) return '#22d3a5'; if (s>=65) return '#4f8ef7'; if (s>=50) return '#fbbf24'; return '#f87171';
+        if (s>=80) return '#afc6ff'; if (s>=65) return '#afc6ff'; if (s>=50) return '#ffb3b0'; return '#ffb4ab';
       }
       function raProgColor(p) {
-        if (p>=75) return '#22d3a5'; if (p>=50) return '#fbbf24'; return '#f87171';
+        if (p>=75) return '#afc6ff'; if (p>=50) return '#ffb3b0'; return '#ffb4ab';
       }
       function raHeatBg(p) {
-        if (p>=80) return 'rgba(34,211,165,0.22)'; if (p>=65) return 'rgba(79,142,247,0.2)';
-        if (p>=50) return 'rgba(251,191,36,0.2)'; return 'rgba(248,113,113,0.2)';
+        if (p>=80) return 'rgba(198, 198, 201, 0.22)'; if (p>=65) return 'rgba(175, 198, 255, 0.2)';
+        if (p>=50) return 'rgba(255, 179, 176, 0.2)'; return 'rgba(255, 180, 171, 0.2)';
       }
       function raScore(sec, sectionKey) {
         if (!sec) return { score:0, max:0, grade:'—', issues:[], suggestion:null };
@@ -367,7 +367,7 @@
       function raHtmlLegend(containerId, items) {
         const el = document.getElementById(containerId); if (!el) return;
         const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        const valColor = isLight ? '#0c1a2e' : '#e2e8f0';
+        const valColor = isLight ? '#dfe3e7' : '#44474a';
         el.innerHTML = items.map(item =>
           `<div class="ra-legend-item"><span class="ra-legend-dot" style="background:${item.color}"></span><span>${item.label}</span><span style="margin-left:auto;color:${valColor};font-weight:500">${item.value}</span></div>`
         ).join('');
@@ -380,8 +380,8 @@
       }
       function raAxisStyle() {
         const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        const gridColor = isLight ? 'rgba(14,100,180,0.10)' : 'rgba(255,255,255,0.06)';
-        const tickColor = isLight ? '#3a5170' : '#94a3b8';
+        const gridColor = isLight ? 'rgba(175, 198, 255, 0.10)' : 'rgba(255,255,255,0.06)';
+        const tickColor = isLight ? '#c5c6ca' : '#c5c6ca';
         return {
           grid:{ color: gridColor },
           ticks:{ color: tickColor, font:{family:'inherit',size:10}, maxRotation:0, autoSkip:true, maxTicksLimit:8 }
@@ -484,7 +484,7 @@
                             .slice(0, 3)
                             .map(
                                 (f) =>
-                                    `<div class="ra-insight" style="--insight-c:${f.severity === "critical" ? "#f87171" : "#fbbf24"}">
+                                    `<div class="ra-insight" style="--insight-c:${f.severity === "critical" ? "#ffb4ab" : "#ffb3b0"}">
               <strong>${f.fix}</strong>${f.action}</div>`,
                             )
                             .join("");
@@ -537,22 +537,22 @@
                             {
                                 v: ov.raw_score || 0,
                                 l: "Raw Pts",
-                                c: "#4f8ef7",
+                                c: "#afc6ff",
                             },
                             {
                                 v: (rc.completeness_score || 0) + "%",
                                 l: "Complete",
-                                c: "#22d3a5",
+                                c: "#afc6ff",
                             },
                             {
                                 v: D.projects.total_projects || 0,
                                 l: "Projects",
-                                c: "#a78bfa",
+                                c: "#d9e2ff",
                             },
                             {
                                 v: D.skills.total_skills_count || 0,
                                 l: "Skills",
-                                c: "#fbbf24",
+                                c: "#ffb3b0",
                             },
                         ];
                         el_strip.innerHTML = metrics
@@ -574,7 +574,7 @@
                                 {
                                     data: secRaw,
                                     backgroundColor: secColors,
-                                    borderColor: "#161b25",
+                                    borderColor: "#171c1f",
                                     borderWidth: 2,
                                 },
                             ],
@@ -644,10 +644,10 @@
                         document.documentElement.getAttribute("data-theme") ===
                         "light";
                     const _radarGrid = _isLight
-                        ? "rgba(14,100,180,0.12)"
+                        ? "rgba(175, 198, 255, 0.12)"
                         : "rgba(255,255,255,0.07)";
-                    const _ptBorder = _isLight ? "#f0f4f9" : "#161b25";
-                    const _ptLabel = _isLight ? "#0c1a2e" : "#e2e8f0";
+                    const _ptBorder = _isLight ? "#1b2023" : "#171c1f";
+                    const _ptLabel = _isLight ? "#dfe3e7" : "#44474a";
                     // Radar
                     raCreateChart("raRadarChart", {
                         type: "radar",
@@ -656,8 +656,8 @@
                             datasets: [
                                 {
                                     data: secPct,
-                                    backgroundColor: "rgba(79,142,247,0.15)",
-                                    borderColor: "#4f8ef7",
+                                    backgroundColor: "rgba(175, 198, 255, 0.15)",
+                                    borderColor: "#afc6ff",
                                     borderWidth: 2,
                                     pointBackgroundColor: secColors,
                                     pointRadius: 5,
@@ -674,7 +674,7 @@
                                     max: 100,
                                     ticks: {
                                         stepSize: 25,
-                                        color: _isLight ? "#3a5170" : "#94a3b8",
+                                        color: _isLight ? "#c5c6ca" : "#c5c6ca",
                                         backdropColor: "transparent",
                                         font: { size: 9 },
                                     },
@@ -708,7 +708,7 @@
                                     label: "Remaining",
                                     data: secMax.map((m, i) => m - secRaw[i]),
                                     backgroundColor: _isLight
-                                        ? "rgba(14,100,180,0.08)"
+                                        ? "rgba(175, 198, 255, 0.08)"
                                         : "rgba(255,255,255,0.06)",
                                     borderRadius: 4,
                                 },
@@ -806,10 +806,10 @@
                         sk.soft_skills?.length || 0,
                     ];
                     const catColors = [
-                        "#4f8ef7",
-                        "#22d3a5",
-                        "#fbbf24",
-                        "#a78bfa",
+                        "#afc6ff",
+                        "#afc6ff",
+                        "#ffb3b0",
+                        "#d9e2ff",
                     ];
                     raCreateChart("raChartSkillsCat", {
                         type: "doughnut",
@@ -819,7 +819,7 @@
                                 {
                                     data: catData,
                                     backgroundColor: catColors,
-                                    borderColor: "#161b25",
+                                    borderColor: "#171c1f",
                                     borderWidth: 2,
                                 },
                             ],
@@ -859,9 +859,9 @@
                                 {
                                     data: [wEvidence, noEv, basic],
                                     backgroundColor: [
-                                        "#22d3a5",
-                                        "#fbbf24",
-                                        "#f87171",
+                                        "#afc6ff",
+                                        "#ffb3b0",
+                                        "#ffb4ab",
                                     ],
                                     borderRadius: 8,
                                 },
@@ -930,10 +930,10 @@
                                     data: projScores,
                                     backgroundColor: projScores.map((s) =>
                                         s >= 8
-                                            ? "#22d3a5"
+                                            ? "#afc6ff"
                                             : s >= 5
-                                              ? "#fbbf24"
-                                              : "#f87171",
+                                              ? "#ffb3b0"
+                                              : "#ffb4ab",
                                     ),
                                     borderRadius: 8,
                                 },
@@ -965,11 +965,11 @@
                                 {
                                     data: [withLink, withOutcome, tutorial],
                                     backgroundColor: [
-                                        "#22d3a5",
-                                        "#4f8ef7",
-                                        "#fbbf24",
+                                        "#afc6ff",
+                                        "#afc6ff",
+                                        "#ffb3b0",
                                     ],
-                                    borderColor: "#161b25",
+                                    borderColor: "#171c1f",
                                     borderWidth: 2,
                                 },
                             ],
@@ -980,17 +980,17 @@
                         {
                             label: "Has Link",
                             value: withLink,
-                            color: "#22d3a5",
+                            color: "#afc6ff",
                         },
                         {
                             label: "Has Outcome",
                             value: withOutcome,
-                            color: "#4f8ef7",
+                            color: "#afc6ff",
                         },
                         {
                             label: "Tutorial",
                             value: tutorial,
-                            color: "#fbbf24",
+                            color: "#ffb3b0",
                         },
                     ]);
 
@@ -1023,7 +1023,7 @@
               </div>
               <div style="display:flex;align-items:center;gap:0.5rem;font-size:11px;color:var(--ra-muted)">
                 <span>Score</span>
-                <div class="ra-prog-bar" style="flex:1"><div class="ra-prog-fill" style="width:${(p.project_score || 0) * 10}%;background:#4f8ef7"></div></div>
+                <div class="ra-prog-bar" style="flex:1"><div class="ra-prog-fill" style="width:${(p.project_score || 0) * 10}%;background:#afc6ff"></div></div>
                 <span>${p.project_score || 0}/10</span>
               </div>`;
                             el_prgrid.appendChild(card);
@@ -1046,9 +1046,9 @@
                         (r) => r.duration_months || 0,
                     );
                     const dotMap = {
-                        active: "#22d3a5",
-                        mostly_observation: "#fbbf24",
-                        unclear: "#f87171",
+                        active: "#afc6ff",
+                        mostly_observation: "#ffb3b0",
+                        unclear: "#ffb4ab",
                     };
                     raCreateChart("raChartExpScores", {
                         type: "bar",
@@ -1060,7 +1060,7 @@
                                     backgroundColor: roles.map(
                                         (r) =>
                                             dotMap[r.contribution_quality] ||
-                                            "#4f8ef7",
+                                            "#afc6ff",
                                     ),
                                     borderRadius: 6,
                                 },
@@ -1083,8 +1083,8 @@
                             datasets: [
                                 {
                                     data: roleDurations,
-                                    backgroundColor: "#4f8ef799",
-                                    borderColor: "#4f8ef7",
+                                    backgroundColor: "#afc6ff99",
+                                    borderColor: "#afc6ff",
                                     borderWidth: 1,
                                     borderRadius: 6,
                                 },
@@ -1110,7 +1110,7 @@
                             roles.forEach((role) => {
                                 const dotColor =
                                     dotMap[role.contribution_quality] ||
-                                    "#94a3b8";
+                                    "#c5c6ca";
                                 const item = document.createElement("div");
                                 item.className = "ra-tl-item";
                                 item.innerHTML = `
@@ -1157,9 +1157,9 @@
                                             ),
                                         ],
                                         backgroundColor: [
-                                            "#4f8ef7",
-                                            "#22d3a5",
-                                            "#a78bfa",
+                                            "#afc6ff",
+                                            "#afc6ff",
+                                            "#d9e2ff",
                                         ],
                                         borderRadius: 8,
                                     },
@@ -1228,10 +1228,10 @@
                         relData = Object.values(relMap);
                     const relColors = relLabels.map((l) =>
                         l.includes("highly")
-                            ? "#22d3a5"
+                            ? "#afc6ff"
                             : l.includes("somewhat")
-                              ? "#fbbf24"
-                              : "#f87171",
+                              ? "#ffb3b0"
+                              : "#ffb4ab",
                     );
                     raCreateChart("raChartCertRel", {
                         type: "pie",
@@ -1241,7 +1241,7 @@
                                 {
                                     data: relData,
                                     backgroundColor: relColors,
-                                    borderColor: "#161b25",
+                                    borderColor: "#171c1f",
                                     borderWidth: 2,
                                 },
                             ],
@@ -1270,7 +1270,7 @@
                                         (a) => a.activity_score || 0,
                                     ),
                                     backgroundColor: acts.map((a) =>
-                                        a.is_leadership ? "#a78bfa" : "#4f8ef7",
+                                        a.is_leadership ? "#d9e2ff" : "#afc6ff",
                                     ),
                                     borderRadius: 6,
                                 },
@@ -1320,7 +1320,7 @@
                         col2.innerHTML =
                             '<div style="font-size:13px;font-weight:600;color:var(--ra-text);margin-bottom:1rem">🏆 Achievements</div>';
                         if (ct.most_impressive_achievement)
-                            col2.innerHTML += `<div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.3);border-radius:12px;padding:0.8rem;margin-bottom:0.75rem;display:flex;gap:0.55rem;align-items:flex-start">
+                            col2.innerHTML += `<div style="background:rgba(255, 179, 176, 0.08);border:1px solid rgba(255, 179, 176, 0.3);border-radius:12px;padding:0.8rem;margin-bottom:0.75rem;display:flex;gap:0.55rem;align-items:flex-start">
               <span style="font-size:20px">⭐</span><div><div style="font-weight:500;font-size:13px">${ct.most_impressive_achievement}</div></div></div>`;
                         (ct.achievements_found || []).forEach((a) => {
                             col2.innerHTML += `<div class="ra-achieve-item">
@@ -1348,8 +1348,8 @@
                     const _vBorder =
                         document.documentElement.getAttribute("data-theme") ===
                         "light"
-                            ? "#f0f4f9"
-                            : "#161b25";
+                            ? "#1b2023"
+                            : "#171c1f";
                     raCreateChart("raChartFmtVerbs", {
                         type: "doughnut",
                         data: {
@@ -1358,9 +1358,9 @@
                                 {
                                     data: [strong, weak, filler],
                                     backgroundColor: [
-                                        "#22d3a5",
-                                        "#fbbf24",
-                                        "#f87171",
+                                        "#afc6ff",
+                                        "#ffb3b0",
+                                        "#ffb4ab",
                                     ],
                                     borderColor: _vBorder,
                                     borderWidth: 2,
@@ -1370,9 +1370,9 @@
                         options: raChartOpts({ cutout: "55%" }),
                     });
                     raHtmlLegend("raLegendFmtVerbs", [
-                        { label: "Strong", value: strong, color: "#22d3a5" },
-                        { label: "Weak", value: weak, color: "#fbbf24" },
-                        { label: "Filler", value: filler, color: "#f87171" },
+                        { label: "Strong", value: strong, color: "#afc6ff" },
+                        { label: "Weak", value: weak, color: "#ffb3b0" },
+                        { label: "Filler", value: filler, color: "#ffb4ab" },
                     ]);
 
                     const atsV =
@@ -1381,14 +1381,14 @@
                         ] || 50;
                     const atsC =
                         fm.ats_risk_level === "low"
-                            ? "#22d3a5"
+                            ? "#afc6ff"
                             : fm.ats_risk_level === "medium"
-                              ? "#fbbf24"
-                              : "#f87171";
+                              ? "#ffb3b0"
+                              : "#ffb4ab";
                     const _gaugeBg =
                         document.documentElement.getAttribute("data-theme") ===
                         "light"
-                            ? "rgba(14,100,180,0.08)"
+                            ? "rgba(175, 198, 255, 0.08)"
                             : "rgba(255,255,255,0.06)";
                     raCreateChart("raChartAtsGauge", {
                         type: "doughnut",
@@ -1443,10 +1443,10 @@
                         sevD = Object.values(sevCounts);
                     const sevColors = sevL.map((s) =>
                         s === "critical"
-                            ? "#f87171"
+                            ? "#ffb4ab"
                             : s === "high"
-                              ? "#fbbf24"
-                              : "#4f8ef7",
+                              ? "#ffb3b0"
+                              : "#afc6ff",
                     );
                     raCreateChart("raChartActionSev", {
                         type: "pie",
@@ -1456,7 +1456,7 @@
                                 {
                                     data: sevD,
                                     backgroundColor: sevColors,
-                                    borderColor: "#161b25",
+                                    borderColor: "#171c1f",
                                     borderWidth: 2,
                                 },
                             ],
@@ -1485,7 +1485,7 @@
                             datasets: [
                                 {
                                     data: gains,
-                                    backgroundColor: "#22d3a5",
+                                    backgroundColor: "#afc6ff",
                                     borderRadius: 6,
                                 },
                             ],
@@ -1576,11 +1576,11 @@
                                 {
                                     data: [comp, miss, under],
                                     backgroundColor: [
-                                        "#22d3a5",
-                                        "#f87171",
-                                        "#fbbf24",
+                                        "#afc6ff",
+                                        "#ffb4ab",
+                                        "#ffb3b0",
                                     ],
-                                    borderColor: "#161b25",
+                                    borderColor: "#171c1f",
                                     borderWidth: 2,
                                 },
                             ],
@@ -1588,12 +1588,12 @@
                         options: raChartOpts({ cutout: "60%" }),
                     });
                     raHtmlLegend("raLegendCompStatus", [
-                        { label: "Complete", value: comp, color: "#22d3a5" },
-                        { label: "Missing", value: miss, color: "#f87171" },
+                        { label: "Complete", value: comp, color: "#afc6ff" },
+                        { label: "Missing", value: miss, color: "#ffb4ab" },
                         {
                             label: "Underdeveloped",
                             value: under,
-                            color: "#fbbf24",
+                            color: "#ffb3b0",
                         },
                     ]);
 
@@ -1624,9 +1624,9 @@
                                         ] || 50,
                                     ],
                                     backgroundColor: [
-                                        "#4f8ef7",
-                                        "#22d3a5",
-                                        "#fbbf24",
+                                        "#afc6ff",
+                                        "#afc6ff",
+                                        "#ffb3b0",
                                     ],
                                     borderRadius: 8,
                                 },
@@ -1762,7 +1762,7 @@
                 const crmPhasesCont   = document.getElementById("crmPhasesContainer");
                 const crmSummary      = document.getElementById("crmSummaryFooter");
 
-                const RM_COLORS = ['#7C3AED','#06B6D4','#F59E0B','#10B981','#ef4444','#3b82f6'];
+                const RM_COLORS = ['#005ed0','#d9e2ff','#ffb3b0','#c6c6c9','#ffb4ab','#afc6ff'];
                 const RM_ICONS  = ['🚀','⚡','🛠️','🔥','🎯','🏆'];
 
                 // ── Auto-load saved roadmap from DB on tab init ────────────────────
@@ -1825,7 +1825,7 @@
                         const milestones = (step.milestones || step.skills || []).slice(0, 4);
                         const msHtml = milestones.length
                             ? milestones.map(m => `<li class="crm-milestone-item"><span class="crm-milestone-icon">○</span><span>${typeof m === 'string' ? m : m.text || ''}</span></li>`).join('')
-                            : '<li class="crm-milestone-item" style="color:#64748B;font-style:italic;">Complete the objectives in this phase.</li>';
+                            : '<li class="crm-milestone-item" style="color:#838486;font-style:italic;">Complete the objectives in this phase.</li>';
 
                         card.innerHTML = `
                             <div class="crm-card-eyebrow"><span>${icon}</span> Phase ${step.step || i + 1}</div>
@@ -1836,7 +1836,7 @@
                             <p class="crm-card-desc">${step.description || ''}</p>
                             <div class="crm-milestones-label">Milestones:</div>
                             <ul class="crm-milestones-list">${msHtml}</ul>
-                            ${step.deliverable ? `<div style="background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px 14px;font-size:0.83rem;color:#94A3B8;">&#x1F4E6; ${step.deliverable}</div>` : ''}
+                            ${step.deliverable ? `<div style="background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px 14px;font-size:0.83rem;color:#c5c6ca;">&#x1F4E6; ${step.deliverable}</div>` : ''}
                         `;
                         crmPhasesCont.appendChild(card);
                     });
@@ -1891,8 +1891,8 @@
                                  preserveAspectRatio="none"
                                  style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
                                 <!-- Single thin glowing line -->
-                                <path d="${d}" stroke="rgba(124,58,237,0.15)" stroke-width="6" stroke-linecap="round" fill="none"/>
-                                <path d="${d}" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" fill="none"/>
+                                <path d="${d}" stroke="rgba(0, 94, 208, 0.15)" stroke-width="6" stroke-linecap="round" fill="none"/>
+                                <path d="${d}" stroke="#005ed0" stroke-width="2" stroke-linecap="round" fill="none"/>
                         `;
                         steps.forEach((_, i) => {
                             const cy    = i * cardSpacing + 180;
@@ -1902,13 +1902,13 @@
                             const icon  = i === numCards - 1 ? '🏆' : RM_ICONS[i % RM_ICONS.length];
                             svgHTML += `
                                 <!-- Thin connector from line to card -->
-                                <line x1="${roadX}" y1="${cy}" x2="${circX}" y2="${cy}" stroke="rgba(124,58,237,0.3)" stroke-width="1.5" stroke-dasharray="4 3"/>
+                                <line x1="${roadX}" y1="${cy}" x2="${circX}" y2="${cy}" stroke="rgba(0, 94, 208, 0.3)" stroke-width="1.5" stroke-dasharray="4 3"/>
                                 <!-- Small dot on the line -->
                                 <circle cx="${roadX}" cy="${cy}" r="5" fill="${color}" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
                                 <!-- Phase icon circle (smaller) -->
                                 <circle cx="${circX}" cy="${cy}" r="28" fill="${color}" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"
                                         style="filter:drop-shadow(0 2px 8px rgba(0,0,0,0.25));"/>
-                                <text x="${circX}" y="${cy + 8}" text-anchor="middle" fill="#fff"
+                                <text x="${circX}" y="${cy + 8}" text-anchor="middle" fill="#dfe3e7"
                                       font-size="18" font-family="sans-serif">${icon}</text>
                             `;
                         });
@@ -2023,7 +2023,7 @@
                             } else {
                                 // Fallback: display raw text in hero area
                                 if (crmHero) crmHero.innerHTML = `<div class="crm-hero-inner"><h1 class="crm-hero-title">${currentRole} → ${targetRole}</h1></div>`;
-                                if (crmPhasesCont) crmPhasesCont.innerHTML = `<div style="padding:28px;background:rgba(255,255,255,0.04);border-radius:14px;color:#94A3B8;white-space:pre-wrap;font-size:14px;line-height:1.8;">${roadmapText}</div>`;
+                                if (crmPhasesCont) crmPhasesCont.innerHTML = `<div style="padding:28px;background:rgba(255,255,255,0.04);border-radius:14px;color:#c5c6ca;white-space:pre-wrap;font-size:14px;line-height:1.8;">${roadmapText}</div>`;
                                 if (crmSvgCont)    crmSvgCont.innerHTML = '';
                                 if (crmSummary)    crmSummary.innerHTML = '';
                                 if (crmVisualOutput) crmVisualOutput.classList.add('visible');
@@ -2125,7 +2125,7 @@
                         roadmapWrap.appendChild(phasesContainer);
 
                         const icons = ["🚀", "⚡", "🛠️", "🔥", "🎯", "🏆"];
-                        const colors = ["#0ea5e9", "#7c3aed", "#f59e0b", "#10b981", "#ef4444", "#3b82f6"];
+                        const colors = ["#afc6ff", "#005ed0", "#ffb3b0", "#c6c6c9", "#ffb4ab", "#afc6ff"];
 
                         // Render Cards (Clean text to match the infographic style)
                         parsedData.steps.forEach((step, index) => {
@@ -2154,7 +2154,7 @@
                                 <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">
                                     ${step.description}
                                 </p>
-                                ${step.duration ? `<span style="display: inline-block; font-size: 12px; font-weight: 700; color: #ffffff; background: ${color}; padding: 6px 14px; border-radius: 99px;">⏱ ${step.duration}</span>` : ''}
+                                ${step.duration ? `<span style="display: inline-block; font-size: 12px; font-weight: 700; color: #dfe3e7; background: ${color}; padding: 6px 14px; border-radius: 99px;">⏱ ${step.duration}</span>` : ''}
                             `;
                             phasesContainer.appendChild(card);
                         });
@@ -2217,13 +2217,13 @@
                                      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;">
                                     
                                     <!-- Thick dark shadow border -->
-                                    <path d="${d}" stroke="#1e293b" stroke-width="70" stroke-linecap="round" fill="none"></path>
+                                    <path d="${d}" stroke="#313539" stroke-width="70" stroke-linecap="round" fill="none"></path>
                                     
                                     <!-- Thick vibrant blue main road -->
-                                    <path d="${d}" stroke="#283593" stroke-width="60" stroke-linecap="round" fill="none"></path>
+                                    <path d="${d}" stroke="#005ed0" stroke-width="60" stroke-linecap="round" fill="none"></path>
                                     
                                     <!-- Center dashed white line -->
-                                    <path d="${d}" stroke="#ffffff" stroke-width="5" stroke-dasharray="24 16" stroke-linecap="round" fill="none"></path>
+                                    <path d="${d}" stroke="#dfe3e7" stroke-width="5" stroke-dasharray="24 16" stroke-linecap="round" fill="none"></path>
                             `;
 
                             parsedData.steps.forEach((step, index) => {
@@ -2238,14 +2238,14 @@
                                 
                                 svgHTML += `
                                     <!-- Connecting line from road to big circle -->
-                                    <line x1="${roadX}" y1="${cy}" x2="${bigCircleX}" y2="${cy}" stroke="#fbc02d" stroke-width="6"></line>
+                                    <line x1="${roadX}" y1="${cy}" x2="${bigCircleX}" y2="${cy}" stroke="#ffb3b0" stroke-width="6"></line>
                                     
                                     <!-- Small yellow road anchor dot -->
-                                    <circle cx="${roadX}" cy="${cy}" r="12" fill="#fbc02d" stroke="#ffffff" stroke-width="4"></circle>
+                                    <circle cx="${roadX}" cy="${cy}" r="12" fill="#ffb3b0" stroke="#dfe3e7" stroke-width="4"></circle>
                                     
                                     <!-- Huge colored icon circle -->
-                                    <circle cx="${bigCircleX}" cy="${cy}" r="45" fill="${color}" stroke="#ffffff" stroke-width="6" style="filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));"></circle>
-                                    <text x="${bigCircleX}" y="${cy + 10}" text-anchor="middle" fill="#ffffff" font-size="28px" font-family="sans-serif">${icon}</text>
+                                    <circle cx="${bigCircleX}" cy="${cy}" r="45" fill="${color}" stroke="#dfe3e7" stroke-width="6" style="filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));"></circle>
+                                    <text x="${bigCircleX}" y="${cy + 10}" text-anchor="middle" fill="#dfe3e7" font-size="28px" font-family="sans-serif">${icon}</text>
                                 `;
                             });
 
@@ -2599,7 +2599,7 @@
                         const ctaBtn = document.getElementById("uploadResumeBtnCta");
                         if (ctaBtn) {
                             ctaBtn.textContent = "✅ " + file.name + " uploaded";
-                            ctaBtn.style.color = "#22d3a5";
+                            ctaBtn.style.color = "#afc6ff";
                         }
 
                         if (window.CareerIQAuth?.Toast) {

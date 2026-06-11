@@ -1,68 +1,62 @@
-                            /* ── Master Analytics UI ─────────────────────────────────────── */
+/* ── Master Analytics UI ─────────────────────────────────────── */
                             :root {
+                                /* Dark mode — from DESIGN.md */
                                 --ra-bg: var(--bg-primary, #0f1417);
                                 --ra-card: var(--bg-card, #1b2023);
                                 --ra-elevated: var(--bg-secondary, #171c1f);
-                                --ra-blue: #afc6ff;
+                                --ra-blue: #afc6ff;     /* secondary */
                                 --ra-emerald: #4ade80;
                                 --ra-amber: #f59e0b;
-                                --ra-rose: #ffb4ab;
-                                --ra-purple: #d9e2ff;
+                                --ra-rose: #ffb4ab;    /* error */
+                                --ra-purple: #d9e2ff;  /* secondary-fixed */
                                 --ra-text: var(--text-primary, #dfe3e7);
                                 --ra-muted: var(--text-secondary, #c5c6ca);
                                 --ra-dim: var(--text-muted, #838486);
-                                --ra-border: #44474a;
-                                --ra-border-h: #8f9194;
+                                --ra-border: #44474a;   /* outline-variant */
+                                --ra-border-h: #8f9194; /* outline */
                                 --ra-radius: 8px;
                                 --ra-ease: cubic-bezier(0.4, 0, 0.2, 1);
                             }
                             /* ── Light mode ra-* overrides ── */
                             [data-theme="light"] {
-                                --ra-bg: #f8fafc;
+                                /* Light mode — DESIGN.md inverse tokens */
+                                --ra-bg: #f8f9fa;
                                 --ra-card: #ffffff;
-                                --ra-elevated: #f1f5f9;
-                                --ra-border: #e2e2e5;
-                                --ra-border-h: #c6c6c9;
-                                --ra-dim: #5d5e61;
-                                --ra-blue: #005ed0;
-                                --ra-emerald: #10b981;
-                                --ra-amber: #d97706;
-                                --ra-rose: #93000a;
-                                --ra-purple: #004398;
-                                --ra-text: #1a1c1e;
-                                --ra-muted: #454749;
-                            }
-                            [data-theme="light"] .ra-reanalyze-btn:hover {
-                                background: rgba(14, 165, 233, 0.08);
-                                color: var(--text-primary);
+                                --ra-elevated: #eef0f2;
+                                --ra-blue: #005ed0;    /* secondary-container */
+                                --ra-emerald: #1a7a4a;
+                                --ra-amber: #a16207;
+                                --ra-rose: #93000a;    /* error-container */
+                                --ra-purple: #004398;  /* on-secondary-fixed-variant */
+                                --ra-text: #1a1c1e;    /* on-primary-fixed */
+                                --ra-muted: #454749;   /* on-primary-fixed-variant */
+                                --ra-dim: #5d5e61;     /* inverse-primary */
+                                --ra-border: #c6c6c9;  /* primary-fixed-dim */
+                                --ra-border-h: #838486;
                             }
                             [data-theme="light"] .ra-section-card {
-                                background: #ffffff;
-                                border-color: rgba(14, 100, 180, 0.12);
-                                box-shadow: 0 2px 12px rgba(14, 100, 180, 0.07);
+                                background: var(--bg-card);
+                                border-color: #c6c6c9;
+                                box-shadow: 0 2px 12px rgba(26, 28, 30, 0.07);
                             }
                             [data-theme="light"] .ra-overview-hero {
-                                background: linear-gradient(
-                                    135deg,
-                                    #e8f4fd 0%,
-                                    #f0f4f9 100%
-                                );
+                                background: linear-gradient(135deg, #eef0f2 0%, #f8f9fa 100%);
                             }
                             [data-theme="light"] .ra-gauge-track {
-                                stroke: rgba(14, 100, 180, 0.14);
+                                stroke: rgba(0, 94, 208, 0.14);
                             }
                             [data-theme="light"] .ra-prog-bar {
-                                background: rgba(14, 100, 180, 0.1);
+                                background: rgba(0, 94, 208, 0.08);
                             }
                             [data-theme="light"] .ra-gauge-bg {
-                                stroke: rgba(14, 100, 180, 0.12);
+                                stroke: rgba(0, 94, 208, 0.10);
                             }
                             [data-theme="light"] .ra-tab-btn:hover {
-                                background: rgba(14, 165, 233, 0.08);
+                                background: rgba(0, 94, 208, 0.06);
                                 color: var(--text-primary);
                             }
                             [data-theme="light"] .ra-tab-btn.active {
-                                background: rgba(14, 165, 233, 0.12);
+                                background: rgba(0, 94, 208, 0.10);
                                 border-color: var(--brand);
                                 color: var(--brand);
                             }
@@ -143,7 +137,7 @@
                                     var(--brand),
                                     var(--brand)
                                 );
-                                color: #fff;
+                                color: #dfe3e7;
                                 font-weight: 600;
                                 font-size: 15px;
                                 padding: 12px 28px;
@@ -239,7 +233,7 @@
                             }
                             .ra-gauge-track {
                                 fill: none;
-                                stroke: var(--ra-elevated, #1e2535);
+                                stroke: var(--ra-elevated, #171c1f);
                                 stroke-width: 8;
                             }
                             .ra-gauge-fill {
@@ -298,7 +292,7 @@
                                 line-height: 1.7;
                                 max-width: 520px;
                                 padding-left: 0.75rem;
-                                border-left: 2px solid rgba(79, 142, 247, 0.4);
+                                border-left: 2px solid rgba(175, 198, 255, 0.4);
                             }
                             .ra-hero-badges {
                                 display: flex;
@@ -312,7 +306,7 @@
                                 margin-top: 0.25rem;
                             }
                             .ra-hero-stat {
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border: 1px solid var(--ra-border);
                                 border-radius: 10px;
                                 padding: 0.45rem 0.6rem;
@@ -336,9 +330,9 @@
                                 gap: 0.6rem;
                             }
                             .ra-insight {
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border: 1px solid var(--ra-border);
-                                border-left: 2px solid var(--insight-c, #f87171);
+                                border-left: 2px solid var(--insight-c, #ffb4ab);
                                 border-radius: 8px;
                                 padding: 0.45rem 0.6rem;
                                 font-size: 11px;
@@ -365,32 +359,32 @@
                                 border: 1px solid var(--ra-border);
                             }
                             .ra-badge-blue {
-                                background: rgba(79, 142, 247, 0.12);
+                                background: rgba(175, 198, 255, 0.12);
                                 color: var(--ra-blue);
-                                border-color: rgba(79, 142, 247, 0.25);
+                                border-color: rgba(175, 198, 255, 0.25);
                             }
                             .ra-badge-green {
-                                background: rgba(34, 211, 165, 0.12);
+                                background: rgba(198, 198, 201, 0.12);
                                 color: var(--ra-emerald);
-                                border-color: rgba(34, 211, 165, 0.25);
+                                border-color: rgba(198, 198, 201, 0.25);
                             }
                             .ra-badge-amber {
-                                background: rgba(251, 191, 36, 0.12);
+                                background: rgba(255, 179, 176, 0.12);
                                 color: var(--ra-amber);
-                                border-color: rgba(251, 191, 36, 0.25);
+                                border-color: rgba(255, 179, 176, 0.25);
                             }
                             .ra-badge-rose {
-                                background: rgba(248, 113, 113, 0.12);
+                                background: rgba(255, 180, 171, 0.12);
                                 color: var(--ra-rose);
-                                border-color: rgba(248, 113, 113, 0.25);
+                                border-color: rgba(255, 180, 171, 0.25);
                             }
                             .ra-badge-purple {
-                                background: rgba(167, 139, 250, 0.12);
+                                background: rgba(217, 226, 255, 0.12);
                                 color: var(--ra-purple);
-                                border-color: rgba(167, 139, 250, 0.25);
+                                border-color: rgba(217, 226, 255, 0.25);
                             }
                             .ra-badge-gray {
-                                background: rgba(148, 163, 184, 0.1);
+                                background: rgba(197, 198, 202, 0.1);
                                 color: var(--ra-muted);
                             }
                             .ra-pill {
@@ -400,29 +394,29 @@
                                 border-radius: 999px;
                                 font-size: 11px;
                                 border: 1px solid var(--ra-border);
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 color: var(--ra-text);
                             }
                             .ra-pill-green {
-                                background: rgba(34, 211, 165, 0.1);
+                                background: rgba(198, 198, 201, 0.1);
                                 color: var(--ra-emerald);
-                                border-color: rgba(34, 211, 165, 0.2);
+                                border-color: rgba(198, 198, 201, 0.2);
                             }
                             .ra-pill-amber {
-                                background: rgba(251, 191, 36, 0.1);
+                                background: rgba(255, 179, 176, 0.1);
                                 color: var(--ra-amber);
-                                border-color: rgba(251, 191, 36, 0.2);
+                                border-color: rgba(255, 179, 176, 0.2);
                             }
                             .ra-pill-red {
-                                background: rgba(248, 113, 113, 0.1);
+                                background: rgba(255, 180, 171, 0.1);
                                 color: var(--ra-rose);
-                                border-color: rgba(248, 113, 113, 0.2);
+                                border-color: rgba(255, 180, 171, 0.2);
                             }
 
                             /* Progress bars */
                             .ra-prog-bar {
                                 height: 6px;
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border-radius: 999px;
                                 overflow: hidden;
                             }
@@ -434,7 +428,7 @@
 
                             /* Chart panels */
                             .ra-chart-panel {
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border: 1px solid var(--ra-border);
                                 border-radius: 12px;
                                 padding: 1rem;
@@ -551,8 +545,8 @@
                                 width: 30px;
                                 height: 30px;
                                 border-radius: 8px;
-                                background: rgba(79, 142, 247, 0.1);
-                                border: 1px solid rgba(79, 142, 247, 0.2);
+                                background: rgba(175, 198, 255, 0.1);
+                                border: 1px solid rgba(175, 198, 255, 0.2);
                                 display: flex;
                                 align-items: center;
                                 justify-content: center;
@@ -590,7 +584,7 @@
                             }
                             .ra-sc-stat {
                                 text-align: center;
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border-radius: 6px;
                                 padding: 0.25rem;
                                 font-size: 9px;
@@ -606,9 +600,9 @@
                                 font-size: 10px;
                                 padding: 0.12rem 0.45rem;
                                 border-radius: 6px;
-                                background: rgba(248, 113, 113, 0.1);
+                                background: rgba(255, 180, 171, 0.1);
                                 color: var(--ra-rose);
-                                border: 1px solid rgba(248, 113, 113, 0.2);
+                                border: 1px solid rgba(255, 180, 171, 0.2);
                             }
                             .ra-tip-line {
                                 font-size: 11px;
@@ -645,7 +639,7 @@
 
                             /* Skills */
                             .ra-skills-row {
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border: 1px solid var(--ra-border);
                                 border-radius: 12px;
                                 padding: 0.8rem 1rem;
@@ -727,7 +721,7 @@
                                 top: 12px;
                                 bottom: 12px;
                                 width: 2px;
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                             }
                             .ra-tl-item {
                                 position: relative;
@@ -743,10 +737,10 @@
                                 width: 14px;
                                 height: 14px;
                                 border-radius: 50%;
-                                border: 2px solid var(--ra-bg, #0d0f14);
+                                border: 2px solid var(--ra-bg, #0f1417);
                             }
                             .ra-tl-body {
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border: 1px solid var(--ra-border);
                                 border-radius: 12px;
                                 padding: 0.85rem 1rem;
@@ -764,7 +758,7 @@
 
                             /* Certs */
                             .ra-cert-card {
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border-radius: 12px;
                                 border: 1px solid var(--ra-border);
                                 padding: 0.8rem;
@@ -822,19 +816,19 @@
                                 text-align: center;
                             }
                             .ra-ats-low {
-                                background: rgba(34, 211, 165, 0.12);
+                                background: rgba(198, 198, 201, 0.12);
                                 color: var(--ra-emerald);
-                                border: 1px solid rgba(34, 211, 165, 0.25);
+                                border: 1px solid rgba(198, 198, 201, 0.25);
                             }
                             .ra-ats-medium {
-                                background: rgba(251, 191, 36, 0.12);
+                                background: rgba(255, 179, 176, 0.12);
                                 color: var(--ra-amber);
-                                border: 1px solid rgba(251, 191, 36, 0.25);
+                                border: 1px solid rgba(255, 179, 176, 0.25);
                             }
                             .ra-ats-high {
-                                background: rgba(248, 113, 113, 0.12);
+                                background: rgba(255, 180, 171, 0.12);
                                 color: var(--ra-rose);
-                                border: 1px solid rgba(248, 113, 113, 0.25);
+                                border: 1px solid rgba(255, 180, 171, 0.25);
                             }
 
                             /* Action Plan tabs */
@@ -843,7 +837,7 @@
                                 gap: 0.3rem;
                                 margin-bottom: 1rem;
                                 flex-wrap: wrap;
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border: 1px solid var(--ra-border);
                                 border-radius: 12px;
                                 padding: 0.3rem;
@@ -865,8 +859,8 @@
                             }
                             .ra-tab-btn.active {
                                 color: var(--ra-blue);
-                                background: rgba(79, 142, 247, 0.14);
-                                border-color: rgba(79, 142, 247, 0.3);
+                                background: rgba(175, 198, 255, 0.14);
+                                border-color: rgba(175, 198, 255, 0.3);
                             }
                             .ra-tab-panel {
                                 display: none;
@@ -875,7 +869,7 @@
                                 display: block;
                             }
                             .ra-fix-card {
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border-radius: 12px;
                                 border: 1px solid var(--ra-border);
                                 padding: 0.8rem;
@@ -892,11 +886,11 @@
                                 font-size: 13px;
                             }
                             .ra-sev-critical {
-                                background: rgba(248, 113, 113, 0.15);
+                                background: rgba(255, 180, 171, 0.15);
                                 color: var(--ra-rose);
                             }
                             .ra-sev-high {
-                                background: rgba(251, 191, 36, 0.15);
+                                background: rgba(255, 179, 176, 0.15);
                                 color: var(--ra-amber);
                             }
                             .ra-time-chip {
@@ -913,13 +907,13 @@
                                 justify-content: space-between;
                                 gap: 1rem;
                                 padding: 0.65rem;
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border-radius: 12px;
                                 border: 1px solid var(--ra-border);
                                 margin-bottom: 0.45rem;
                             }
                             .ra-gain {
-                                background: rgba(34, 211, 165, 0.15);
+                                background: rgba(198, 198, 201, 0.15);
                                 color: var(--ra-emerald);
                                 padding: 0.18rem 0.5rem;
                                 border-radius: 6px;
@@ -928,7 +922,7 @@
                                 white-space: nowrap;
                             }
                             .ra-week-card {
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border-radius: 12px;
                                 border: 1px solid var(--ra-border);
                                 padding: 0.8rem;
@@ -945,7 +939,7 @@
                                 display: flex;
                                 gap: 0.75rem;
                                 padding: 0.8rem;
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border-radius: 12px;
                                 border: 1px solid var(--ra-border);
                                 margin-bottom: 0.5rem;
@@ -954,12 +948,12 @@
                                 flex-shrink: 0;
                                 padding: 0.25rem 0.5rem;
                                 border-radius: 8px;
-                                background: rgba(167, 139, 250, 0.12);
+                                background: rgba(217, 226, 255, 0.12);
                                 color: var(--ra-purple);
                                 font-size: 10px;
                                 font-weight: 500;
                                 height: fit-content;
-                                border: 1px solid rgba(167, 139, 250, 0.25);
+                                border: 1px solid rgba(217, 226, 255, 0.25);
                             }
 
                             /* Completeness */
@@ -1010,11 +1004,11 @@
                             }
                             .ra-panel-s {
                                 border-left: 3px solid var(--ra-emerald);
-                                background: rgba(34, 211, 165, 0.04);
+                                background: rgba(198, 198, 201, 0.04);
                             }
                             .ra-panel-g {
                                 border-left: 3px solid var(--ra-rose);
-                                background: rgba(248, 113, 113, 0.04);
+                                background: rgba(255, 180, 171, 0.04);
                             }
                             .ra-panel-list {
                                 list-style: none;
@@ -1030,7 +1024,7 @@
                                 gap: 0.45rem;
                                 align-items: flex-start;
                                 padding: 0.4rem 0.55rem;
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border-radius: 8px;
                                 border: 1px solid var(--ra-border);
                                 line-height: 1.45;
@@ -1046,8 +1040,8 @@
                             .ra-role-btn {
                                 padding: 0.45rem 0.9rem;
                                 border-radius: 999px;
-                                border: 1px solid rgba(79, 142, 247, 0.3);
-                                background: rgba(79, 142, 247, 0.1);
+                                border: 1px solid rgba(175, 198, 255, 0.3);
+                                background: rgba(175, 198, 255, 0.1);
                                 color: var(--ra-blue);
                                 font-family: inherit;
                                 font-size: 13px;
@@ -1055,7 +1049,7 @@
                                 transition: all 0.2s;
                             }
                             .ra-role-btn:hover {
-                                background: rgba(79, 142, 247, 0.2);
+                                background: rgba(175, 198, 255, 0.2);
                             }
                             .ra-certs-rec-grid {
                                 display: grid;
@@ -1069,7 +1063,7 @@
                                 }
                             }
                             .ra-cert-rec-card {
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border-radius: 12px;
                                 border: 1px solid var(--ra-border);
                                 padding: 0.75rem;
@@ -1082,13 +1076,13 @@
                                     transform 0.2s;
                             }
                             .ra-cert-rec-card:hover {
-                                border-color: rgba(79, 142, 247, 0.4);
+                                border-color: rgba(175, 198, 255, 0.4);
                                 transform: translateY(-2px);
                             }
                             .ra-encouragement {
                                 position: relative;
                                 padding: 1.25rem 1.25rem 1.25rem 2.5rem;
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border-radius: 12px;
                                 border: 1px solid var(--ra-border);
                                 border-left: 3px solid var(--ra-blue);
@@ -1138,7 +1132,7 @@
                                 }
                             }
                             .ra-metric-cell {
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border: 1px solid var(--ra-border);
                                 border-radius: 10px;
                                 padding: 0.6rem 0.7rem;
@@ -1161,8 +1155,8 @@
 
                             /* Section tip */
                             .ra-section-tip {
-                                background: rgba(79, 142, 247, 0.06);
-                                border: 1px solid rgba(79, 142, 247, 0.18);
+                                background: rgba(175, 198, 255, 0.06);
+                                border: 1px solid rgba(175, 198, 255, 0.18);
                                 border-radius: 10px;
                                 padding: 0.6rem 0.8rem;
                                 font-size: 11px;
@@ -1188,7 +1182,7 @@
                                 color: var(--ra-muted);
                                 padding: 0.4rem 0.6rem;
                                 border-radius: 8px;
-                                background: var(--ra-elevated, #1e2535);
+                                background: var(--ra-elevated, #171c1f);
                                 border: 1px solid var(--ra-border);
                             }
                             .ra-legend-item > span:nth-child(2) {

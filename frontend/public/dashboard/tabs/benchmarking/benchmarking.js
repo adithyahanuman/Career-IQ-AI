@@ -49,24 +49,24 @@
     }
 
     function gradeColor(grade) {
-        if (!grade) return '#6b7280';
+        if (!grade) return '#838486';
         const g = grade.replace('−','-');
-        if (g.startsWith('A')) return '#34d399';
-        if (g === 'B+') return '#60a5fa';
-        if (g === 'B')  return '#818cf8';
-        if (g === 'B-') return '#a78bfa';
-        if (g.startsWith('C')) return '#fbbf24';
-        if (g === 'D')  return '#f87171';
-        return '#fca5a5';
+        if (g.startsWith('A')) return '#c6c6c9';
+        if (g === 'B+') return '#afc6ff';
+        if (g === 'B')  return '#afc6ff';
+        if (g === 'B-') return '#d9e2ff';
+        if (g.startsWith('C')) return '#ffb3b0';
+        if (g === 'D')  return '#ffb4ab';
+        return '#ffb4ab';
     }
 
     function barColor(score) {
-        if (score >= 85) return '#34d399';
-        if (score >= 75) return '#60a5fa';
-        if (score >= 65) return '#818cf8';
-        if (score >= 55) return '#fbbf24';
-        if (score >= 45) return '#fb923c';
-        return '#f87171';
+        if (score >= 85) return '#c6c6c9';
+        if (score >= 75) return '#afc6ff';
+        if (score >= 65) return '#afc6ff';
+        if (score >= 55) return '#ffb3b0';
+        if (score >= 45) return '#ffb3b0';
+        return '#ffb4ab';
     }
 
     function podiumEmoji(rank) { return ['🥇','🥈','🥉'][rank] || ''; }
@@ -275,17 +275,17 @@
             <div class="bench-role-detail">
                 ${r.major_strength ? `
                 <div class="bench-detail-item">
-                    <div class="bench-detail-dot" style="background:#34d399;"></div>
+                    <div class="bench-detail-dot" style="background:#c6c6c9;"></div>
                     <div>
-                        <div class="bench-detail-label" style="color:#34d399;">Strength</div>
+                        <div class="bench-detail-label" style="color:#c6c6c9;">Strength</div>
                         <div class="bench-detail-text">${r.major_strength}</div>
                     </div>
                 </div>` : ''}
                 ${r.improvement_suggestion ? `
                 <div class="bench-detail-item">
-                    <div class="bench-detail-dot" style="background:#fbbf24;"></div>
+                    <div class="bench-detail-dot" style="background:#ffb3b0;"></div>
                     <div>
-                        <div class="bench-detail-label" style="color:#fbbf24;">To Improve</div>
+                        <div class="bench-detail-label" style="color:#ffb3b0;">To Improve</div>
                         <div class="bench-detail-text">${r.improvement_suggestion}</div>
                     </div>
                 </div>` : ''}

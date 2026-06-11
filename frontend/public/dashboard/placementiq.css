@@ -30,7 +30,7 @@
 .menu-notif-badge {
     margin-left: auto;
     background: var(--brand);
-    color: #fff;
+    color: #dfe3e7;
     font-size: 10px;
     font-weight: 700;
     padding: 2px 6px;
@@ -84,7 +84,7 @@
     align-items: center;
     gap: 8px;
     background: var(--brand);
-    color: #fff;
+    color: #dfe3e7;
     font-weight: 600;
     font-size: 14px;
     padding: 10px 20px;
@@ -97,7 +97,7 @@
 }
 
 .piq-upload-btn:hover {
-    background: #4f46e5;
+    background: #005ed0;
     transform: translateY(-1px);
 }
 
@@ -106,7 +106,7 @@
     align-items: center;
     gap: 8px;
     background: linear-gradient(135deg, var(--brand), var(--brand));
-    color: #fff;
+    color: #dfe3e7;
     font-weight: 600;
     font-size: 14px;
     padding: 10px 20px;
@@ -148,7 +148,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 30% 50%, rgba(99,102,241,0.06) 0%, transparent 65%);
+    background: radial-gradient(ellipse at 30% 50%, rgba(0, 94, 208, 0.06) 0%, transparent 65%);
     pointer-events: none;
 }
 
@@ -168,7 +168,7 @@
 
 .piq-gauge-track {
     fill: none;
-    stroke: rgba(99,102,241,0.12);
+    stroke: rgba(0, 94, 208, 0.12);
     stroke-width: 8;
 }
 
@@ -246,7 +246,7 @@
     align-items: center;
     gap: 8px;
     background: linear-gradient(135deg, var(--brand), var(--brand-dark));
-    color: #fff;
+    color: #dfe3e7;
     font-weight: 600;
     font-size: 14px;
     padding: 10px 20px;
@@ -329,18 +329,18 @@
 }
 
 .piq-icon-blue {
-    background: rgba(99,102,241,0.12);
+    background: rgba(0, 94, 208, 0.12);
     color: var(--brand);
 }
 
 .piq-icon-yellow {
-    background: rgba(251,191,36,0.12);
-    color: #fbbf24;
+    background: rgba(255, 179, 176, 0.12);
+    color: #ffb3b0;
 }
 
 .piq-icon-green {
-    background: rgba(34,211,165,0.12);
-    color: #22d3a5;
+    background: rgba(198, 198, 201, 0.12);
+    color: #afc6ff;
 }
 
 .piq-metric-value {
@@ -424,8 +424,8 @@
 }
 
 .piq-role-item:hover {
-    border-color: rgba(99,102,241,0.3);
-    background: rgba(99,102,241,0.04);
+    border-color: rgba(0, 94, 208, 0.3);
+    background: rgba(0, 94, 208, 0.04);
 }
 
 .piq-role-header {
@@ -471,14 +471,14 @@
     font-weight: 500;
     padding: 2px 8px;
     border-radius: 4px;
-    background: rgba(99,102,241,0.08);
+    background: rgba(0, 94, 208, 0.08);
     color: var(--brand);
-    border: 1px solid rgba(99,102,241,0.15);
+    border: 1px solid rgba(0, 94, 208, 0.15);
 }
 
 .piq-role-bar-wrap {
     height: 4px;
-    background: rgba(99,102,241,0.1);
+    background: rgba(0, 94, 208, 0.1);
     border-radius: 2px;
     overflow: hidden;
 }
@@ -554,7 +554,7 @@
 .piq-skill-bar-bg {
     height: 5px;
     border-radius: 3px;
-    background: rgba(99,102,241,0.1);
+    background: rgba(0, 94, 208, 0.1);
     overflow: hidden;
 }
 
@@ -582,9 +582,9 @@
     font-weight: 500;
     padding: 4px 10px;
     border-radius: 6px;
-    background: rgba(251,191,36,0.08);
-    color: #fbbf24;
-    border: 1px solid rgba(251,191,36,0.2);
+    background: rgba(255, 179, 176, 0.08);
+    color: #ffb3b0;
+    border: 1px solid rgba(255, 179, 176, 0.2);
 }
 
 /* Insights */
@@ -604,7 +604,7 @@
 }
 
 .piq-label-green {
-    color: #22d3a5;
+    color: #afc6ff;
 }
 
 .piq-strength-item {
@@ -618,7 +618,7 @@
 }
 
 .piq-strength-icon {
-    color: #22d3a5;
+    color: #afc6ff;
     flex-shrink: 0;
     margin-top: 2px;
 }
@@ -646,7 +646,7 @@
     font-size: 12px;
     font-weight: 700;
     color: var(--brand);
-    background: rgba(99,102,241,0.1);
+    background: rgba(0, 94, 208, 0.1);
     padding: 2px 8px;
     border-radius: 4px;
     flex-shrink: 0;
@@ -665,7 +665,7 @@
     position: absolute;
     inset: -2px;
     border-radius: 18px;
-    background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(139,92,246,0.2), rgba(14,165,233,0.15));
+    background: linear-gradient(135deg, rgba(0, 94, 208, 0.3), rgba(175, 198, 255, 0.2), rgba(175, 198, 255, 0.15));
     z-index: -1;
     opacity: 0;
     transition: opacity 0.3s;
@@ -679,10 +679,10 @@
     font-size: 11px;
     font-weight: 600;
     color: var(--brand);
-    background: rgba(99,102,241,0.08);
+    background: rgba(0, 94, 208, 0.08);
     padding: 4px 10px;
     border-radius: 6px;
-    border: 1px solid rgba(99,102,241,0.15);
+    border: 1px solid rgba(0, 94, 208, 0.15);
     white-space: nowrap;
 }
 
@@ -704,8 +704,8 @@
 }
 
 .piq-growth-panel:hover {
-    border-color: rgba(99,102,241,0.25);
-    box-shadow: 0 4px 20px rgba(99,102,241,0.06);
+    border-color: rgba(0, 94, 208, 0.25);
+    box-shadow: 0 4px 20px rgba(0, 94, 208, 0.06);
 }
 
 /* Panel header row */
@@ -727,12 +727,12 @@
 }
 
 .piq-icon-warn {
-    background: rgba(251,191,36,0.12);
-    color: #fbbf24;
+    background: rgba(255, 179, 176, 0.12);
+    color: #ffb3b0;
 }
 
 .piq-icon-violet {
-    background: rgba(99,102,241,0.12);
+    background: rgba(0, 94, 208, 0.12);
     color: var(--brand);
 }
 
@@ -750,16 +750,16 @@
     font-weight: 700;
     padding: 2px 8px;
     border-radius: 99px;
-    background: rgba(251,191,36,0.1);
-    color: #fbbf24;
-    border: 1px solid rgba(251,191,36,0.2);
+    background: rgba(255, 179, 176, 0.1);
+    color: #ffb3b0;
+    border: 1px solid rgba(255, 179, 176, 0.2);
     white-space: nowrap;
 }
 
 .piq-badge-violet {
-    background: rgba(99,102,241,0.1);
+    background: rgba(0, 94, 208, 0.1);
     color: var(--brand);
-    border-color: rgba(99,102,241,0.2);
+    border-color: rgba(0, 94, 208, 0.2);
 }
 
 /* Missing skill chips */
@@ -807,7 +807,7 @@
 }
 
 .piq-project-card:hover {
-    border-color: rgba(99,102,241,0.25);
+    border-color: rgba(0, 94, 208, 0.25);
     transform: translateX(3px);
 }
 
@@ -855,17 +855,17 @@
     font-weight: 600;
     padding: 2px 7px;
     border-radius: 4px;
-    background: rgba(99,102,241,0.08);
+    background: rgba(0, 94, 208, 0.08);
     color: var(--brand);
-    border: 1px solid rgba(99,102,241,0.15);
+    border: 1px solid rgba(0, 94, 208, 0.15);
 }
 
 .piq-project-impact {
     font-size: 10px;
     font-weight: 700;
-    color: #22d3a5;
-    background: rgba(34,211,165,0.08);
-    border: 1px solid rgba(34,211,165,0.18);
+    color: #afc6ff;
+    background: rgba(198, 198, 201, 0.08);
+    border: 1px solid rgba(198, 198, 201, 0.18);
     padding: 2px 7px;
     border-radius: 6px;
     white-space: nowrap;
@@ -905,8 +905,8 @@
 }
 
 .piq-icon-teal {
-    background: rgba(34,211,165,0.12);
-    color: #22d3a5;
+    background: rgba(198, 198, 201, 0.12);
+    color: #afc6ff;
 }
 
 .piq-road-list {
@@ -928,11 +928,11 @@
 }
 
 .piq-road-step:hover {
-    background: rgba(99,102,241,0.04);
+    background: rgba(0, 94, 208, 0.04);
 }
 
 .piq-road-step:focus-visible {
-    box-shadow: 0 0 0 2px rgba(99,102,241,0.4);
+    box-shadow: 0 0 0 2px rgba(0, 94, 208, 0.4);
 }
 
 /* Left column: node + vertical connector */
@@ -968,7 +968,7 @@
     width: 2px;
     flex: 1;
     min-height: 16px;
-    background: linear-gradient(to bottom, rgba(99,102,241,0.25), rgba(99,102,241,0.05));
+    background: linear-gradient(to bottom, rgba(0, 94, 208, 0.25), rgba(0, 94, 208, 0.05));
     margin: 4px 0;
     border-radius: 1px;
 }
@@ -1046,9 +1046,9 @@
 .piq-road-impact {
     font-size: 11px;
     font-weight: 600;
-    color: #22d3a5;
-    background: rgba(34,211,165,0.07);
-    border: 1px solid rgba(34,211,165,0.18);
+    color: #afc6ff;
+    background: rgba(198, 198, 201, 0.07);
+    border: 1px solid rgba(198, 198, 201, 0.18);
     border-radius: 6px;
     padding: 4px 10px;
     display: inline-block;
@@ -1056,7 +1056,7 @@
 
 /* Active/open step gets a left accent */
 .piq-road-step.piq-road-open {
-    background: rgba(99,102,241,0.04);
+    background: rgba(0, 94, 208, 0.04);
     border-left: 2px solid var(--brand);
     padding-left: 6px;
 }
@@ -1080,21 +1080,21 @@
 }
 
 .piq-road-tag-warn {
-    background: rgba(251,191,36,0.1);
-    border-color: rgba(251,191,36,0.3);
-    color: #fbbf24;
+    background: rgba(255, 179, 176, 0.1);
+    border-color: rgba(255, 179, 176, 0.3);
+    color: #ffb3b0;
 }
 
 .piq-road-tag-violet {
-    background: rgba(99,102,241,0.1);
-    border-color: rgba(99,102,241,0.3);
-    color: #818cf8;
+    background: rgba(0, 94, 208, 0.1);
+    border-color: rgba(0, 94, 208, 0.3);
+    color: #afc6ff;
 }
 
 .piq-road-tag-amber {
-    background: rgba(249,115,22,0.08);
-    border-color: rgba(249,115,22,0.25);
-    color: #fb923c;
+    background: rgba(255, 179, 176, 0.08);
+    border-color: rgba(255, 179, 176, 0.25);
+    color: #ffb3b0;
     max-width: 260px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1103,9 +1103,9 @@
 }
 
 .piq-road-tag-teal {
-    background: rgba(34,211,165,0.08);
-    border-color: rgba(34,211,165,0.25);
-    color: #34d399;
+    background: rgba(198, 198, 201, 0.08);
+    border-color: rgba(198, 198, 201, 0.25);
+    color: #c6c6c9;
 }
 
 /* Compact impact pill in step header */
@@ -1144,7 +1144,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
+    color: #dfe3e7;
     flex-shrink: 0;
 }
 
@@ -1184,8 +1184,8 @@
 }
 
 .piq-ai-prompt:hover {
-    background: rgba(99,102,241,0.06);
-    border-color: rgba(99,102,241,0.2);
+    background: rgba(0, 94, 208, 0.06);
+    border-color: rgba(0, 94, 208, 0.2);
     color: var(--text-primary);
 }
 
@@ -1226,7 +1226,7 @@
     height: 38px;
     border-radius: 8px;
     background: var(--brand);
-    color: #fff;
+    color: #dfe3e7;
     border: none;
     cursor: pointer;
     display: flex;
@@ -1237,7 +1237,7 @@
 }
 
 .piq-ai-send:hover {
-    background: #4f46e5;
+    background: #005ed0;
     transform: scale(1.05);
 }
 
@@ -1256,7 +1256,7 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: rgba(99,102,241,0.1);
+    background: rgba(0, 94, 208, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1289,8 +1289,8 @@
 }
 
 .piq-upload-cta-btn:hover {
-    background: rgba(99,102,241,0.06);
-    border-color: rgba(99,102,241,0.3);
+    background: rgba(0, 94, 208, 0.06);
+    border-color: rgba(0, 94, 208, 0.3);
 }
 
 .piq-upload-cta-hint {
@@ -1326,36 +1326,36 @@
 
 /* ── Light mode ── */
 [data-theme="light"] .piq-hero-card {
-    background: #fff;
+    background: var(--bg-card);
 }
 
 [data-theme="light"] .piq-metric-card {
-    background: #fff;
-    box-shadow: 0 2px 12px rgba(14, 100, 180, 0.06);
+    background: var(--bg-card);
+    box-shadow: 0 2px 12px rgba(175, 198, 255, 0.06);
 }
 
 [data-theme="light"] .piq-card {
-    background: #fff;
+    background: var(--bg-card);
 }
 
 [data-theme="light"] .piq-role-item {
-    background: #f8fafc;
+    background: #0f1417;
 }
 
 [data-theme="light"] .piq-improvement-item {
-    background: #f8fafc;
+    background: #0f1417;
 }
 
 [data-theme="light"] .piq-ai-prompt {
-    background: #f8fafc;
+    background: #0f1417;
 }
 
 [data-theme="light"] .piq-ai-input {
-    background: #f8fafc;
+    background: #0f1417;
 }
 
 [data-theme="light"] .piq-upload-cta-btn {
-    background: #f8fafc;
+    background: #0f1417;
 }
 
 /* ── Responsive ── */

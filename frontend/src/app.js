@@ -277,7 +277,7 @@
               ctx.beginPath();
               ctx.moveTo(a.x, a.y);
               ctx.lineTo(b.x, b.y);
-              ctx.strokeStyle = `rgba(212,245,0,${0.08 * (1 - dist / 120)})`;
+              ctx.strokeStyle = `rgba(175, 198, 255, ${0.08 * (1 - dist / 120)})`;
               ctx.lineWidth = 0.5;
               ctx.stroke();
             }
@@ -465,11 +465,11 @@
         position: fixed;
         top: 0; left: 0;
         height: 3px;
-        background: linear-gradient(90deg, #6366f1, #a855f7, #06b6d4);
+        background: linear-gradient(90deg, #005ed0, #d9e2ff, #d9e2ff);
         z-index: 9999;
         width: 0%;
         transition: width 0.1s linear;
-        box-shadow: 0 0 8px rgba(99,102,241,0.6);
+        box-shadow: 0 0 8px rgba(0, 94, 208, 0.6);
       `;
       document.body.appendChild(bar);
 
@@ -533,14 +533,14 @@
         width: 52px;
         height: 52px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
-        color: #ffffff;
+        background: linear-gradient(135deg, #005ed0, #afc6ff);
+        color: #dfe3e7;
         border: none;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 20px rgba(212,245,0,0.45);
+        box-shadow: 0 4px 20px rgba(175, 198, 255, 0.45);
         z-index: 900;
         transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
         font-family: var(--font-sans);
@@ -553,8 +553,8 @@
           right: 60px;
           top: 50%;
           transform: translateY(-50%);
-          background: var(--bg-card, #11111e);
-          color: var(--text-primary, #f8f9ff);
+          background: var(--bg-card, #1b2023);
+          color: var(--text-primary, #dfe3e7);
           border: 1px solid var(--border, rgba(255,255,255,0.08));
           border-radius: 8px;
           padding: 6px 12px;
@@ -567,7 +567,7 @@
           box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         #chatBotBtn:hover .chat-tooltip { opacity: 1; }
-        #chatBotBtn:hover { transform: translateY(-4px) scale(1.1); box-shadow: 0 8px 28px rgba(212,245,0,0.55); }
+        #chatBotBtn:hover { transform: translateY(-4px) scale(1.1); box-shadow: 0 8px 28px rgba(175, 198, 255, 0.55); }
         #chatBotBtn:active { transform: scale(0.95); }
       `;
       document.head.appendChild(tooltip);
@@ -637,7 +637,7 @@
     init() {
       document.querySelectorAll('.pricing-card').forEach(card => {
         card.addEventListener('mouseenter', () => {
-          card.style.boxShadow = '0 20px 60px rgba(99,102,241,0.15), 0 0 0 1px rgba(99,102,241,0.2)';
+          card.style.boxShadow = '0 20px 60px rgba(0, 94, 208, 0.15), 0 0 0 1px rgba(0, 94, 208, 0.2)';
         });
         card.addEventListener('mouseleave', () => {
           card.style.boxShadow = '';
@@ -679,8 +679,8 @@
     });
 
     // Console easter egg
-    console.log('%c🚀 CareerIQ AI', 'font-size:24px;font-weight:900;background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;');
-    console.log('%cDiscover your ideal career path with AI 🎯', 'font-size:14px;color:#a0a3b8;');
+    console.log('%c🚀 CareerIQ AI', 'font-size:24px;font-weight:900;background:linear-gradient(135deg,#005ed0,#d9e2ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;');
+    console.log('%cDiscover your ideal career path with AI 🎯', 'font-size:14px;color:#c5c6ca;');
   });
 
 })();

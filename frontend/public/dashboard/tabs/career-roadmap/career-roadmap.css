@@ -4,16 +4,16 @@
 
 /* ── Design tokens (scoped) ───────────────────────────────────── */
 #page-career-roadmap {
-    --rm-violet: #7C3AED;
-    --rm-cyan:   #06B6D4;
-    --rm-amber:  #F59E0B;
-    --rm-green:  #10B981;
-    --rm-surface:#0D1425;
+    --rm-violet: #005ed0;
+    --rm-cyan:   #d9e2ff;
+    --rm-amber:  #ffb3b0;
+    --rm-green:  #c6c6c9;
+    --rm-surface:#0f1417;
     --rm-glass:  rgba(255,255,255,0.04);
     --rm-border: rgba(255,255,255,0.08);
-    --rm-text:   #F1F5F9;
-    --rm-dim:    #94A3B8;
-    --rm-muted:  #64748B;
+    --rm-text:   #dfe3e7;
+    --rm-dim:    #c5c6ca;
+    --rm-muted:  #838486;
     --rm-radius: 14px;
 }
 
@@ -63,7 +63,7 @@
 .crm-field input {
     width: 100%;
     padding: 13px 16px;
-    background: rgba(5, 8, 16, 0.6);
+    background: rgba(15, 20, 23, 0.6);
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 10px;
     color: var(--rm-text);
@@ -76,7 +76,7 @@
 
 .crm-field input:focus {
     border-color: var(--rm-violet);
-    box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+    box-shadow: 0 0 0 3px rgba(0, 94, 208, 0.15);
 }
 
 .crm-hint {
@@ -92,7 +92,7 @@
     align-items: center;
     gap: 8px;
     background: linear-gradient(135deg, var(--rm-violet), var(--rm-cyan));
-    color: #fff;
+    color: #dfe3e7;
     font-weight: 700;
     font-size: 15px;
     padding: 14px 36px;
@@ -100,7 +100,7 @@
     border: none;
     cursor: pointer;
     transition: opacity 0.2s, transform 0.15s;
-    box-shadow: 0 4px 24px rgba(124,58,237,0.35);
+    box-shadow: 0 4px 24px rgba(0, 94, 208, 0.35);
     font-family: 'Space Grotesk', sans-serif;
 }
 .crm-generate-btn:hover  { opacity: 0.9; transform: translateY(-2px); }
@@ -332,9 +332,9 @@
     align-items: center;
     gap: 5px;
 }
-.crm-status-badge.in-progress { background: rgba(245,158,11,0.12); color: var(--rm-amber); }
-.crm-status-badge.upcoming    { background: rgba(100,116,139,0.12); color: var(--rm-muted); }
-.crm-status-badge.done        { background: rgba(16,185,129,0.12);  color: var(--rm-green); }
+.crm-status-badge.in-progress { background: rgba(255, 179, 176, 0.12); color: var(--rm-amber); }
+.crm-status-badge.upcoming    { background: rgba(131, 132, 134, 0.12); color: var(--rm-muted); }
+.crm-status-badge.done        { background: rgba(198, 198, 201, 0.12);  color: var(--rm-green); }
 
 .crm-status-dot {
     width: 6px; height: 6px;

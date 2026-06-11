@@ -14,11 +14,11 @@ function renderHero() {
 
     // Source banner
     const sourceBanner = isAI
-        ? `<div style="display:inline-flex;align-items:center;gap:8px;background:rgba(14,165,233,0.12);border:1px solid rgba(14,165,233,0.3);border-radius:99px;padding:6px 16px;font-size:0.8rem;font-weight:600;color:#06B6D4;margin-bottom:20px;">
+        ? `<div style="display:inline-flex;align-items:center;gap:8px;background:rgba(175, 198, 255, 0.12);border:1px solid rgba(175, 198, 255, 0.3);border-radius:99px;padding:6px 16px;font-size:0.8rem;font-weight:600;color:#d9e2ff;margin-bottom:20px;">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                 AI-Generated Roadmap
            </div>`
-        : `<div style="display:inline-flex;align-items:center;gap:8px;background:rgba(100,116,139,0.12);border:1px solid rgba(100,116,139,0.2);border-radius:99px;padding:6px 16px;font-size:0.8rem;font-weight:600;color:#94A3B8;margin-bottom:20px;">
+        : `<div style="display:inline-flex;align-items:center;gap:8px;background:rgba(131, 132, 134, 0.12);border:1px solid rgba(131, 132, 134, 0.2);border-radius:99px;padding:6px 16px;font-size:0.8rem;font-weight:600;color:#c5c6ca;margin-bottom:20px;">
                 📋 Demo Roadmap — Generate yours from the Dashboard
            </div>`;
 

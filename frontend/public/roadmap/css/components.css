@@ -96,7 +96,7 @@
     stroke: var(--violet);
     stroke-width: 2.5;
     stroke-dasharray: 14 7;
-    filter: drop-shadow(0 0 10px rgba(124, 58, 237, 0.4));
+    filter: drop-shadow(0 0 10px rgba(0, 94, 208, 0.4));
 }
 .phases-container {
     position: relative;
@@ -154,9 +154,9 @@
     align-items: center;
     gap: 6px;
 }
-.badge-status.completed { background: rgba(16, 185, 129, 0.13); color: var(--green); }
-.badge-status.in_progress { background: rgba(245, 158, 11, 0.13); color: var(--amber); }
-.badge-status.upcoming { background: rgba(100, 116, 139, 0.13); color: var(--muted); }
+.badge-status.completed { background: rgba(198, 198, 201, 0.13); color: var(--green); }
+.badge-status.in_progress { background: rgba(255, 179, 176, 0.13); color: var(--amber); }
+.badge-status.upcoming { background: rgba(131, 132, 134, 0.13); color: var(--muted); }
 
 .status-dot {
     width: 6px; height: 6px;

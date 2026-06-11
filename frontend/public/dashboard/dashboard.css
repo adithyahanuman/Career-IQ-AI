@@ -57,7 +57,7 @@
             .logo-box svg {
                 width: 18px;
                 height: 18px;
-                stroke: #ffffff;
+                stroke: #dfe3e7;
             }
 
             .brand-text {
@@ -108,8 +108,8 @@
             }
 
             .menu-item.active {
-                background: rgba(99, 102, 241, 0.08);
-                border-color: rgba(99, 102, 241, 0.15);
+                background: rgba(0, 94, 208, 0.08);
+                border-color: rgba(0, 94, 208, 0.15);
                 color: var(--brand);
                 font-weight: 600;
             }
@@ -147,19 +147,19 @@
                 height: 38px;
                 border-radius: 50%;
                 background: linear-gradient(135deg, var(--brand), var(--brand-dark));
-                color: #ffffff;
+                color: #dfe3e7;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 font-weight: 700;
                 font-size: 16px;
-                box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+                box-shadow: 0 2px 8px rgba(0, 94, 208, 0.3);
                 flex-shrink: 0;
                 transition: box-shadow 0.2s;
             }
 
             .sidebar-user:hover .user-avatar {
-                box-shadow: 0 4px 16px rgba(99, 102, 241, 0.5);
+                box-shadow: 0 4px 16px rgba(0, 94, 208, 0.5);
             }
 
             .user-meta {
@@ -224,7 +224,7 @@
             .dropdown-header {
                 padding: 14px 16px;
                 border-bottom: 1px solid var(--border);
-                background: rgba(14, 165, 233, 0.04);
+                background: rgba(175, 198, 255, 0.04);
             }
 
             .dropdown-header-name {
@@ -268,15 +268,15 @@
             }
 
             .dropdown-item.danger {
-                color: #ef4444;
+                color: #ffb4ab;
             }
 
             .dropdown-item.danger svg {
-                stroke: #ef4444;
+                stroke: #ffb4ab;
             }
 
             .dropdown-item.danger:hover {
-                background: rgba(239, 68, 68, 0.08);
+                background: rgba(255, 180, 171, 0.08);
             }
 
             .dropdown-divider {
@@ -399,7 +399,7 @@
                 height: 100%;
                 background: radial-gradient(
                     circle at right,
-                    rgba(14, 165, 233, 0.1) 0%,
+                    rgba(175, 198, 255, 0.1) 0%,
                     transparent 70%
                 );
                 pointer-events: none;
@@ -444,7 +444,7 @@
                 align-items: center;
                 gap: 8px;
                 background: var(--brand);
-                color: #ffffff;
+                color: #dfe3e7;
                 font-weight: 600;
                 font-size: 15px;
                 padding: 12px 24px;
@@ -484,7 +484,7 @@
                 width: 40px;
                 height: 40px;
                 border-radius: 10px;
-                background: rgba(99, 102, 241, 0.1);
+                background: rgba(0, 94, 208, 0.1);
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -538,9 +538,9 @@
             }
 
             .cs-badge {
-                background: rgba(245, 158, 11, 0.1);
-                color: #f59e0b;
-                border: 1px solid rgba(245, 158, 11, 0.2);
+                background: rgba(255, 179, 176, 0.1);
+                color: #ffb3b0;
+                border: 1px solid rgba(255, 179, 176, 0.2);
                 font-size: 10px;
                 font-weight: 700;
                 text-transform: uppercase;
@@ -619,8 +619,8 @@
 
             /* ── Dashboard Light Mode ── */
             [data-theme="light"] .mobile-header {
-                background: #ffffff;
-                border-bottom-color: rgba(14, 100, 180, 0.12);
+                background: var(--bg-card);
+                border-bottom-color: rgba(175, 198, 255, 0.12);
             }
                 font-size: 15px;
                 color: var(--text-secondary);
@@ -639,7 +639,7 @@
                 align-items: center;
                 gap: 8px;
                 background: var(--brand);
-                color: #ffffff;
+                color: #dfe3e7;
                 font-weight: 600;
                 font-size: 15px;
                 padding: 12px 24px;
@@ -679,7 +679,7 @@
                 width: 40px;
                 height: 40px;
                 border-radius: 10px;
-                background: rgba(99, 102, 241, 0.1);
+                background: rgba(0, 94, 208, 0.1);
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -733,9 +733,9 @@
             }
 
             .cs-badge {
-                background: rgba(245, 158, 11, 0.1);
-                color: #f59e0b;
-                border: 1px solid rgba(245, 158, 11, 0.2);
+                background: rgba(255, 179, 176, 0.1);
+                color: #ffb3b0;
+                border: 1px solid rgba(255, 179, 176, 0.2);
                 font-size: 10px;
                 font-weight: 700;
                 text-transform: uppercase;
@@ -814,20 +814,20 @@
 
             /* ── Dashboard Light Mode ── */
             [data-theme="light"] .mobile-header {
-                background: #ffffff;
-                border-bottom-color: rgba(14, 100, 180, 0.12);
+                background: var(--bg-card);
+                border-bottom-color: rgba(175, 198, 255, 0.12);
             }
             [data-theme="light"] .sidebar-overlay {
-                background: rgba(12, 26, 46, 0.4);
+                background: rgba(15, 20, 23, 0.4);
             }
             [data-theme="light"] .content-area {
-                background: #f0f4f9;
+                background: #1b2023;
             }
             [data-theme="light"] .upload-spinner {
-                border-color: rgba(14, 100, 180, 0.25);
+                border-color: rgba(175, 198, 255, 0.25);
             }
             [data-theme="light"] .stat-card {
-                box-shadow: 0 2px 12px rgba(14, 100, 180, 0.08);
+                box-shadow: 0 2px 12px rgba(175, 198, 255, 0.08);
             }
             [data-theme="light"] .page-view {
                 color: var(--text-primary);
@@ -859,7 +859,7 @@
                 stroke: var(--brand);
                 stroke-width: 3;
                 stroke-dasharray: 14 7;
-                filter: drop-shadow(0 0 10px rgba(14, 165, 233, 0.4));
+                filter: drop-shadow(0 0 10px rgba(175, 198, 255, 0.4));
             }
             .phases-container {
                 position: relative;
@@ -884,7 +884,7 @@
             }
             .phase-card:hover {
                 transform: translateY(-4px) !important;
-                box-shadow: 0 20px 40px rgba(14, 165, 233, 0.15);
+                box-shadow: 0 20px 40px rgba(175, 198, 255, 0.15);
             }
             .card-eyebrow {
                 display: flex;

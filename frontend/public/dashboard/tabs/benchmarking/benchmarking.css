@@ -49,9 +49,9 @@
     letter-spacing: 1px;
     padding: 4px 12px;
     border-radius: 99px;
-    background: rgba(99,102,241,0.12);
-    border: 1px solid rgba(99,102,241,0.3);
-    color: #818cf8;
+    background: rgba(0, 94, 208, 0.12);
+    border: 1px solid rgba(0, 94, 208, 0.3);
+    color: #afc6ff;
 }
 
 .bench-course-tag {
@@ -59,9 +59,9 @@
     font-weight: 700;
     padding: 4px 12px;
     border-radius: 99px;
-    background: rgba(16,185,129,0.1);
-    border: 1px solid rgba(16,185,129,0.25);
-    color: #34d399;
+    background: rgba(198, 198, 201, 0.1);
+    border: 1px solid rgba(198, 198, 201, 0.25);
+    color: #c6c6c9;
 }
 
 .bench-refresh-btn {
@@ -70,9 +70,9 @@
     gap: 7px;
     padding: 8px 18px;
     border-radius: 10px;
-    background: rgba(99,102,241,0.1);
-    border: 1px solid rgba(99,102,241,0.25);
-    color: #818cf8;
+    background: rgba(0, 94, 208, 0.1);
+    border: 1px solid rgba(0, 94, 208, 0.25);
+    color: #afc6ff;
     font-size: 12px;
     font-weight: 700;
     font-family: inherit;
@@ -80,16 +80,16 @@
     transition: all 0.18s;
 }
 .bench-refresh-btn:hover:not(:disabled) {
-    background: rgba(99,102,241,0.2);
-    border-color: rgba(99,102,241,0.4);
+    background: rgba(0, 94, 208, 0.2);
+    border-color: rgba(0, 94, 208, 0.4);
 }
 .bench-refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Spinner inside button */
 .bench-spin {
     width: 14px; height: 14px;
-    border: 2px solid rgba(129,140,248,0.3);
-    border-top-color: #818cf8;
+    border: 2px solid rgba(175, 198, 255, 0.3);
+    border-top-color: #afc6ff;
     border-radius: 50%;
     animation: benchSpin 0.6s linear infinite;
     display: none;
@@ -130,12 +130,12 @@
     border-radius: 11px;
     background: linear-gradient(135deg, var(--brand), var(--brand-dark));
     border: none;
-    color: #fff;
+    color: #dfe3e7;
     font-size: 14px;
     font-weight: 700;
     font-family: inherit;
     cursor: pointer;
-    box-shadow: 0 4px 18px rgba(99,102,241,0.35);
+    box-shadow: 0 4px 18px rgba(0, 94, 208, 0.35);
     transition: opacity 0.18s, transform 0.15s;
 }
 .bench-state-btn:hover { opacity: 0.9; transform: translateY(-1px); }
@@ -144,7 +144,7 @@
 .bench-loading-bar {
     width: 240px;
     height: 4px;
-    background: rgba(99,102,241,0.15);
+    background: rgba(0, 94, 208, 0.15);
     border-radius: 99px;
     overflow: hidden;
     position: relative;
@@ -161,11 +161,11 @@
 @keyframes loadBar { to { left: 110%; } }
 
 .bench-error-box {
-    background: rgba(239,68,68,0.07);
-    border: 1px solid rgba(239,68,68,0.2);
+    background: rgba(255, 180, 171, 0.07);
+    border: 1px solid rgba(255, 180, 171, 0.2);
     border-radius: 12px;
     padding: 16px 20px;
-    color: #f87171;
+    color: #ffb4ab;
     font-size: 13px;
     display: flex;
     align-items: center;
@@ -209,7 +209,7 @@
     transition: border-color 0.18s;
     box-sizing: border-box;
 }
-.bench-search:focus { border-color: rgba(99,102,241,0.5); }
+.bench-search:focus { border-color: rgba(0, 94, 208, 0.5); }
 .bench-search::placeholder { color: var(--text-secondary); opacity: 0.6; }
 
 .bench-count-badge {
@@ -229,9 +229,9 @@
     gap: 6px;
     padding: 8px 16px;
     border-radius: 10px;
-    background: rgba(99,102,241,0.08);
-    border: 1px solid rgba(99,102,241,0.25);
-    color: #818cf8;
+    background: rgba(0, 94, 208, 0.08);
+    border: 1px solid rgba(0, 94, 208, 0.25);
+    color: #afc6ff;
     font-size: 12px;
     font-weight: 700;
     font-family: inherit;
@@ -239,10 +239,10 @@
     transition: all 0.18s;
     white-space: nowrap;
 }
-.bench-show-all-btn:hover { background: rgba(99,102,241,0.16); }
+.bench-show-all-btn:hover { background: rgba(0, 94, 208, 0.16); }
 .bench-show-all-btn.active {
-    background: rgba(99,102,241,0.18);
-    border-color: rgba(99,102,241,0.4);
+    background: rgba(0, 94, 208, 0.18);
+    border-color: rgba(0, 94, 208, 0.4);
 }
 
 /* ── Top 3 Podium ── */
@@ -280,9 +280,9 @@
     border-radius: 16px 16px 0 0;
 }
 
-.bench-podium-card.rank-1::before { background: linear-gradient(90deg,#f59e0b,#fbbf24); border-color: rgba(251,191,36,0.3); }
-.bench-podium-card.rank-2::before { background: linear-gradient(90deg,#94a3b8,#cbd5e1); border-color: rgba(148,163,184,0.3); }
-.bench-podium-card.rank-3::before { background: linear-gradient(90deg,#b45309,#d97706); border-color: rgba(180,83,9,0.3); }
+.bench-podium-card.rank-1::before { background: linear-gradient(90deg,#ffb3b0,#ffb3b0); border-color: rgba(255, 179, 176, 0.3); }
+.bench-podium-card.rank-2::before { background: linear-gradient(90deg,#c5c6ca,#c5c6ca); border-color: rgba(197, 198, 202, 0.3); }
+.bench-podium-card.rank-3::before { background: linear-gradient(90deg,#ffb3b0,#ffb3b0); border-color: rgba(255, 179, 176, 0.3); }
 
 .bench-podium-rank {
     font-size: 22px;
@@ -351,17 +351,17 @@
 }
 
 .bench-role-card:hover {
-    border-color: rgba(99,102,241,0.35);
+    border-color: rgba(0, 94, 208, 0.35);
     transform: translateX(2px);
-    background: rgba(99,102,241,0.02);
+    background: rgba(0, 94, 208, 0.02);
 }
 
 /* Expanded detail */
 .bench-role-card.expanded {
     flex-direction: column;
     align-items: stretch;
-    border-color: rgba(99,102,241,0.4);
-    background: rgba(99,102,241,0.03);
+    border-color: rgba(0, 94, 208, 0.4);
+    background: rgba(0, 94, 208, 0.03);
 }
 
 .bench-role-card-main {
@@ -466,17 +466,17 @@
 }
 
 /* Score colour helpers */
-.sc-a-plus  { background:rgba(16,185,129,0.12); border-color:rgba(16,185,129,0.3);  color:#34d399; }
-.sc-a       { background:rgba(52,211,153,0.10); border-color:rgba(52,211,153,0.25); color:#34d399; }
-.sc-a-minus { background:rgba(110,231,183,0.1); border-color:rgba(110,231,183,0.25);color:#6ee7b7; }
-.sc-b-plus  { background:rgba(96,165,250,0.10); border-color:rgba(96,165,250,0.25); color:#60a5fa; }
-.sc-b       { background:rgba(99,102,241,0.12); border-color:rgba(99,102,241,0.3);  color:#818cf8; }
-.sc-b-minus { background:rgba(139,92,246,0.10); border-color:rgba(139,92,246,0.25); color:#a78bfa; }
-.sc-c-plus  { background:rgba(251,191,36,0.10); border-color:rgba(251,191,36,0.25); color:#fbbf24; }
-.sc-c       { background:rgba(245,158,11,0.10); border-color:rgba(245,158,11,0.25); color:#f59e0b; }
-.sc-c-minus { background:rgba(249,115,22,0.10); border-color:rgba(249,115,22,0.25); color:#fb923c; }
-.sc-d       { background:rgba(239,68,68,0.10);  border-color:rgba(239,68,68,0.25);  color:#f87171; }
-.sc-f       { background:rgba(185,28,28,0.10);  border-color:rgba(185,28,28,0.25);  color:#fca5a5; }
+.sc-a-plus  { background:rgba(198, 198, 201, 0.12); border-color:rgba(198, 198, 201, 0.3);  color:#c6c6c9; }
+.sc-a       { background:rgba(198, 198, 201, 0.10); border-color:rgba(198, 198, 201, 0.25); color:#c6c6c9; }
+.sc-a-minus { background:rgba(198, 198, 201, 0.1); border-color:rgba(198, 198, 201, 0.25);color:#c6c6c9; }
+.sc-b-plus  { background:rgba(175, 198, 255, 0.10); border-color:rgba(175, 198, 255, 0.25); color:#afc6ff; }
+.sc-b       { background:rgba(0, 94, 208, 0.12); border-color:rgba(0, 94, 208, 0.3);  color:#afc6ff; }
+.sc-b-minus { background:rgba(175, 198, 255, 0.10); border-color:rgba(175, 198, 255, 0.25); color:#d9e2ff; }
+.sc-c-plus  { background:rgba(255, 179, 176, 0.10); border-color:rgba(255, 179, 176, 0.25); color:#ffb3b0; }
+.sc-c       { background:rgba(255, 179, 176, 0.10); border-color:rgba(255, 179, 176, 0.25); color:#ffb3b0; }
+.sc-c-minus { background:rgba(255, 179, 176, 0.10); border-color:rgba(255, 179, 176, 0.25); color:#ffb3b0; }
+.sc-d       { background:rgba(255, 180, 171, 0.10);  border-color:rgba(255, 180, 171, 0.25);  color:#ffb4ab; }
+.sc-f       { background:rgba(255, 180, 171, 0.10);  border-color:rgba(255, 180, 171, 0.25);  color:#ffb4ab; }
 
 /* Responsive */
 @media (max-width: 700px) {
