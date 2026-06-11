@@ -178,10 +178,65 @@ const getMyRoleFit = async (studentId) => {
 };
 
 /**
- * Refresh endpoint — follows EXACTLY the same smart order as getMyRoleFit.
- * AI is only triggered when there is NO done session in the DB at all.
+ * Refresh (button press) — smarter logic:
+ *   1. Compute current resume hash
+ *   2. Done session with SAME hash  → return DB data (resume unchanged, no AI needed)
+ *   3. Done session with DIFF hash  → resume changed → cancel running, re-run AI
+ *   4. No done session at all       → run AI
  */
-const refreshMyRoleFit = (studentId) => getMyRoleFit(studentId);
+const refreshMyRoleFit = async (studentId) => {
+  // ── Fetch student row ──────────────────────────────────────────────────────
+  const { rows: [studentRow] } = await query(
+    `SELECT s.id, s.full_name, s.course, s.branch, s.firebase_uid,
+            r.id          AS resume_id,
+            r.skills_analysis,
+            r.projects_analysis,
+            r.experience_analysis,
+            r.education_analysis,
+            r.certifications_analysis,
+            r.extracurriculars_analysis,
+            r.overall_analysis,
+            r.confidence_analysis,
+            r.action_plan_analysis
+     FROM   students s
+     JOIN   resumes  r ON r.student_id = s.id
+                      AND r.is_primary  = TRUE
+                      AND r.status      = 'done'
+     WHERE  s.id = $1
+     LIMIT  1`,
+    [studentId],
+  );
+
+  if (!studentRow) {
+    const err = new Error('No analysed resume found. Please upload and analyse your resume first.');
+    err.statusCode = 422;
+    throw err;
+  }
+
+  // ── Compute current resume hash ────────────────────────────────────────────
+  const rawText     = await _fetchRawText(studentRow.firebase_uid);
+  const currentHash = sha256(rawText);
+  console.log(`[benchmark:refresh] hash=${currentHash.slice(0, 12)}…`);
+
+  // ── Same hash → resume unchanged → return DB data without AI ──────────────
+  const exactMatch = await _getLatestDoneSession(studentId, currentHash);
+  if (exactMatch) {
+    console.log('[benchmark:refresh] Same resume — returning DB data, no AI needed');
+    return { ...exactMatch, status: 'done', cache: 'hash_match' };
+  }
+
+  // ── Different hash or no session → resume changed → re-run AI ─────────────
+  console.log('[benchmark:refresh] Resume changed or no data — running AI');
+
+  // Cancel any in-progress session first
+  await query(
+    `UPDATE benchmark_sessions SET status='cancelled', updated_at=NOW()
+     WHERE  created_by=$1 AND status='running'`,
+    [studentId],
+  );
+
+  return _runAI(studentId, studentRow, rawText, currentHash);
+};
 
 /**
  * Lightweight status check — never triggers AI.
