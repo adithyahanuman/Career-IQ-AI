@@ -40,7 +40,7 @@ const getMyRoleFit = async (studentId, force = false) => {
   const { rows: [studentRow] } = await query(
     `SELECT s.id, s.full_name, s.course, s.branch,
             r.id          AS resume_id,
-            r.resume_text,
+            r.raw_text,
             r.skills_analysis,
             r.projects_analysis,
             r.experience_analysis,
@@ -76,7 +76,7 @@ const getMyRoleFit = async (studentId, force = false) => {
   const resumePayload = [{
     id:       studentRow.id,
     name:     studentRow.full_name,
-    raw_text: studentRow.resume_text || '',
+    raw_text: studentRow.raw_text || '',
     analysis: {
       skills:              studentRow.skills_analysis           ?? {},
       projects:            studentRow.projects_analysis         ?? {},
@@ -222,7 +222,7 @@ const createSession = async ({ createdBy, candidateIds, jobRoles }) => {
     const resumeRows = await Promise.all(
       candidateIds.map(sid =>
         query(
-          `SELECT r.id, s.full_name AS name, r.resume_text,
+          `SELECT r.id, s.full_name AS name, r.raw_text,
                   r.skills_analysis, r.projects_analysis, r.experience_analysis,
                   r.education_analysis, r.certifications_analysis, r.overall_analysis,
                   r.confidence_analysis, r.action_plan_analysis
@@ -235,7 +235,7 @@ const createSession = async ({ createdBy, candidateIds, jobRoles }) => {
 
     const validResumes = resumeRows.filter(Boolean).map(r => ({
       id: r.id, name: r.name,
-      raw_text: r.resume_text || '',
+      raw_text: r.raw_text || '',
       analysis: {
         skills: r.skills_analysis ?? {}, projects: r.projects_analysis ?? {},
         experience: r.experience_analysis ?? {}, education: r.education_analysis ?? {},
