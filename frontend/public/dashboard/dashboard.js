@@ -149,19 +149,22 @@
       if (dropdownName) dropdownName.textContent = displayName;
       if (dropdownEmail) dropdownEmail.textContent = user.email;
 
-      // Interactive Dashboard Updates based on Profile
+      // Interactive Dashboard Updates based on Profile (null-guarded for new HTML)
       if (profileData && profileData.onboarding_complete) {
-        // Profile Complete
-        document.querySelector('.stats-grid .stat-card:nth-child(1) .stat-value').textContent = '100%';
-
         // GPA / CGPA
-        if (profileData.gpa) {
-          document.getElementById('gpaDisplay').textContent = profileData.gpa;
-        }
+        const gpaEl = document.getElementById('gpaDisplay');
+        if (gpaEl && profileData.gpa) gpaEl.textContent = profileData.gpa;
 
-        // Welcome Subtitle
-        const subtitleText = profileData.course ? `Ready to conquer your goals in ${profileData.course} (${profileData.yearOfStudy || 'Student'})?` : 'Ready to conquer your goals?';
-        document.querySelector('.welcome-subtitle').textContent = subtitleText;
+        // Welcome Subtitle (new HTML uses piqWelcomeSub)
+        const subtitleText = profileData.course
+          ? `Ready to conquer your goals in ${profileData.course} (${profileData.yearOfStudy || 'Student'})?`
+          : 'Ready to conquer your goals?';
+        const subEl = document.querySelector('.welcome-subtitle') || document.getElementById('piqWelcomeSub');
+        if (subEl) subEl.textContent = subtitleText;
+
+        // Legacy stats-grid (may not exist in new HTML)
+        const statVal = document.querySelector('.stats-grid .stat-card:nth-child(1) .stat-value');
+        if (statVal) statVal.textContent = '100%';
       }
 
       // Show admin link if admin
@@ -181,6 +184,11 @@
           '📄 ' + (profileData.resumeName || 'resume.pdf') + ' (saved)';
         const aBtn = document.getElementById('analyzeResumeBtn');
         if (aBtn) aBtn.style.display = 'inline-flex';
+        // Also show analyze btn in RA tab empty state
+        const aBtnRA = document.getElementById('analyzeResumeBtnRA');
+        if (aBtnRA) aBtnRA.style.display = 'inline-flex';
+        const aBtnInAnalysis = document.getElementById('analyzeResumeBtnInAnalysis');
+        if (aBtnInAnalysis) aBtnInAnalysis.style.display = 'inline-flex';
       }
 
 
@@ -223,10 +231,19 @@
       const analyzeFromFirestore = async () => {
         const uid = user.uid;
 
-        const analyzeBtn = document.getElementById('analyzeResumeBtn');
-        const origHTML   = analyzeBtn.innerHTML;
-        analyzeBtn.innerHTML = '<span class="upload-spinner"></span>Analyzing…';
-        analyzeBtn.disabled  = true;
+        // Show loading on ALL analyze buttons
+        const allAnalyzeBtns = [
+          document.getElementById('analyzeResumeBtn'),
+          document.getElementById('analyzeResumeBtnRA'),
+          document.getElementById('analyzeResumeBtnInAnalysis'),
+        ].filter(Boolean);
+
+        allAnalyzeBtns.forEach(btn => {
+          btn.dataset.origHtml = btn.innerHTML;
+          btn.innerHTML = '<span class="upload-spinner"></span>Analyzing…';
+          btn.disabled = true;
+          btn.style.display = 'inline-flex';
+        });
 
         try {
           const snap = await db.collection('user_profiles').doc(uid).get();
@@ -239,6 +256,21 @@
           if (!resumeText || resumeText.trim().length < 50)
             throw new Error('No resume text found. Please upload a PDF resume first.');
 
+          // Fast path: if we have an active resume loaded with an analysis, skip calling the AI again.
+          // (If a new file was uploaded, pgResume would have been set to null in handleFileUpload).
+          if (pgResume && (pgResume.overall_analysis || pgResume.analysis)) {
+            populateResumeAnalysisTab(pgResume);
+
+            allAnalyzeBtns.forEach(btn => { btn.style.display = 'none'; });
+            const savedEl = document.getElementById('savedResumeName');
+            if (savedEl) savedEl.textContent = '';
+
+            if (window.CareerIQAuth && window.CareerIQAuth.Toast) {
+              window.CareerIQAuth.Toast.show('✅ Analysis already stored. Showing your existing results!', 'success', 5000);
+            }
+            return;
+          }
+
           // Call backend — cache is used if analysis already exists for same filename
           const token = await firebase.auth().currentUser.getIdToken();
           const analysis = await window.GeminiClient.analyzeResume(resumeText, token, resumeName);
@@ -247,11 +279,17 @@
 
           populateResumeAnalysisTab(pgResume);
 
-          analyzeBtn.style.display = 'none';
-          document.getElementById('savedResumeName').textContent = '';
+          // Hide all analyze buttons after success
+          allAnalyzeBtns.forEach(btn => { btn.style.display = 'none'; });
+          const savedEl = document.getElementById('savedResumeName');
+          if (savedEl) savedEl.textContent = '';
 
           if (window.CareerIQAuth && window.CareerIQAuth.Toast) {
-            window.CareerIQAuth.Toast.show('Analysis complete! Click “Resume Analysis” in the sidebar to view your report.', 'success', 5000);
+            window.CareerIQAuth.Toast.show(
+              '✅ Analysis complete! See your score on the dashboard and detailed report in "Resume Analysis".',
+              'success',
+              6000
+            );
           }
 
         } catch (err) {
@@ -260,8 +298,11 @@
             window.CareerIQAuth.Toast.show('⚠️ ' + (err.message || 'Analysis failed. Make sure the backend is running.'), 'error', 6000);
           }
         } finally {
-          analyzeBtn.innerHTML = origHTML;
-          analyzeBtn.disabled  = false;
+          // Restore button states (keep display as-is — success path sets display:none)
+          allAnalyzeBtns.forEach(btn => {
+            if (btn.dataset.origHtml) btn.innerHTML = btn.dataset.origHtml;
+            btn.disabled = false;
+          });
         }
       };
 
@@ -273,6 +314,12 @@
       // ═══════════════════════════════════════════════════════════════════════
       const raEmptyState   = document.getElementById('raEmptyState');
       const raAnalysisWrap = document.getElementById('raAnalysisWrap');
+
+      // Wire secondary analyze buttons to the main analyze function
+      const aBtnRA = document.getElementById('analyzeResumeBtnRA');
+      if (aBtnRA) aBtnRA.addEventListener('click', () => analyzeFromFirestore());
+      const aBtnInAnalysis = document.getElementById('analyzeResumeBtnInAnalysis');
+      if (aBtnInAnalysis) aBtnInAnalysis.addEventListener('click', () => analyzeFromFirestore());
 
       // ── Chart registry to avoid duplicate chart instances ──────────────────
       const RA_CHARTS = {};
@@ -342,6 +389,17 @@
       }
 
       const populateResumeAnalysisTab = (resume) => {
+        // ── PlacementIQ Dashboard bridge ──
+        window._piqResumeData = resume;
+        if (window.PlacementIQ && typeof window.PlacementIQ.populate === 'function') {
+          window.PlacementIQ.populate(resume);
+        }
+        // Also show Analyze button in RA tab if resume text exists but no analysis
+        const analyzeInAnalysis = document.getElementById('analyzeResumeBtnInAnalysis');
+        if (analyzeInAnalysis) {
+          analyzeInAnalysis.style.display = 'none'; // analysis done, hide btn
+        }
+
         // Determine data source — check for master analysis columns first
         const hasOverall = resume && (resume.overall_analysis || (resume.analysis && resume.analysis.overall));
         const hasMasterAnalysis = resume && resume.overall_analysis;
@@ -1695,12 +1753,304 @@
                     });
 
                 // ═══════════════════════════════════════════════════════════════════════
-                // CAREER ROADMAP — AI Generation via backend API
+                // CAREER ROADMAP — Full Visual Render (embedded standalone style)
                 // ═══════════════════════════════════════════════════════════════════════
-                const crmGenerateBtn =
-                    document.getElementById("crmGenerateBtn");
-                const crmOutput = document.getElementById("crmOutput");
-                const crmSteps = document.getElementById("crmSteps");
+                const crmGenerateBtn  = document.getElementById("crmGenerateBtn");
+                const crmVisualOutput = document.getElementById("crmVisualOutput");
+                const crmHero         = document.getElementById("crmHeroSection");
+                const crmSvgCont      = document.getElementById("crmSvgContainer");
+                const crmPhasesCont   = document.getElementById("crmPhasesContainer");
+                const crmSummary      = document.getElementById("crmSummaryFooter");
+
+                const RM_COLORS = ['#7C3AED','#06B6D4','#F59E0B','#10B981','#ef4444','#3b82f6'];
+                const RM_ICONS  = ['🚀','⚡','🛠️','🔥','🎯','🏆'];
+
+                function renderVisualRoadmap(parsedData, currentRole, targetRole) {
+                    const steps = parsedData.steps || [];
+
+                    // ── Hero ──────────────────────────────────────────────────
+                    const tagsHtml = (parsedData.requiredSkills || [])
+                        .map(s => `<span class="crm-chip-tag">${s}</span>`).join('');
+
+                    crmHero.innerHTML = `
+                        <div class="crm-orb violet"></div>
+                        <div class="crm-orb amber"></div>
+                        <div class="crm-orb cyan"></div>
+                        <div class="crm-hero-inner">
+                            <div class="crm-hero-pill">⏱ ${parsedData.estimatedTimeline || 'See phases below'}</div>
+                            <h1 class="crm-hero-title">${currentRole} → ${targetRole}</h1>
+                            <p class="crm-hero-subtitle">AI-generated career transition plan · ${new Date().toLocaleDateString()}</p>
+                            <div class="crm-tags-row">${tagsHtml || '<span class="crm-chip-tag">AI Generated</span>'}</div>
+                            <div class="crm-progress-wrap">
+                                <div class="crm-progress-header"><span>Overall Progress</span><span>5%</span></div>
+                                <div class="crm-progress-track">
+                                    <div class="crm-progress-fill" id="crmOverallFill"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        const f = document.getElementById('crmOverallFill');
+                        if (f) f.style.width = '5%';
+                    }, 120);
+
+                    // ── Phase Cards ───────────────────────────────────────────
+                    crmPhasesCont.innerHTML = '';
+                    steps.forEach((step, i) => {
+                        const isLast = i === steps.length - 1;
+                        const color  = RM_COLORS[i % RM_COLORS.length];
+                        const icon   = isLast ? '🏆' : RM_ICONS[i % RM_ICONS.length];
+
+                        const card = document.createElement('div');
+                        card.className = 'crm-phase-card';
+                        card.setAttribute('data-index', i);
+                        card.style.setProperty('--phase-color', color);
+
+                        const milestones = (step.milestones || step.skills || []).slice(0, 4);
+                        const msHtml = milestones.length
+                            ? milestones.map(m => `<li class="crm-milestone-item"><span class="crm-milestone-icon">○</span><span>${typeof m === 'string' ? m : m.text || ''}</span></li>`).join('')
+                            : '<li class="crm-milestone-item" style="color:#64748B;font-style:italic;">Complete the objectives in this phase.</li>';
+
+                        card.innerHTML = `
+                            <div class="crm-card-eyebrow"><span>${icon}</span> Phase ${step.step || i + 1}</div>
+                            <h3 class="crm-card-title">${step.title}</h3>
+                            <div class="crm-card-meta">
+                                <span class="crm-duration-chip">⏱ ${step.duration || 'TBD'}</span>
+                                <span class="crm-status-badge ${i === 0 ? 'in-progress' : 'upcoming'}">
+                                    <span class="crm-status-dot"></span>${i === 0 ? 'In Progress' : 'Upcoming'}
+                                </span>
+                            </div>
+                            <p class="crm-card-desc">${step.description || ''}</p>
+                            <div class="crm-card-phase-progress">
+                                <div class="crm-progress-header"><span>Progress</span><span>${i === 0 ? '5' : '0'}%</span></div>
+                                <div class="crm-progress-track"><div class="crm-progress-fill" data-w="${i === 0 ? 5 : 0}"></div></div>
+                            </div>
+                            <div class="crm-milestones-label">Milestones:</div>
+                            <ul class="crm-milestones-list">${msHtml}</ul>
+                            ${step.deliverable ? `<div style="background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px 14px;font-size:0.83rem;color:#94A3B8;">📦 ${step.deliverable}</div>` : ''}
+                        `;
+                        crmPhasesCont.appendChild(card);
+                    });
+
+                    // ── Position cards + SVG Road ─────────────────────────────
+                    const numCards    = steps.length;
+                    const cardSpacing = 360;
+                    const totalH      = numCards * cardSpacing + 120;
+                    crmPhasesCont.style.height   = `${totalH}px`;
+                    crmPhasesCont.style.position = 'relative';
+                    crmPhasesCont.style.zIndex   = '10';
+
+                    const allCards = crmPhasesCont.querySelectorAll('.crm-phase-card');
+                    allCards.forEach((card, i) => {
+                        card.style.position = 'absolute';
+                        card.style.top      = `${i * cardSpacing + 60}px`;
+                        card.style.zIndex   = '20';
+                        if (i % 2 === 0) {
+                            card.style.left      = '54%';
+                            card.style.width     = '42%';
+                            card.style.textAlign = 'left';
+                        } else {
+                            card.style.right     = '54%';
+                            card.style.width     = '42%';
+                            card.style.textAlign = 'right';
+                        }
+                    });
+
+                    // Animate progress bars
+                    setTimeout(() => {
+                        crmPhasesCont.querySelectorAll('.crm-progress-fill').forEach(f => {
+                            f.style.width = (f.getAttribute('data-w') || 0) + '%';
+                        });
+                    }, 350);
+
+                    // Draw SVG road
+                    if (window.innerWidth > 768) {
+                        crmSvgCont.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:0;';
+                        let d = 'M 500 0 ';
+                        steps.forEach((_, i) => {
+                            const cy    = i * cardSpacing + 180;
+                            const roadX = i % 2 === 0 ? 180 : 820;
+                            if (i === 0) {
+                                d += `C 500 60, ${roadX} 60, ${roadX} ${cy} `;
+                            } else {
+                                const prevCy    = (i - 1) * cardSpacing + 180;
+                                const prevRoadX = i % 2 === 0 ? 820 : 180;
+                                d += `C ${prevRoadX} ${prevCy + 180}, ${roadX} ${cy - 180}, ${roadX} ${cy} `;
+                            }
+                        });
+                        const li = numCards - 1;
+                        const lX = li % 2 === 0 ? 180 : 820;
+                        const lY = li * cardSpacing + 180;
+                        d += `C ${lX} ${lY + 140}, 500 ${lY + 170}, 500 ${totalH}`;
+
+                        let svgHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 ${totalH}"
+                                 preserveAspectRatio="none"
+                                 style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+                                <!-- Single thin glowing line -->
+                                <path d="${d}" stroke="rgba(124,58,237,0.15)" stroke-width="6" stroke-linecap="round" fill="none"/>
+                                <path d="${d}" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" fill="none"/>
+                        `;
+                        steps.forEach((_, i) => {
+                            const cy    = i * cardSpacing + 180;
+                            const roadX = i % 2 === 0 ? 180 : 820;
+                            const circX = i % 2 === 0 ? 460 : 540;
+                            const color = RM_COLORS[i % RM_COLORS.length];
+                            const icon  = i === numCards - 1 ? '🏆' : RM_ICONS[i % RM_ICONS.length];
+                            svgHTML += `
+                                <!-- Thin connector from line to card -->
+                                <line x1="${roadX}" y1="${cy}" x2="${circX}" y2="${cy}" stroke="rgba(124,58,237,0.3)" stroke-width="1.5" stroke-dasharray="4 3"/>
+                                <!-- Small dot on the line -->
+                                <circle cx="${roadX}" cy="${cy}" r="5" fill="${color}" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+                                <!-- Phase icon circle (smaller) -->
+                                <circle cx="${circX}" cy="${cy}" r="28" fill="${color}" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"
+                                        style="filter:drop-shadow(0 2px 8px rgba(0,0,0,0.25));"/>
+                                <text x="${circX}" y="${cy + 8}" text-anchor="middle" fill="#fff"
+                                      font-size="18" font-family="sans-serif">${icon}</text>
+                            `;
+                        });
+                        svgHTML += '</svg>';
+                        crmSvgCont.innerHTML = svgHTML;
+                    }
+
+                    // ── Summary Footer ────────────────────────────────────────
+                    crmSummary.innerHTML = `
+                        <p>Your personalized career roadmap from <strong>${currentRole}</strong> to <strong>${targetRole}</strong>. Follow each phase step-by-step to reach your goal.</p>
+                        <div class="crm-tags-row">${tagsHtml}</div>
+                        <div class="crm-summary-credit">⚡ Generated by CareerIQ AI</div>
+                    `;
+
+                    // ── Scroll reveal ─────────────────────────────────────────
+                    const obs = new IntersectionObserver((entries) => {
+                        entries.forEach(e => {
+                            if (e.isIntersecting) {
+                                const idx = parseInt(e.target.getAttribute('data-index') || 0);
+                                e.target.style.transitionDelay = `${idx * 120}ms`;
+                                e.target.classList.add('revealed');
+                                obs.unobserve(e.target);
+                            }
+                        });
+                    }, { threshold: 0.1 });
+                    allCards.forEach(c => obs.observe(c));
+
+                    // Show output
+                    crmVisualOutput.classList.add('visible');
+                    setTimeout(() => crmVisualOutput.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+                }
+
+                if (crmGenerateBtn) {
+                    crmGenerateBtn.addEventListener("click", async () => {
+                        const targetRole = document.getElementById("crmTargetRole")?.value.trim();
+
+                        if (!targetRole) {
+                            if (window.CareerIQAuth && window.CareerIQAuth.Toast) {
+                                window.CareerIQAuth.Toast.show("Please enter your target role or dream job.", "error");
+                            }
+                            return;
+                        }
+
+                        // Auto-extract current role and skills from the analyzed resume
+                        let currentRole   = "Student / Professional";
+                        let skillsString  = "Communication, Problem Solving";
+
+                        if (pgResume && pgResume.overall_analysis) {
+                            const analysis = typeof pgResume.overall_analysis === 'string'
+                                ? JSON.parse(pgResume.overall_analysis)
+                                : pgResume.overall_analysis;
+
+                            if (analysis.experience?.roles?.length > 0) {
+                                currentRole = analysis.experience.roles[0].job_title || currentRole;
+                            } else if (analysis.education?.education_entries?.length > 0) {
+                                const edu = analysis.education.education_entries[0];
+                                currentRole = `${edu.field_of_study || 'Student'} at ${edu.institution}`;
+                            }
+
+                            if (analysis.skills) {
+                                const allSkills = [
+                                    ...(analysis.skills.technical_skills || []),
+                                    ...(analysis.skills.tools_and_platforms || []),
+                                    ...(analysis.skills.frameworks_and_libraries || [])
+                                ];
+                                if (allSkills.length > 0) skillsString = allSkills.slice(0, 15).join(", ");
+                            }
+                        } else {
+                            if (window.CareerIQAuth && window.CareerIQAuth.Toast) {
+                                window.CareerIQAuth.Toast.show(
+                                    "We couldn't find your analyzed resume. Please upload and analyze your resume first for a tailored roadmap!",
+                                    "warning"
+                                );
+                            }
+                        }
+
+                        const origBtnHTML = crmGenerateBtn.innerHTML;
+                        crmGenerateBtn.innerHTML = '<span class="upload-spinner"></span>Generating Roadmap…';
+                        crmGenerateBtn.disabled  = true;
+                        if (crmVisualOutput) crmVisualOutput.classList.remove("visible");
+
+                        try {
+                            const token    = await firebase.auth().currentUser.getIdToken();
+                            const response = await fetch("http://localhost:5000/api/career/roadmap", {
+                                method:  "POST",
+                                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                                body: JSON.stringify({
+                                    currentRole,
+                                    targetRole,
+                                    skills: skillsString ? skillsString.split(",").map(s => s.trim()).filter(Boolean) : [],
+                                }),
+                            });
+
+                            if (!response.ok) throw new Error("Backend returned " + response.status);
+
+                            const json = await response.json();
+                            const roadmapText = typeof json.data === "string"
+                                ? json.data
+                                : json.data?.roadmap
+                                  ? json.data.roadmap
+                                  : JSON.stringify(json.data, null, 2);
+
+                            // Parse structured JSON
+                            let parsedData = null;
+                            try {
+                                let clean = roadmapText.replace(/```json/gi, '').replace(/```/g, '').trim();
+                                parsedData = JSON.parse(clean);
+                            } catch(e) { console.warn("Could not parse roadmap JSON", e); }
+
+                            if (parsedData && Array.isArray(parsedData.steps)) {
+                                renderVisualRoadmap(parsedData, currentRole, targetRole);
+                            } else {
+                                // Fallback: display raw text in hero area
+                                if (crmHero) crmHero.innerHTML = `<div class="crm-hero-inner"><h1 class="crm-hero-title">${currentRole} → ${targetRole}</h1></div>`;
+                                if (crmPhasesCont) crmPhasesCont.innerHTML = `<div style="padding:28px;background:rgba(255,255,255,0.04);border-radius:14px;color:#94A3B8;white-space:pre-wrap;font-size:14px;line-height:1.8;">${roadmapText}</div>`;
+                                if (crmSvgCont)    crmSvgCont.innerHTML = '';
+                                if (crmSummary)    crmSummary.innerHTML = '';
+                                if (crmVisualOutput) crmVisualOutput.classList.add('visible');
+                            }
+
+                            // Save to localStorage for the standalone roadmap page
+                            try {
+                                localStorage.setItem('careeriq_roadmap', JSON.stringify({
+                                    title: `${currentRole} → ${targetRole}`,
+                                    currentRole, targetRole,
+                                    generatedAt: new Date().toISOString(),
+                                    rawText:     roadmapText,
+                                    parsedData
+                                }));
+                            } catch(e) { console.warn('localStorage save failed', e); }
+
+                        } catch (err) {
+                            console.error("Roadmap generation failed:", err);
+                            if (window.CareerIQAuth && window.CareerIQAuth.Toast) {
+                                window.CareerIQAuth.Toast.show(
+                                    "Roadmap generation failed: " + (err.message || "Make sure the backend is running on port 5000."),
+                                    "error", 6000
+                                );
+                            }
+                        } finally {
+                            crmGenerateBtn.innerHTML = origBtnHTML;
+                            crmGenerateBtn.disabled  = false;
+                        }
+                    });
+                }
 
                 // Pre-fill current role from profile
                 if (profileData) {
@@ -1720,87 +2070,307 @@
 
                 const renderRoadmapSteps = (rawText) => {
                     crmSteps.innerHTML = "";
-                    // Try to parse structured steps from the raw AI text
-                    // Look for numbered lines like "1. Title" or "Step 1:"
-                    const lines = rawText.split("\n").filter((l) => l.trim());
-                    const stepRegex = /^(\d+)[.):]\s*(.+)/;
-                    let steps = [];
-                    let currentStep = null;
+                    
+                    let parsedData = null;
+                    try {
+                        // AI sometimes wraps JSON in markdown blocks
+                        let cleanText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+                        parsedData = JSON.parse(cleanText);
+                    } catch (e) {
+                        console.warn("Could not parse AI output as JSON, falling back to raw render", e);
+                    }
 
-                    lines.forEach((line) => {
-                        const match = line.match(stepRegex);
-                        if (match) {
-                            if (currentStep) steps.push(currentStep);
-                            currentStep = {
-                                num: match[1],
-                                title: match[2].trim(),
-                                lines: [],
-                            };
-                        } else if (currentStep) {
-                            currentStep.lines.push(line.trim());
-                        }
-                    });
-                    if (currentStep) steps.push(currentStep);
+                    if (parsedData && parsedData.steps && Array.isArray(parsedData.steps)) {
+                        // Render Metadata box
+                        const metaDiv = document.createElement("div");
+                        metaDiv.style.marginBottom = "40px";
+                        metaDiv.style.padding = "20px";
+                        metaDiv.style.background = "var(--bg-secondary)";
+                        metaDiv.style.borderRadius = "12px";
+                        metaDiv.style.border = "1px solid var(--border)";
+                        metaDiv.innerHTML = `
+                            <div style="font-size: 14px; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 18px">⏱️</span> <strong>Estimated Timeline:</strong> 
+                                <span style="color: var(--text-secondary)">${parsedData.estimatedTimeline || 'Not specified'}</span>
+                            </div>
+                            <div style="font-size: 14px; color: var(--text-primary); display: flex; align-items: flex-start; gap: 8px;">
+                                <span style="font-size: 18px">🛠️</span> <strong>Required Skills:</strong> 
+                                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: -2px;">
+                                    ${(parsedData.requiredSkills || []).map(s => `<span class="crm-skill-chip">${s}</span>`).join('') || '<span style="color: var(--text-secondary)">Not specified</span>'}
+                                </div>
+                            </div>
+                        `;
+                        crmSteps.appendChild(metaDiv);
 
-                    if (steps.length >= 2) {
-                        steps.forEach((step) => {
-                            const desc = step.lines.join(" ");
-                            // Extract duration hint if present
-                            const durationMatch = desc.match(
-                                /(\d+[-–]\d+\s*(weeks?|months?|years?))/i,
-                            );
-                            const durationText = durationMatch
-                                ? durationMatch[0]
-                                : null;
+                        // Render Full Roadmap Framework (SVG + Scroll Animations)
+                        const roadmapWrap = document.createElement("section");
+                        roadmapWrap.className = "timeline-section";
+                        roadmapWrap.id = "timeline";
+                        roadmapWrap.style.width = "100%";
 
-                            const el = document.createElement("div");
-                            el.className = "crm-step";
-                            el.innerHTML = `
-              <div class="crm-step-left">
-                <div class="crm-step-num">${step.num}</div>
-                <div class="crm-step-line"></div>
-              </div>
-              <div class="crm-step-body">
-                <h4 class="crm-step-title">${step.title}</h4>
-                ${durationText ? `<span class="crm-step-duration">⏱ ${durationText}</span>` : ""}
-                <p class="crm-step-desc">${desc || "Follow this step to progress on your career path."}</p>
-              </div>
-            `;
-                            crmSteps.appendChild(el);
+                        // Container for the SVG path
+                        const svgContainer = document.createElement("div");
+                        svgContainer.className = "timeline-svg-container";
+                        svgContainer.id = "svg-container";
+                        roadmapWrap.appendChild(svgContainer);
+
+                        // Container for the cards
+                        const phasesContainer = document.createElement("div");
+                        phasesContainer.className = "phases-container";
+                        phasesContainer.id = "phases-container";
+                        phasesContainer.style.width = "100%";
+                        roadmapWrap.appendChild(phasesContainer);
+
+                        const icons = ["🚀", "⚡", "🛠️", "🔥", "🎯", "🏆"];
+                        const colors = ["#0ea5e9", "#7c3aed", "#f59e0b", "#10b981", "#ef4444", "#3b82f6"];
+
+                        // Render Cards (Clean text to match the infographic style)
+                        parsedData.steps.forEach((step, index) => {
+                            const isLast = index === parsedData.steps.length - 1;
+                            let icon = icons[index % icons.length];
+                            if (isLast) icon = "🏆";
+                            const color = colors[index % colors.length];
+                            
+                            const card = document.createElement("div");
+                            card.className = "phase-card";
+                            card.setAttribute("data-index", index);
+                            
+                            // Remove default card styling to blend perfectly with the infographic road
+                            card.style.background = "transparent";
+                            card.style.border = "none";
+                            card.style.boxShadow = "none";
+                            card.style.padding = "0";
+                            
+                            card.innerHTML = `
+                                <div style="font-size: 13px; font-weight: 800; color: ${color}; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;">
+                                    Phase ${step.step || (index + 1)}
+                                </div>
+                                <h3 style="font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; line-height: 1.2;">
+                                    ${step.title}
+                                </h3>
+                                <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">
+                                    ${step.description}
+                                </p>
+                                ${step.duration ? `<span style="display: inline-block; font-size: 12px; font-weight: 700; color: #ffffff; background: ${color}; padding: 6px 14px; border-radius: 99px;">⏱ ${step.duration}</span>` : ''}
+                            `;
+                            phasesContainer.appendChild(card);
                         });
+                        
+                        crmSteps.appendChild(roadmapWrap);
+
+                        // SVG Drawing Logic (String based for rock-solid browser rendering)
+                        const numCards = parsedData.steps.length;
+                        const cardSpacing = 320;
+                        const totalHeight = numCards * cardSpacing + 100;
+                        phasesContainer.style.height = `${totalHeight}px`;
+                        phasesContainer.style.position = "relative";
+                        phasesContainer.style.zIndex = "10";
+
+                        // Position Cards
+                        const cards = phasesContainer.querySelectorAll(".phase-card");
+                        cards.forEach((card, index) => {
+                            card.style.position = "absolute";
+                            card.style.top = `${index * cardSpacing + 50}px`;
+                            card.style.width = "40%";
+                            card.style.zIndex = "20";
+                            
+                            if (index % 2 === 0) {
+                                // Road on left, Card on right
+                                card.style.left = "55%";
+                                card.style.paddingLeft = "10px";
+                                card.style.textAlign = "left";
+                            } else {
+                                // Road on right, Card on left
+                                card.style.right = "55%";
+                                card.style.paddingRight = "10px";
+                                card.style.textAlign = "right";
+                            }
+                        });
+
+                        if (window.innerWidth > 768) {
+                            let d = "M 500 0 ";
+                            parsedData.steps.forEach((step, index) => {
+                                const cy = index * cardSpacing + 150; 
+                                const roadX = index % 2 === 0 ? 200 : 800; // Massive S-curve swings
+                                
+                                if (index === 0) {
+                                    d += `C 500 50, ${roadX} 50, ${roadX} ${cy} `;
+                                } else {
+                                    const prevCy = (index - 1) * cardSpacing + 150;
+                                    const prevRoadX = index % 2 === 0 ? 800 : 200;
+                                    d += `C ${prevRoadX} ${prevCy + 160}, ${roadX} ${cy - 160}, ${roadX} ${cy} `;
+                                }
+                            });
+                            // Complete the road off the bottom
+                            const lastIndex = numCards - 1;
+                            const lastRoadX = lastIndex % 2 === 0 ? 200 : 800;
+                            const lastCy = lastIndex * cardSpacing + 150;
+                            d += `C ${lastRoadX} ${lastCy + 120}, 500 ${lastCy + 150}, 500 ${totalHeight} `;
+
+                            let svgHTML = `
+                                <svg xmlns="http://www.w3.org/2000/svg" 
+                                     viewBox="0 0 1000 ${totalHeight}" 
+                                     preserveAspectRatio="none"
+                                     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;">
+                                    
+                                    <!-- Thick dark shadow border -->
+                                    <path d="${d}" stroke="#1e293b" stroke-width="70" stroke-linecap="round" fill="none"></path>
+                                    
+                                    <!-- Thick vibrant blue main road -->
+                                    <path d="${d}" stroke="#283593" stroke-width="60" stroke-linecap="round" fill="none"></path>
+                                    
+                                    <!-- Center dashed white line -->
+                                    <path d="${d}" stroke="#ffffff" stroke-width="5" stroke-dasharray="24 16" stroke-linecap="round" fill="none"></path>
+                            `;
+
+                            parsedData.steps.forEach((step, index) => {
+                                const isLast = index === numCards - 1;
+                                const color = colors[index % colors.length];
+                                let icon = icons[index % icons.length];
+                                if (isLast) icon = "🏆";
+                                
+                                const cy = index * cardSpacing + 150;
+                                const roadX = index % 2 === 0 ? 200 : 800;
+                                const bigCircleX = index % 2 === 0 ? 450 : 550;
+                                
+                                svgHTML += `
+                                    <!-- Connecting line from road to big circle -->
+                                    <line x1="${roadX}" y1="${cy}" x2="${bigCircleX}" y2="${cy}" stroke="#fbc02d" stroke-width="6"></line>
+                                    
+                                    <!-- Small yellow road anchor dot -->
+                                    <circle cx="${roadX}" cy="${cy}" r="12" fill="#fbc02d" stroke="#ffffff" stroke-width="4"></circle>
+                                    
+                                    <!-- Huge colored icon circle -->
+                                    <circle cx="${bigCircleX}" cy="${cy}" r="45" fill="${color}" stroke="#ffffff" stroke-width="6" style="filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));"></circle>
+                                    <text x="${bigCircleX}" y="${cy + 10}" text-anchor="middle" fill="#ffffff" font-size="28px" font-family="sans-serif">${icon}</text>
+                                `;
+                            });
+
+                            svgHTML += `</svg>`;
+                            svgContainer.innerHTML = svgHTML;
+                            svgContainer.style.zIndex = "5";
+                        }
+
+                        // Intersection Observer for Cards (Fade in text nicely)
+                        const observer = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) {
+                                    const idx = entry.target.getAttribute("data-index") || 0;
+                                    entry.target.style.transitionDelay = `${idx * 150}ms`;
+                                    entry.target.classList.add("revealed");
+                                    observer.unobserve(entry.target);
+                                }
+                            });
+                        }, { threshold: 0.1 });
+                        
+                        cards.forEach(c => observer.observe(c));
+
                     } else {
-                        // Fallback: show raw text nicely
-                        const el = document.createElement("div");
-                        el.className = "crm-raw-output";
-                        el.textContent = rawText;
-                        crmSteps.appendChild(el);
+                        // Fallback: try to parse numbered list or show raw
+                        const lines = rawText.split("\\n").filter((l) => l.trim());
+                        const stepRegex = /^(\\d+)[.):]\\s*(.+)/;
+                        let steps = [];
+                        let currentStep = null;
+
+                        lines.forEach((line) => {
+                            const match = line.match(stepRegex);
+                            if (match) {
+                                if (currentStep) steps.push(currentStep);
+                                currentStep = {
+                                    num: match[1],
+                                    title: match[2].trim(),
+                                    lines: [],
+                                };
+                            } else if (currentStep) {
+                                currentStep.lines.push(line.trim());
+                            }
+                        });
+                        if (currentStep) steps.push(currentStep);
+
+                        if (steps.length >= 2) {
+                            steps.forEach((step) => {
+                                const desc = step.lines.join(" ");
+                                const durationMatch = desc.match(
+                                    /(\\d+[-–]\\d+\\s*(weeks?|months?|years?))/i,
+                                );
+                                const durationText = durationMatch ? durationMatch[0] : null;
+
+                                const el = document.createElement("div");
+                                el.className = "crm-step";
+                                el.innerHTML = `
+                                  <div class="crm-step-left">
+                                    <div class="crm-step-num">${step.num}</div>
+                                    <div class="crm-step-line"></div>
+                                  </div>
+                                  <div class="crm-step-body">
+                                    <h4 class="crm-step-title">${step.title}</h4>
+                                    ${durationText ? `<span class="crm-step-duration">⏱ ${durationText}</span>` : ""}
+                                    <p class="crm-step-desc">${desc || "Follow this step to progress on your career path."}</p>
+                                  </div>
+                                `;
+                                crmSteps.appendChild(el);
+                            });
+                        } else {
+                            const el = document.createElement("div");
+                            el.className = "crm-raw-output";
+                            el.textContent = rawText;
+                            crmSteps.appendChild(el);
+                        }
                     }
                 };
 
                 if (crmGenerateBtn) {
                     crmGenerateBtn.addEventListener("click", async () => {
-                        const currentRole = document
-                            .getElementById("crmCurrentRole")
-                            .value.trim();
                         const targetRole = document
                             .getElementById("crmTargetRole")
                             .value.trim();
-                        const skills = document
-                            .getElementById("crmSkills")
-                            .value.trim();
 
-                        if (!currentRole || !targetRole) {
-                            if (
-                                window.CareerIQAuth &&
-                                window.CareerIQAuth.Toast
-                            ) {
+                        if (!targetRole) {
+                            if (window.CareerIQAuth && window.CareerIQAuth.Toast) {
                                 window.CareerIQAuth.Toast.show(
-                                    "Please enter both your current role and target role.",
-                                    "error",
+                                    "Please enter your target role or dream job.",
+                                    "error"
                                 );
                             }
                             return;
                         }
+
+                        // Auto-extract current role and skills from the analyzed resume
+                        let currentRole = "Student / Professional";
+                        let skillsString = "Communication, Problem Solving";
+
+                        if (pgResume && pgResume.overall_analysis) {
+                            const analysis = typeof pgResume.overall_analysis === 'string' ? JSON.parse(pgResume.overall_analysis) : pgResume.overall_analysis;
+                            
+                            // Try to get their latest role from experience
+                            if (analysis.experience && analysis.experience.roles && analysis.experience.roles.length > 0) {
+                                currentRole = analysis.experience.roles[0].job_title || currentRole;
+                            } else if (analysis.education && analysis.education.education_entries && analysis.education.education_entries.length > 0) {
+                                currentRole = `${analysis.education.education_entries[0].field_of_study || 'Student'} at ${analysis.education.education_entries[0].institution}`;
+                            }
+
+                            // Try to gather all skills into a string
+                            if (analysis.skills) {
+                                const allSkills = [
+                                    ...(analysis.skills.technical_skills || []),
+                                    ...(analysis.skills.tools_and_platforms || []),
+                                    ...(analysis.skills.frameworks_and_libraries || [])
+                                ];
+                                if (allSkills.length > 0) {
+                                    skillsString = allSkills.slice(0, 15).join(", "); // Limit to top 15 skills for context
+                                }
+                            }
+                        } else {
+                            if (window.CareerIQAuth && window.CareerIQAuth.Toast) {
+                                window.CareerIQAuth.Toast.show(
+                                    "We couldn't find your analyzed resume. Please upload and analyze your resume first for a tailored roadmap!",
+                                    "warning"
+                                );
+                            }
+                            // We still allow it to continue using the fallback defaults
+                        }
+
+                        const skills = skillsString;
 
                         const origBtnHTML = crmGenerateBtn.innerHTML;
                         crmGenerateBtn.innerHTML =
@@ -1859,6 +2429,32 @@
                                 behavior: "smooth",
                                 block: "start",
                             });
+
+                            // ── Save to localStorage so the standalone Visual Roadmap page can show this data ──
+                            try {
+                                let parsedForStorage = null;
+                                try {
+                                    let clean = roadmapText.replace(/```json/gi,'').replace(/```/g,'').trim();
+                                    parsedForStorage = JSON.parse(clean);
+                                } catch(e) {}
+
+                                const storagePayload = {
+                                    title: `${currentRole} → ${targetRole}`,
+                                    currentRole,
+                                    targetRole,
+                                    generatedAt: new Date().toISOString(),
+                                    rawText: roadmapText,
+                                    parsedData: parsedForStorage
+                                };
+                                localStorage.setItem('careeriq_roadmap', JSON.stringify(storagePayload));
+
+                                // Update the "Open Full Roadmap" links to reflect live data is ready
+                                document.querySelectorAll('.crm-view-full-btn').forEach(btn => {
+                                    btn.title = `View visual roadmap: ${currentRole} → ${targetRole}`;
+                                });
+                            } catch(storageErr) {
+                                console.warn('Could not save roadmap to localStorage:', storageErr);
+                            }
                         } catch (err) {
                             console.error("Roadmap generation failed:", err);
                             if (
@@ -1881,129 +2477,172 @@
                 }
 
                 // ═══════════════════════════════════════════════════════════════════════
-                // UPLOAD — extracts text, saves to Firestore ONLY
-                // Rules:
-                //  • Same filename + analysis already saved → keep existing analysis,
-                //    just show a toast ("same resume, showing saved results")
-                //  • Different file → overwrite text, clear old analysis, show Analyze btn
+                // UPLOAD — extracts text from PDF, saves to Firestore
+                // Supports: uploadResumeBtn (topbar) + uploadResumeBtnCta (upload card)
+                // After upload: shows Analyze button in topbar + RA tab + RA tab header
                 // ═══════════════════════════════════════════════════════════════════════
-                const uploadResumeBtn =
-                    document.getElementById("uploadResumeBtn");
-                const resumeFileInput =
-                    document.getElementById("resumeFileInput");
+                const resumeFileInput = document.getElementById("resumeFileInput");
 
-                if (uploadResumeBtn && resumeFileInput) {
-                    uploadResumeBtn.addEventListener("click", () =>
-                        resumeFileInput.click(),
-                    );
+                // Helper: show/hide analyze buttons everywhere
+                const showAnalyzeButtons = (show) => {
+                    [
+                        document.getElementById("analyzeResumeBtn"),
+                        document.getElementById("analyzeResumeBtnRA"),
+                        document.getElementById("analyzeResumeBtnInAnalysis"),
+                    ].forEach(btn => {
+                        if (btn) btn.style.display = show ? "inline-flex" : "none";
+                    });
+                };
 
-                    resumeFileInput.addEventListener("change", async (e) => {
-                        const file = e.target.files[0];
-                        if (!file) return;
+                // Helper: update resume name label in topbar
+                const setResumeLabel = (text) => {
+                    const el = document.getElementById("savedResumeName");
+                    if (el) el.textContent = text;
+                };
 
-                        const uid = user.uid;
-
-                        const origHTML = uploadResumeBtn.innerHTML;
-                        uploadResumeBtn.innerHTML =
-                            '<span class="upload-spinner"></span>Saving…';
-                        uploadResumeBtn.disabled = true;
-
-                        try {
-                            // Check current Firestore state
-                            const snap = await db
-                                .collection("user_profiles")
-                                .doc(uid)
-                                .get();
-                            const existing = snap.exists ? snap.data() : {};
-
-                            // ── Same filename AND analysis exists in PostgreSQL → keep everything, just notify
-                            if (
-                                file.name === existing.resumeName &&
-                                pgResume &&
-                                pgResume.file_name === file.name &&
-                                pgResume.overall_analysis
-                            ) {
-                                populateResumeAnalysisTab(pgResume);
-                                if (
-                                    window.CareerIQAuth &&
-                                    window.CareerIQAuth.Toast
-                                ) {
-                                    window.CareerIQAuth.Toast.show(
-                                        "Same resume detected — your saved analysis is shown in the Resume Analysis tab.",
-                                        "info",
-                                        4000,
-                                    );
-                                }
-                                return; // nothing to re-upload
-                            }
-
-                            // ── New file → extract text and save
-                            pgResume = null;
-                            const extracted =
-                                await ResumeExtractor.extractFromFile(file);
-                            const resumeText = extracted.raw_text;
-
-                            if (!resumeText || resumeText.trim().length < 50)
-                                throw new Error(
-                                    "Could not read text from this PDF. Make sure it is not a scanned image.",
-                                );
-
-                            // Save text; clear old analysis so stale scores don't show
-                            const FieldValue = firebase.firestore.FieldValue;
-                            await db
-                                .collection("user_profiles")
-                                .doc(uid)
-                                .set(
-                                    {
-                                        resumeName: file.name,
-                                        resumeText: resumeText,
-                                        resumeExtractedAt:
-                                            new Date().toISOString(),
-                                        resumeAnalysis: FieldValue.delete(),
-                                        resumeScore: FieldValue.delete(),
-                                        resumeUploadCount:
-                                            FieldValue.increment(1),
-                                    },
-                                    { merge: true },
-                                );
-
-                            // Show Analyze button for new resume
-                            document.getElementById(
-                                "savedResumeName",
-                            ).textContent =
-                                "📄 " + file.name + " — ready to analyze";
-                            if (analyzeResumeBtn)
-                                analyzeResumeBtn.style.display = "inline-flex";
-
-                            if (
-                                window.CareerIQAuth &&
-                                window.CareerIQAuth.Toast
-                            ) {
-                                window.CareerIQAuth.Toast.show(
-                                    'Resume saved! Click "Analyze with AI" to get your score.',
-                                    "success",
-                                    5000,
-                                );
-                            }
-                        } catch (err) {
-                            console.error("Upload failed:", err);
-                            if (
-                                window.CareerIQAuth &&
-                                window.CareerIQAuth.Toast
-                            ) {
-                                window.CareerIQAuth.Toast.show(
-                                    "Upload failed: " + err.message,
-                                    "error",
-                                );
-                            }
-                        } finally {
-                            uploadResumeBtn.innerHTML = origHTML;
-                            uploadResumeBtn.disabled = false;
-                            resumeFileInput.value = "";
+                // Helper: set loading state on all upload buttons
+                const setUploadBtnState = (loading) => {
+                    const btns = [
+                        document.getElementById("uploadResumeBtn"),
+                        document.getElementById("uploadResumeBtnCta"),
+                    ];
+                    btns.forEach(btn => {
+                        if (!btn) return;
+                        if (loading) {
+                            btn.dataset.origHtml = btn.innerHTML;
+                            btn.innerHTML = '<span class="upload-spinner"></span>Saving…';
+                            btn.disabled = true;
+                        } else {
+                            btn.innerHTML = btn.dataset.origHtml || btn.innerHTML;
+                            btn.disabled = false;
                         }
                     });
+                };
+
+                // Core upload handler
+                const handleFileUpload = async (file) => {
+                    if (!file) return;
+
+                    // Only accept PDF
+                    if (!file.name.toLowerCase().endsWith('.pdf')) {
+                        if (window.CareerIQAuth?.Toast) {
+                            window.CareerIQAuth.Toast.show("Please upload a PDF file.", "error");
+                        }
+                        return;
+                    }
+
+                    const uid = user.uid;
+                    setUploadBtnState(true);
+
+                    try {
+                        // Check Firestore for existing resume
+                        const snap = await db.collection("user_profiles").doc(uid).get();
+                        const existing = snap.exists ? snap.data() : {};
+
+                        // Same filename + already analyzed → just reload analysis
+                        if (
+                            file.name === existing.resumeName &&
+                            pgResume &&
+                            pgResume.file_name === file.name &&
+                            pgResume.overall_analysis
+                        ) {
+                            populateResumeAnalysisTab(pgResume);
+                            if (window.CareerIQAuth?.Toast) {
+                                window.CareerIQAuth.Toast.show(
+                                    "Same resume detected — your saved analysis is displayed.",
+                                    "info",
+                                    4000
+                                );
+                            }
+                            return;
+                        }
+
+                        // New file → extract text
+                        pgResume = null;
+
+                        // Check pdf.js is loaded
+                        if (typeof pdfjsLib === "undefined") {
+                            throw new Error("PDF library not loaded. Please refresh the page and try again.");
+                        }
+
+                        const extracted = await ResumeExtractor.extractFromFile(file);
+                        const resumeText = extracted.raw_text;
+
+                        if (!resumeText || resumeText.trim().length < 50) {
+                            throw new Error(
+                                "Could not read text from this PDF. Please make sure it is not a scanned image (use a text-based PDF)."
+                            );
+                        }
+
+                        // Save to Firestore
+                        const FieldValue = firebase.firestore.FieldValue;
+                        await db.collection("user_profiles").doc(uid).set(
+                            {
+                                resumeName: file.name,
+                                resumeText: resumeText,
+                                resumeExtractedAt: new Date().toISOString(),
+                                resumeAnalysis: FieldValue.delete(),
+                                resumeScore: FieldValue.delete(),
+                                resumeUploadCount: FieldValue.increment(1),
+                            },
+                            { merge: true }
+                        );
+
+                        // Show Analyze button everywhere
+                        setResumeLabel("📄 " + file.name + " — ready to analyze");
+                        showAnalyzeButtons(true);
+
+                        // Also update the CTA card button text
+                        const ctaBtn = document.getElementById("uploadResumeBtnCta");
+                        if (ctaBtn) {
+                            ctaBtn.textContent = "✅ " + file.name + " uploaded";
+                            ctaBtn.style.color = "#22d3a5";
+                        }
+
+                        if (window.CareerIQAuth?.Toast) {
+                            window.CareerIQAuth.Toast.show(
+                                '✅ Resume saved! Click "Analyze with AI" to get your score.',
+                                "success",
+                                5000
+                            );
+                        }
+
+                    } catch (err) {
+                        console.error("Upload failed:", err);
+                        if (window.CareerIQAuth?.Toast) {
+                            window.CareerIQAuth.Toast.show(
+                                "Upload failed: " + (err.message || "Unknown error"),
+                                "error",
+                                6000
+                            );
+                        }
+                    } finally {
+                        setUploadBtnState(false);
+                        if (resumeFileInput) resumeFileInput.value = "";
+                    }
+                };
+
+                // Wire the shared file input to the handler
+                if (resumeFileInput) {
+                    resumeFileInput.addEventListener("change", (e) => {
+                        handleFileUpload(e.target.files[0]);
+                    });
                 }
+
+                // Wire topbar upload button
+                const uploadResumeBtn = document.getElementById("uploadResumeBtn");
+                if (uploadResumeBtn && resumeFileInput) {
+                    uploadResumeBtn.addEventListener("click", () => resumeFileInput.click());
+                }
+
+                // Wire CTA card upload button
+                const uploadResumeBtnCta = document.getElementById("uploadResumeBtnCta");
+                if (uploadResumeBtnCta && resumeFileInput) {
+                    uploadResumeBtnCta.addEventListener("click", () => resumeFileInput.click());
+                }
+
             };
+
 
             if (window.CareerIQAuth) {
                 initApp();

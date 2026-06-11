@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Career Roadmap — CareerIQ AI</title>
+    <meta name="description" content="Explore your personalized AI-generated visual career roadmap with phases, milestones, and deliverables on CareerIQ AI.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+
+    <style>
+        /* Back-to-dashboard nav bar */
+        .roadmap-topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 24px;
+            background: rgba(5, 8, 16, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .roadmap-topbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            color: #F1F5F9;
+            text-decoration: none;
+        }
+        .roadmap-topbar-brand span {
+            color: #06B6D4;
+        }
+        .roadmap-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 16px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            color: #94A3B8;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        .roadmap-back-btn:hover {
+            background: rgba(255,255,255,0.06);
+            color: #F1F5F9;
+            border-color: rgba(255,255,255,0.25);
+        }
+        /* Offset hero for fixed topbar */
+        body { padding-top: 56px; }
+    </style>
+</head>
+<body>
+
+    <!-- Back-to-Dashboard Topbar -->
+    <nav class="roadmap-topbar" aria-label="CareerIQ navigation">
+        <a href="../dashboard.html#career-roadmap" class="roadmap-topbar-brand">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+            Career<span>IQ AI</span>
+        </a>
+        <a href="../dashboard.html#career-roadmap" class="roadmap-back-btn">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+            Back to Dashboard
+        </a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <!-- Rendered by JS -->
+    </section>
+
+    <!-- Phase Timeline Section -->
+    <section class="timeline-section" id="timeline">
+        <div class="timeline-svg-container" id="svg-container">
+            <!-- SVG injected here -->
+        </div>
+        <div class="phases-container" id="phases-container">
+            <!-- Cards injected here -->
+        </div>
+    </section>
+
+    <!-- Summary Footer -->
+    <footer class="summary-footer" id="summary">
+        <!-- Rendered by JS -->
+    </footer>
+
+    <!-- Global Tooltip for Nodes -->
+    <div id="tooltip" class="tooltip"></div>
+
+    <!-- Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/render.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

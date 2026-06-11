@@ -1,0 +1,245 @@
+/* Typography & Texts */
+.hero-title {
+    font-size: 3.5rem;
+    background: linear-gradient(135deg, var(--violet), var(--cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+}
+.hero-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Chips & Badges */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.chip-pill {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    margin-bottom: 24px;
+}
+.tags-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+.chip-tag {
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+}
+
+/* Overall Progress */
+.progress-container {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: left;
+}
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+.progress-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    width: 0; /* animated via JS */
+    background: linear-gradient(90deg, var(--violet), var(--cyan));
+    border-radius: 3px;
+    transition: width 1.2s ease;
+}
+
+/* Phase Timeline Layout */
+.timeline-section {
+    position: relative;
+    padding: 60px 0;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+.timeline-svg-container {
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+.timeline-svg-container svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+.road-path {
+    fill: none;
+    stroke: var(--violet);
+    stroke-width: 2.5;
+    stroke-dasharray: 14 7;
+    filter: drop-shadow(0 0 10px rgba(124, 58, 237, 0.4));
+}
+.phases-container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Phase Cards */
+.phase-card {
+    width: 360px;
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    border-top: 3px solid var(--phase-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 60px;
+}
+.phase-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px calc(var(--phase-color) + 22); /* appended opacity via hack or JS */
+}
+
+/* Card Internal Layout */
+.card-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--phase-color);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+.card-title {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+}
+.card-meta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    align-items: center;
+}
+.badge-status {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.badge-status.completed { background: rgba(16, 185, 129, 0.13); color: var(--green); }
+.badge-status.in_progress { background: rgba(245, 158, 11, 0.13); color: var(--amber); }
+.badge-status.upcoming { background: rgba(100, 116, 139, 0.13); color: var(--muted); }
+
+.status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+.badge-status.in_progress .status-dot {
+    animation: dot-pulse 1.5s infinite;
+}
+
+.card-objective {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+/* Milestones */
+.milestones-list {
+    list-style: none;
+    margin-bottom: 24px;
+}
+.milestone-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    color: var(--text);
+}
+.milestone-item.done {
+    color: var(--muted);
+    text-decoration: line-through;
+}
+.milestone-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+.milestone-item.done .milestone-icon { color: var(--green); }
+.milestone-item:not(.done) .milestone-icon { color: var(--muted); }
+
+/* Deliverable */
+.deliverable-box {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Tooltip */
+.tooltip {
+    position: absolute;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: var(--text);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 100;
+    white-space: nowrap;
+}
+.tooltip.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-title { font-size: 2.5rem; }
+    .timeline-svg-container { display: none; }
+    .phase-card {
+        position: static !important; /* overrides JS inline styles */
+        width: 100%;
+        margin: 0 auto 30px;
+        transform: none !important;
+    }
+}
