@@ -71,7 +71,7 @@
 
     function podiumEmoji(rank) { return ['🥇','🥈','🥉'][rank] || ''; }
     function tierLabel(tier) {
-        return { btech:'B.Tech', mtech:'M.Tech', phd:'PhD' }[tier] || 'B.Tech';
+        return { btech:'B.Tech', mtech:'M.Tech', msc:'M.Sc', mba:'MBA', phd:'PhD' }[tier] || 'B.Tech';
     }
 
     // ── Render helpers ────────────────────────────────────────────────────────

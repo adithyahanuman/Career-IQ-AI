@@ -4,115 +4,89 @@
  * ai/rolesList.js
  *
  * Predefined placement role lists by course level.
- * Used by the benchmarking service to auto-select roles
- * based on the student's detected course (B.Tech, M.Tech, PhD).
+ * Tiers: btech | mtech | msc | mba | phd
  */
 
 const ROLES = {
+
   btech: [
-    // Software & IT
     'Software Engineer',
-    'Software Development Engineer (SDE)',
     'Full Stack Developer',
-    'Backend Developer',
-    'Frontend Developer',
-    'Systems Engineer',
-    'Product Engineer',
-    'DevOps Engineer',
-    'Cloud Engineer',
-    // Data & AI
-    'Data Analyst',
-    'Data Scientist',
     'Data Engineer',
+    'Data Scientist',
     'Machine Learning Engineer',
-    'AI Engineer',
-    'Business Intelligence Analyst',
-    // Cyber Security
-    'Cyber Security Analyst',
-    'Security Engineer',
-    'SOC Analyst',
-    // Electronics & Semiconductor
-    'Embedded Engineer',
-    'Firmware Engineer',
-    'VLSI Design Engineer',
-    'ASIC Verification Engineer',
-    'FPGA Engineer',
+    'DevOps Engineer',
+    'Cyber Security Engineer',
+    'Embedded Systems Engineer',
+    'VLSI Engineer',
     'Hardware Engineer',
-    // Electrical
-    'Electrical Design Engineer',
-    'Power Systems Engineer',
-    'Automation Engineer',
-    'Control Systems Engineer',
-    // Mechanical / Manufacturing
-    'Design Engineer',
-    'Manufacturing Engineer',
-    'Production Engineer',
-    'Quality Engineer',
-    'Automotive Engineer',
-    // Civil
-    'Structural Engineer',
-    'Site Engineer',
-    'Construction Engineer',
-    'BIM Engineer',
-    // Chemical / Process
+    'Electrical Engineer',
+    'Mechanical Engineer',
+    'Civil Engineer',
     'Process Engineer',
-    'Plant Engineer',
-    'Operations Engineer',
-    'Safety Engineer',
-    // Business & Consulting
+    'Biomedical Engineer',
     'Business Analyst',
-    'Technology Analyst',
-    'Associate Consultant',
-    'Technical Consultant',
-    'Operations Analyst',
-    'Product Analyst',
-    // Finance
+    'Consultant',
     'Financial Analyst',
-    'Risk Analyst',
-    // Graduate Programs
+    'Product Manager',
     'Graduate Engineer Trainee (GET)',
-    'Management Trainee',
   ],
 
   mtech: [
-    // Software & AI
-    'Senior Software Engineer',
+    // All B.Tech roles
+    'Software Engineer',
+    'Full Stack Developer',
+    'Data Engineer',
     'Data Scientist',
     'Machine Learning Engineer',
-    'AI Engineer',
-    'Cloud Engineer',
-    // Semiconductor
+    'DevOps Engineer',
+    'Cyber Security Engineer',
+    'Embedded Systems Engineer',
     'VLSI Engineer',
-    'ASIC Engineer',
-    'Physical Design Engineer',
-    'Embedded Engineer',
-    // Core Engineering
-    'Design Engineer',
-    'Systems Engineer',
-    'Automation Engineer',
+    'Hardware Engineer',
+    'Electrical Engineer',
+    'Mechanical Engineer',
+    'Civil Engineer',
     'Process Engineer',
-    // Research
-    'Research Engineer',
-    'R&D Engineer',
-    'Applied Scientist',
-    // Consulting
-    'Technology Consultant',
-    'Solutions Consultant',
+    'Biomedical Engineer',
+    'Business Analyst',
+    'Consultant',
+    'Financial Analyst',
+    'Product Manager',
+    'Graduate Engineer Trainee (GET)',
+    // M.Tech additions
+    'Cloud Architect',
+    'Research Scientist',
+    'Senior VLSI Engineer',
+    'Senior Embedded Systems Engineer',
+    'Advanced AI/ML Engineer',
+  ],
+
+  msc: [
+    'Data Scientist',
+    'Data Engineer',
+    'Bioinformatics Scientist',
+    'Research Scientist',
+    'Financial Analyst',
+    'Business Analyst',
+  ],
+
+  mba: [
+    'Business Analyst',
+    'Consultant',
+    'Product Manager',
+    'Financial Analyst',
+    'Marketing Analyst',
+    'HR Specialist',
+    'Supply Chain Analyst',
+    'Management Trainee',
   ],
 
   phd: [
-    // Research
     'Research Scientist',
-    'Applied Scientist',
-    'Research Engineer',
-    'R&D Engineer',
-    // Academia
-    'Assistant Professor',
-    'Postdoctoral Researcher',
-    // Industry
+    'Professor / Academic Researcher',
     'AI Research Scientist',
-    'Computational Scientist',
-    'Principal Engineer',
+    'Semiconductor Research Scientist',
     'Technology Specialist',
   ],
 };
@@ -120,20 +94,29 @@ const ROLES = {
 /**
  * Detect the course tier from free-text degree/course strings.
  *
- * @param {string} degreeText  - e.g. "B.Tech Computer Science", "M.Tech AI", "PhD"
- * @returns {'btech'|'mtech'|'phd'}
+ * @param {string} degreeText  - e.g. "B.Tech Computer Science", "M.Tech AI", "MBA", "PhD"
+ * @returns {'btech'|'mtech'|'msc'|'mba'|'phd'}
  */
 function detectCourseTier(degreeText) {
   if (!degreeText) return 'btech';
   const t = degreeText.toLowerCase();
 
-  if (t.includes('ph') || t.includes('phd') || t.includes('doctorate') || t.includes('doctor')) {
+  if (t.includes('ph.d') || t.includes('phd') || t.includes('doctorate') || t.includes('doctor of')) {
     return 'phd';
+  }
+  if (t.includes('mba') || t.includes('m.b.a') || t.includes('master of business')) {
+    return 'mba';
+  }
+  if (
+    t.includes('m.sc') || t.includes('msc') || t.includes('m.s.') ||
+    (t.includes('master') && (t.includes('science') || t.includes('sc')))
+  ) {
+    return 'msc';
   }
   if (
     t.includes('m.tech') || t.includes('mtech') || t.includes('m tech') ||
-    t.includes('m.e') || t.includes('m.s') || t.includes('msc') || t.includes('m.sc') ||
-    t.includes('master') || t.includes('pg') || t.includes('post grad')
+    t.includes('m.e') || t.includes('master of technology') || t.includes('master of engineering') ||
+    t.includes('pg') || t.includes('post grad') || t.includes('master')
   ) {
     return 'mtech';
   }
