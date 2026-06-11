@@ -1324,38 +1324,62 @@
     line-height: 1.5;
 }
 
-/* ── Light mode ── */
+/* ── Light mode overrides ── */
 [data-theme="light"] .piq-hero-card {
     background: var(--bg-card);
+    box-shadow: var(--shadow-md);
 }
 
 [data-theme="light"] .piq-metric-card {
     background: var(--bg-card);
-    box-shadow: 0 2px 12px rgba(175, 198, 255, 0.06);
+    box-shadow: var(--shadow-sm);
 }
 
 [data-theme="light"] .piq-card {
     background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
 }
 
 [data-theme="light"] .piq-role-item {
-    background: #0f1417;
+    background: var(--bg-secondary);
+    border-color: var(--border);
+}
+
+[data-theme="light"] .piq-role-item:hover {
+    background: rgba(0, 94, 208, 0.05);
+    border-color: rgba(0, 94, 208, 0.25);
 }
 
 [data-theme="light"] .piq-improvement-item {
-    background: #0f1417;
+    background: var(--bg-secondary);
+    border-color: var(--border);
 }
 
 [data-theme="light"] .piq-ai-prompt {
-    background: #0f1417;
+    background: var(--bg-secondary);
+    border-color: var(--border);
 }
 
 [data-theme="light"] .piq-ai-input {
-    background: #0f1417;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border-color: var(--border-input);
 }
 
 [data-theme="light"] .piq-upload-cta-btn {
-    background: #0f1417;
+    background: var(--bg-card);
+    border-color: var(--border);
+}
+
+[data-theme="light"] .piq-growth-panel {
+    background: var(--bg-secondary);
+    border-color: var(--border);
+}
+
+[data-theme="light"] .piq-missing-tag {
+    background: rgba(145, 0, 10, 0.06);
+    color: var(--red);
+    border-color: rgba(145, 0, 10, 0.15);
 }
 
 /* ── Responsive ── */

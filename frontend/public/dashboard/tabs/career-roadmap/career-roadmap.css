@@ -1,20 +1,34 @@
 /* ═══════════════════════════════════════════════════════════════
-   CareerIQ — Career Roadmap Tab  (visual style matching standalone)
+   CareerIQ — Career Roadmap Tab  (theme-aware)
    ═══════════════════════════════════════════════════════════════ */
 
-/* ── Design tokens (scoped) ───────────────────────────────────── */
+/* ── Design tokens (scoped, dark mode defaults from DESIGN.md) ── */
 #page-career-roadmap {
-    --rm-violet: #005ed0;
-    --rm-cyan:   #d9e2ff;
-    --rm-amber:  #ffb3b0;
-    --rm-green:  #c6c6c9;
-    --rm-surface:#0f1417;
-    --rm-glass:  rgba(255,255,255,0.04);
-    --rm-border: rgba(255,255,255,0.08);
-    --rm-text:   #dfe3e7;
-    --rm-dim:    #c5c6ca;
-    --rm-muted:  #838486;
-    --rm-radius: 14px;
+    --rm-violet:  var(--brand-dark, #005ed0);
+    --rm-cyan:    var(--brand-light, #d9e2ff);
+    --rm-amber:   var(--pink, #ffb3b0);
+    --rm-green:   var(--green, #4ade80);
+    --rm-surface: var(--bg-card, #1b2023);
+    --rm-glass:   var(--bg-glass, rgba(175, 198, 255, 0.04));
+    --rm-border:  var(--border, #44474a);
+    --rm-text:    var(--text-primary, #dfe3e7);
+    --rm-dim:     var(--text-secondary, #c5c6ca);
+    --rm-muted:   var(--text-muted, #838486);
+    --rm-radius:  14px;
+}
+
+/* Light mode token overrides */
+[data-theme="light"] #page-career-roadmap {
+    --rm-violet:  var(--brand, #005ed0);
+    --rm-cyan:    var(--brand-light, #afc6ff);
+    --rm-amber:   #a16207;
+    --rm-green:   var(--green, #1a7a4a);
+    --rm-surface: var(--bg-card, #ffffff);
+    --rm-glass:   rgba(0, 94, 208, 0.04);
+    --rm-border:  var(--border, #c6c6c9);
+    --rm-text:    var(--text-primary, #1a1c1e);
+    --rm-dim:     var(--text-secondary, #454749);
+    --rm-muted:   var(--text-muted, #5d5e61);
 }
 
 /* ── Form Wrap ────────────────────────────────────────────────── */
@@ -26,6 +40,7 @@
     margin-bottom: 0;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
+    transition: background 0.3s, border-color 0.3s;
 }
 
 .crm-form-header {
@@ -37,13 +52,14 @@
     font-weight: 800;
     color: var(--rm-text);
     margin: 0 0 6px;
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: var(--font-sans);
 }
 
 .crm-subtitle {
     font-size: 14px;
     color: var(--rm-muted);
     line-height: 1.5;
+    font-family: var(--font-sans);
 }
 
 .crm-field {
@@ -58,24 +74,29 @@
     text-transform: uppercase;
     letter-spacing: 0.6px;
     margin-bottom: 8px;
+    font-family: var(--font-sans);
 }
 
 .crm-field input {
     width: 100%;
     padding: 13px 16px;
-    background: rgba(15, 20, 23, 0.6);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: var(--rm-surface);
+    border: 1px solid var(--rm-border);
     border-radius: 10px;
     color: var(--rm-text);
     font-size: 15px;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-sans);
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.3s;
     box-sizing: border-box;
 }
 
+.crm-field input::placeholder {
+    color: var(--rm-muted);
+}
+
 .crm-field input:focus {
-    border-color: var(--rm-violet);
+    border-color: var(--brand, #005ed0);
     box-shadow: 0 0 0 3px rgba(0, 94, 208, 0.15);
 }
 
@@ -84,6 +105,7 @@
     color: var(--rm-muted);
     margin-top: 10px;
     line-height: 1.5;
+    font-family: var(--font-sans);
 }
 
 .crm-generate-btn {
@@ -91,8 +113,8 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(135deg, var(--rm-violet), var(--rm-cyan));
-    color: #dfe3e7;
+    background: linear-gradient(135deg, var(--brand-dark, #005ed0), var(--brand, #afc6ff));
+    color: var(--on-brand, #ffffff);
     font-weight: 700;
     font-size: 15px;
     padding: 14px 36px;
@@ -100,10 +122,10 @@
     border: none;
     cursor: pointer;
     transition: opacity 0.2s, transform 0.15s;
-    box-shadow: 0 4px 24px rgba(0, 94, 208, 0.35);
-    font-family: 'Space Grotesk', sans-serif;
+    box-shadow: 0 4px 24px rgba(0, 94, 208, 0.28);
+    font-family: var(--font-sans);
 }
-.crm-generate-btn:hover  { opacity: 0.9; transform: translateY(-2px); }
+.crm-generate-btn:hover   { opacity: 0.9; transform: translateY(-2px); }
 .crm-generate-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
 /* ── Visual Output Wrapper ────────────────────────────────────── */
@@ -136,9 +158,9 @@
     z-index: 0;
     animation: crmFloat 10s infinite alternate ease-in-out;
 }
-.crm-orb.violet { top: -40px; left: 8%;  width: 280px; height: 280px; background: var(--rm-violet); }
-.crm-orb.cyan   { bottom: -80px; right: 8%; width: 360px; height: 360px; background: var(--rm-cyan); animation-delay: -3s; }
-.crm-orb.amber  { top: 30%; left: 38%; width: 220px; height: 220px; background: var(--rm-amber); animation-delay: -6s; }
+.crm-orb.violet { top: -40px; left: 8%;  width: 280px; height: 280px; background: var(--brand-dark, #005ed0); }
+.crm-orb.cyan   { bottom: -80px; right: 8%; width: 360px; height: 360px; background: var(--brand, #afc6ff); animation-delay: -3s; }
+.crm-orb.amber  { top: 30%; left: 38%; width: 220px; height: 220px; background: var(--pink, #ffb3b0); animation-delay: -6s; }
 
 @keyframes crmFloat {
     0%   { transform: translateY(0); }
@@ -163,18 +185,20 @@
     font-size: 0.85rem;
     font-weight: 500;
     margin-bottom: 24px;
+    font-family: var(--font-sans);
+    transition: background 0.3s, border-color 0.3s, color 0.3s;
 }
 
 .crm-hero-title {
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 800;
-    background: linear-gradient(135deg, var(--rm-violet), var(--rm-cyan));
+    background: linear-gradient(135deg, var(--brand-dark, #005ed0), var(--brand, #afc6ff));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     margin-bottom: 12px;
     letter-spacing: -0.5px;
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: var(--font-sans);
     line-height: 1.15;
 }
 
@@ -182,6 +206,7 @@
     font-size: 1rem;
     color: var(--rm-dim);
     margin-bottom: 28px;
+    font-family: var(--font-sans);
 }
 
 .crm-tags-row {
@@ -202,6 +227,8 @@
     border: 1px solid var(--rm-border);
     background: transparent;
     color: var(--rm-dim);
+    font-family: var(--font-sans);
+    transition: border-color 0.3s, color 0.3s;
 }
 
 /* Overall progress */
@@ -217,6 +244,7 @@
     color: var(--rm-dim);
     margin-bottom: 7px;
     font-weight: 500;
+    font-family: var(--font-sans);
 }
 .crm-progress-track {
     height: 6px;
@@ -227,7 +255,7 @@
 .crm-progress-fill {
     height: 100%;
     width: 0;
-    background: linear-gradient(90deg, var(--rm-violet), var(--rm-cyan));
+    background: linear-gradient(90deg, var(--brand-dark, #005ed0), var(--brand, #afc6ff));
     border-radius: 3px;
     transition: width 1.2s ease;
 }
@@ -266,13 +294,12 @@
     border-radius: var(--rm-radius);
     padding: 24px;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-    border-top: 3px solid var(--phase-color, var(--rm-violet));
-
-    /* Scroll-reveal: start hidden */
+    box-shadow: var(--shadow-lg, 0 10px 30px rgba(0,0,0,0.2));
+    border-top: 3px solid var(--phase-color, var(--brand-dark, #005ed0));
+    transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease,
+                background 0.3s, border-color 0.3s;
     opacity: 0;
     transform: translateY(40px);
-    transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease;
 }
 .crm-phase-card.revealed {
     opacity: 1;
@@ -280,7 +307,7 @@
 }
 .crm-phase-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow-xl, 0 20px 40px rgba(0,0,0,0.28));
 }
 
 .crm-card-eyebrow {
@@ -290,9 +317,10 @@
     font-size: 0.78rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: var(--phase-color, var(--rm-violet));
+    color: var(--phase-color, var(--brand-dark, #005ed0));
     margin-bottom: 8px;
     letter-spacing: 1.2px;
+    font-family: var(--font-sans);
 }
 
 .crm-card-title {
@@ -300,7 +328,7 @@
     font-weight: 800;
     color: var(--rm-text);
     margin-bottom: 12px;
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: var(--font-sans);
 }
 
 .crm-card-meta {
@@ -321,6 +349,8 @@
     border: 1px solid var(--rm-border);
     background: var(--rm-surface);
     color: var(--rm-text);
+    font-family: var(--font-sans);
+    transition: background 0.3s, border-color 0.3s, color 0.3s;
 }
 
 .crm-status-badge {
@@ -331,10 +361,11 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
+    font-family: var(--font-sans);
 }
 .crm-status-badge.in-progress { background: rgba(255, 179, 176, 0.12); color: var(--rm-amber); }
 .crm-status-badge.upcoming    { background: rgba(131, 132, 134, 0.12); color: var(--rm-muted); }
-.crm-status-badge.done        { background: rgba(198, 198, 201, 0.12);  color: var(--rm-green); }
+.crm-status-badge.done        { background: rgba(74, 222, 128, 0.12);  color: var(--rm-green); }
 
 .crm-status-dot {
     width: 6px; height: 6px;
@@ -354,6 +385,7 @@
     color: var(--rm-dim);
     line-height: 1.6;
     margin-bottom: 18px;
+    font-family: var(--font-sans);
 }
 
 .crm-card-phase-progress {
@@ -371,6 +403,7 @@
     font-weight: 700;
     color: var(--rm-muted);
     margin-bottom: 10px;
+    font-family: var(--font-sans);
 }
 
 .crm-milestones-list {
@@ -385,6 +418,7 @@
     font-size: 0.83rem;
     margin-bottom: 7px;
     color: var(--rm-text);
+    font-family: var(--font-sans);
 }
 .crm-milestone-icon { flex-shrink: 0; margin-top: 2px; color: var(--rm-muted); }
 
@@ -396,6 +430,7 @@
     border-radius: var(--rm-radius);
     text-align: center;
     margin-top: 60px;
+    transition: background 0.3s, border-color 0.3s;
 }
 .crm-summary-footer p {
     max-width: 580px;
@@ -403,11 +438,13 @@
     color: var(--rm-dim);
     font-size: 0.95rem;
     line-height: 1.6;
+    font-family: var(--font-sans);
 }
 .crm-summary-credit {
     font-size: 12px;
     color: var(--rm-muted);
     margin-top: 24px;
+    font-family: var(--font-sans);
 }
 
 /* ── Responsive ───────────────────────────────────────────────── */
