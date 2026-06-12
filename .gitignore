@@ -1,6 +1,7 @@
 # ─── Dependencies ────────────────────────────────────────────────────────────
 node_modules/
 backend/node_modules/
+frontend/node_modules/
 
 # ─── Environment & Secrets (NEVER commit these) ───────────────────────────────
 .env
@@ -10,17 +11,26 @@ backend/node_modules/
 backend/.env
 backend/.env.local
 backend/.env.production
+**/.env
 
 # Firebase service account key (contains private key)
 serviceAccountKey.json
 backend/serviceAccountKey.json
 **/serviceAccountKey*.json
 
-# ─── Temporary utility/scratch files ─────────────────────────────────────────
+# ─── Scratch / Test / Debug scripts ──────────────────────────────────────────
 fix_*.js
 recover.js
-*.txt
 _debug_*.js
+check_*.js
+test_*.js
+alter_db.js
+invalidate_cache.js
+backend/src/check.js
+
+# ─── Text / log dumps ────────────────────────────────────────────────────────
+*.txt
+*.log
 
 # ─── OS files ────────────────────────────────────────────────────────────────
 .DS_Store
@@ -35,9 +45,13 @@ build/
 # ─── IDE & Tooling ───────────────────────────────────────────────────────────
 .continue/
 .vscode/
+.kiro/
 .editorconfig
 tools/
 docs/
 
-# ─── Legacy/Backup ───────────────────────────────────────────────────────────
+# ─── Legacy / Versioned backups ──────────────────────────────────────────────
 frontend/public/dashboard.html
+frontend/public/dashboard/tabs/benchmarking/benchmarking_v*.js
+frontend/public/dashboard/tabs/benchmarking/benchmarking_v*.css
+DESIGN\ (1).md
