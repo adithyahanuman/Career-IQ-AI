@@ -1,42 +1,41 @@
-/* ── Master Analytics UI ─────────────────────────────────────── */
+/* ── Master Analytics UI ────────────────────────────────────────────── */
                             :root {
-                                /* Dark mode — from DESIGN.md */
-                                --ra-bg: var(--bg-primary, #0f1417);
-                                --ra-card: var(--bg-card, #1b2023);
-                                --ra-elevated: var(--bg-secondary, #171c1f);
-                                --ra-blue: #afc6ff;     /* secondary */
-                                --ra-emerald: #4ade80;
-                                --ra-amber: #f59e0b;
-                                --ra-rose: #ffb4ab;    /* error */
-                                --ra-purple: #d9e2ff;  /* secondary-fixed */
-                                --ra-text: var(--text-primary, #dfe3e7);
-                                --ra-muted: var(--text-secondary, #c5c6ca);
-                                --ra-dim: var(--text-muted, #838486);
-                                --ra-border: #44474a;   /* outline-variant */
-                                --ra-border-h: #8f9194; /* outline */
+                                /* Dark mode — Rose Gold */
+                                --ra-bg: var(--bg-primary, #1a1218);
+                                --ra-card: var(--bg-card, #281d26);
+                                --ra-elevated: var(--bg-secondary, #221720);
+                                --ra-blue: #f4a5b0;      /* rose (brand) */
+                                --ra-emerald: #86efac;   /* green */
+                                --ra-amber: #fbbf24;     /* amber */
+                                --ra-rose: #ffb3b0;      /* error/red */
+                                --ra-purple: #ffd7de;    /* light rose tint */
+                                --ra-text: var(--text-primary, #f4eff2);
+                                --ra-muted: var(--text-secondary, #d4bfca);
+                                --ra-dim: var(--text-muted, #9a7f92);
+                                --ra-border: #4a3545;
+                                --ra-border-h: #7a5a72;
                                 --ra-radius: 8px;
                                 --ra-ease: cubic-bezier(0.4, 0, 0.2, 1);
                             }
                             /* ── Light mode ra-* overrides ── */
                             [data-theme="light"] {
-                                /* Light mode — DESIGN.md inverse tokens */
-                                --ra-bg: #f8f9fa;
+                                /* Light mode — Rose Gold inverse tokens */
+                                --ra-bg: #fff8f9;
                                 --ra-card: #ffffff;
-                                --ra-elevated: #eef0f2;
-                                --ra-blue: #005ed0;    /* secondary-container */
-                                --ra-emerald: #1a7a4a;
-                                --ra-amber: #a16207;
-                                --ra-rose: #93000a;    /* error-container */
-                                --ra-purple: #004398;  /* on-secondary-fixed-variant */
-                                --ra-text: #1a1c1e;    /* on-primary-fixed */
-                                --ra-muted: #454749;   /* on-primary-fixed-variant */
-                                --ra-dim: #5d5e61;     /* inverse-primary */
-                                --ra-border: #c6c6c9;  /* primary-fixed-dim */
-                                --ra-border-h: #838486;
+                                --ra-elevated: #fdeef1;
+                                --ra-blue: #c2185b;      /* deep rose (brand) */
+                                --ra-emerald: #166534;
+                                --ra-amber: #92400e;
+                                --ra-rose: #a01040;
+                                --ra-purple: #880e4f;
+                                --ra-text: #1f0f15;
+                                --ra-muted: #5c3347;
+                                --ra-dim: #9a6080;
+                                --ra-border: #f0c8d0;
+                                --ra-border-h: #c2849a;
                             }
                             [data-theme="light"] .ra-section-card {
                                 background: var(--bg-card);
-                                border-color: #c6c6c9;
                                 box-shadow: 0 2px 12px rgba(26, 28, 30, 0.07);
                             }
                             [data-theme="light"] .ra-overview-hero {

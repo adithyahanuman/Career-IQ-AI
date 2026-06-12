@@ -219,9 +219,9 @@
       document.getElementById('logoutBtn').addEventListener('click', async () => {
         try {
           await Session.destroy();
-          window.location.href = 'index.html';
+          window.location.href = '../auth/login.html';
         } catch (err) {
-          window.location.href = 'index.html';
+          window.location.href = '../auth/login.html';
         }
       });
 

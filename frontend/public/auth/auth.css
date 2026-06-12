@@ -6,62 +6,63 @@
 /* ---- Reuse design tokens from main site ---- */
 :root {
   /* ═══════════════════════════════════════════════
-     DARK MODE — Midnight Slate & Neon Cobalt
-     Source: DESIGN.md
+     DARK MODE — Rose Gold
+     Deep charcoal surfaces, rose/gold brand accents
      ═══════════════════════════════════════════════ */
 
   /* Surfaces */
-  --bg-primary:        #0f1417; /* surface / background */
-  --bg-secondary:      #171c1f; /* surface-container-low */
-  --bg-card:           #1b2023; /* surface-container */
-  --bg-card-hover:     #262b2e; /* surface-container-high */
-  --bg-highest:        #313539; /* surface-container-highest */
-  --bg-lowest:         #0a0f12; /* surface-container-lowest */
+  --bg-primary:        #1a1218;
+  --bg-secondary:      #221720;
+  --bg-card:           #281d26;
+  --bg-card-hover:     #32252f;
+  --bg-highest:        #3d2e39;
+  --bg-lowest:         #130d11;
+  --bg-bright:         #3d2e39;
 
-  --bg-glass:          rgba(175, 198, 255, 0.04);
-  --bg-glass-hover:    rgba(175, 198, 255, 0.08);
-  --bg-nav:            rgba(15, 20, 23, 0.85);
-  --bg-nav-scrolled:   rgba(10, 15, 18, 0.97);
+  /* Glass overlays */
+  --bg-glass:          rgba(244, 165, 176, 0.05);
+  --bg-glass-hover:    rgba(244, 165, 176, 0.10);
+  --bg-nav:            rgba(26, 18, 24, 0.88);
+  --bg-nav-scrolled:   rgba(19, 13, 17, 0.97);
 
   /* Borders */
-  --border:            #44474a; /* outline-variant */
-  --border-strong:     #8f9194; /* outline */
-  --border-input:      #44474a;
+  --border:            #4a3545;
+  --border-strong:     #7a5a72;
+  --border-input:      #4a3545;
 
   /* Text */
-  --text-primary:      #dfe3e7; /* on-surface */
-  --text-secondary:    #c5c6ca; /* on-surface-variant */
-  --text-muted:        #838486; /* on-primary-container */
-  --text-inverse:      #2c3134; /* inverse-on-surface */
-  --text-error:        #ffb4ab; /* error */
-  --text-success:      #4ade80;
+  --text-primary:      #f4eff2;
+  --text-secondary:    #d4bfca;
+  --text-muted:        #9a7f92;
+  --text-inverse:      #2a1f27;
+  --text-error:        #ffb3b0;
+  --text-success:      #86efac;
 
-  /* Brand — Neon Cobalt */
-  --brand:             #afc6ff; /* secondary */
-  --brand-light:       #d9e2ff; /* secondary-fixed */
-  --brand-dark:        #005ed0; /* secondary-container */
-  --on-brand:          #002d6c; /* on-secondary */
+  /* Brand — Rose Gold */
+  --brand:             #f4a5b0;  /* rose on dark */
+  --brand-light:       #ffd7de;  /* lighter rose tint */
+  --brand-dark:        #c2185b;  /* deep rose/magenta */
+  --on-brand:          #2a0a14;  /* text ON brand bg */
 
-  /* Semantic */
-  --green:             #4ade80;
-  --orange:            #f59e0b;
-  --red:               #ffb4ab; /* error */
-  --pink:              #ffb3b0; /* tertiary */
-  --lime:              #d9e2ff;
-  --cyan:              #afc6ff;
+  /* Semantic colors */
+  --green:             #86efac;
+  --orange:            #fbbf24;
+  --red:               #ffb3b0;
+  --pink:              #f4a5b0;
+  --on-red:            #3b0012;
 
   /* Gradients */
-  --gradient-brand:    linear-gradient(135deg, #afc6ff 0%, #005ed0 100%);
-  --gradient-text:     linear-gradient(135deg, #d9e2ff 0%, #afc6ff 50%, #005ed0 100%);
-  --gradient-hero:     radial-gradient(ellipse at top, rgba(175, 198, 255, 0.12) 0%, transparent 65%);
+  --gradient-brand:    linear-gradient(135deg, #f4a5b0 0%, #c2185b 100%);
+  --gradient-text:     linear-gradient(135deg, #ffd7de 0%, #f4a5b0 50%, #c2185b 100%);
+  --gradient-hero:     radial-gradient(ellipse at top, rgba(244, 165, 176, 0.14) 0%, transparent 65%);
 
-  /* Elevation — Tonal */
+  /* Elevation */
   --shadow-sm:         0 0 0 1px rgba(255, 255, 255, 0.06);
-  --shadow-md:         0 0 0 1px rgba(255, 255, 255, 0.10);
-  --shadow-lg:         0 0 0 1px rgba(255, 255, 255, 0.10), 0 8px 24px rgba(0,0,0,0.45);
-  --shadow-xl:         0 0 0 1px rgba(255, 255, 255, 0.10), 0 16px 40px rgba(0,0,0,0.60);
-  --shadow-glow:       0 0 28px rgba(175, 198, 255, 0.18);
-  --shadow-glow-sm:    0 0 14px rgba(175, 198, 255, 0.12);
+  --shadow-md:         0 0 0 1px rgba(255, 255, 255, 0.09);
+  --shadow-lg:         0 0 0 1px rgba(255, 255, 255, 0.09), 0 8px 24px rgba(0,0,0,0.5);
+  --shadow-xl:         0 0 0 1px rgba(255, 255, 255, 0.09), 0 16px 40px rgba(0,0,0,0.65);
+  --shadow-glow:       0 0 28px rgba(244, 165, 176, 0.22);
+  --shadow-glow-sm:    0 0 14px rgba(244, 165, 176, 0.15);
 
   /* Shape */
   --radius-xs:         2px;
@@ -71,6 +72,7 @@
   --radius-xl:         16px;
   --radius-full:       9999px;
 
+  /* Layout */
   --nav-height:        64px;
 
   /* Motion */
@@ -86,62 +88,63 @@
 
 [data-theme="light"] {
   /* ═══════════════════════════════════════════════
-     LIGHT MODE — Midnight Slate & Neon Cobalt
-     Derived via MD3 inverse / fixed tokens in DESIGN.md
+     LIGHT MODE — Rose Gold
+     Warm white surfaces, deep rose brand
      ═══════════════════════════════════════════════ */
 
   /* Surfaces */
-  --bg-primary:        #f8f9fa;
-  --bg-secondary:      #eef0f2;
+  --bg-primary:        #fff8f9;
+  --bg-secondary:      #fdeef1;
   --bg-card:           #ffffff;
-  --bg-card-hover:     #f2f4f6;
-  --bg-highest:        #e8eaed;
+  --bg-card-hover:     #fdf2f4;
+  --bg-highest:        #f9e4e8;
   --bg-lowest:         #ffffff;
+  --bg-bright:         #ffffff;
 
-  --bg-glass:          rgba(0, 94, 208, 0.04);
-  --bg-glass-hover:    rgba(0, 94, 208, 0.08);
-  --bg-nav:            rgba(255, 255, 255, 0.88);
-  --bg-nav-scrolled:   rgba(255, 255, 255, 0.97);
+  /* Glass overlays */
+  --bg-glass:          rgba(194, 24, 91, 0.04);
+  --bg-glass-hover:    rgba(194, 24, 91, 0.08);
+  --bg-nav:            rgba(255, 248, 249, 0.90);
+  --bg-nav-scrolled:   rgba(255, 248, 249, 0.98);
 
   /* Borders */
-  --border:            #c6c6c9; /* primary-fixed-dim */
-  --border-strong:     #838486; /* on-primary-container */
-  --border-input:      #c6c6c9;
+  --border:            #f0c8d0;
+  --border-strong:     #c2849a;
+  --border-input:      #f0c8d0;
 
   /* Text */
-  --text-primary:      #1a1c1e; /* on-primary-fixed */
-  --text-secondary:    #454749; /* on-primary-fixed-variant */
-  --text-muted:        #5d5e61; /* inverse-primary */
-  --text-inverse:      #dfe3e7;
-  --text-error:        #93000a; /* error-container */
-  --text-success:      #1a7a4a;
+  --text-primary:      #1f0f15;
+  --text-secondary:    #5c3347;
+  --text-muted:        #9a6080;
+  --text-inverse:      #f4eff2;
+  --text-error:        #a01040;
+  --text-success:      #166534;
 
-  /* Brand */
-  --brand:             #005ed0; /* secondary-container */
-  --brand-light:       #afc6ff; /* secondary-fixed-dim */
-  --brand-dark:        #001a43; /* on-secondary-fixed */
+  /* Brand — deep rose on light */
+  --brand:             #c2185b;
+  --brand-light:       #f4a5b0;
+  --brand-dark:        #880e4f;
   --on-brand:          #ffffff;
 
-  /* Semantic */
-  --green:             #1a7a4a;
-  --orange:            #a16207;
-  --red:               #93000a; /* error-container */
-  --pink:              #8c1520; /* on-tertiary-fixed-variant */
-  --lime:              #d9e2ff;
-  --cyan:              #afc6ff;
+  /* Semantic colors */
+  --green:             #166534;
+  --orange:            #92400e;
+  --red:               #a01040;
+  --pink:              #c2185b;
+  --on-red:            #ffffff;
 
   /* Gradients */
-  --gradient-brand:    linear-gradient(135deg, #005ed0 0%, #004398 100%);
-  --gradient-text:     linear-gradient(135deg, #005ed0 0%, #002d6c 100%);
-  --gradient-hero:     radial-gradient(ellipse at top, rgba(0, 94, 208, 0.08) 0%, transparent 65%);
+  --gradient-brand:    linear-gradient(135deg, #c2185b 0%, #880e4f 100%);
+  --gradient-text:     linear-gradient(135deg, #c2185b 0%, #880e4f 100%);
+  --gradient-hero:     radial-gradient(ellipse at top, rgba(194, 24, 91, 0.07) 0%, transparent 65%);
 
   /* Elevation */
-  --shadow-sm:         0 1px 3px rgba(26, 28, 30, 0.08);
-  --shadow-md:         0 4px 12px rgba(26, 28, 30, 0.10);
-  --shadow-lg:         0 8px 28px rgba(26, 28, 30, 0.12);
-  --shadow-xl:         0 16px 48px rgba(26, 28, 30, 0.14);
-  --shadow-glow:       0 0 24px rgba(0, 94, 208, 0.16);
-  --shadow-glow-sm:    0 0 12px rgba(0, 94, 208, 0.12);
+  --shadow-sm:         0 1px 3px rgba(31, 15, 21, 0.08);
+  --shadow-md:         0 4px 12px rgba(31, 15, 21, 0.10);
+  --shadow-lg:         0 8px 28px rgba(31, 15, 21, 0.12);
+  --shadow-xl:         0 16px 48px rgba(31, 15, 21, 0.14);
+  --shadow-glow:       0 0 24px rgba(194, 24, 91, 0.18);
+  --shadow-glow-sm:    0 0 12px rgba(194, 24, 91, 0.12);
 }
 
 

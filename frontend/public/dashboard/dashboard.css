@@ -321,6 +321,12 @@
                 background: var(--bg-glass-hover);
             }
 
+            .theme-toggle-btn .sun-icon { display: block; }
+            .theme-toggle-btn .moon-icon { display: none; }
+
+            [data-theme="light"] .theme-toggle-btn .sun-icon { display: none; }
+            [data-theme="light"] .theme-toggle-btn .moon-icon { display: block; }
+
             /* Main Container & Top Nav bar */
             .content-area {
                 flex: 1;

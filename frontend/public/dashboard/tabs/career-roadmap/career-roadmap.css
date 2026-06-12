@@ -2,33 +2,33 @@
    CareerIQ — Career Roadmap Tab  (theme-aware)
    ═══════════════════════════════════════════════════════════════ */
 
-/* ── Design tokens (scoped, dark mode defaults from DESIGN.md) ── */
+/* ── Design tokens (scoped, dark mode defaults — Rose Gold) ── */
 #page-career-roadmap {
-    --rm-violet:  var(--brand-dark, #005ed0);
-    --rm-cyan:    var(--brand-light, #d9e2ff);
-    --rm-amber:   var(--pink, #ffb3b0);
-    --rm-green:   var(--green, #4ade80);
-    --rm-surface: var(--bg-card, #1b2023);
-    --rm-glass:   var(--bg-glass, rgba(175, 198, 255, 0.04));
-    --rm-border:  var(--border, #44474a);
-    --rm-text:    var(--text-primary, #dfe3e7);
-    --rm-dim:     var(--text-secondary, #c5c6ca);
-    --rm-muted:   var(--text-muted, #838486);
+    --rm-violet:  var(--brand-dark, #c2185b);
+    --rm-cyan:    var(--brand-light, #ffd7de);
+    --rm-amber:   var(--orange, #fbbf24);
+    --rm-green:   var(--green, #86efac);
+    --rm-surface: var(--bg-card, #281d26);
+    --rm-glass:   var(--bg-glass, rgba(244, 165, 176, 0.05));
+    --rm-border:  var(--border, #4a3545);
+    --rm-text:    var(--text-primary, #f4eff2);
+    --rm-dim:     var(--text-secondary, #d4bfca);
+    --rm-muted:   var(--text-muted, #9a7f92);
     --rm-radius:  14px;
 }
 
 /* Light mode token overrides */
 [data-theme="light"] #page-career-roadmap {
-    --rm-violet:  var(--brand, #005ed0);
-    --rm-cyan:    var(--brand-light, #afc6ff);
-    --rm-amber:   #a16207;
-    --rm-green:   var(--green, #1a7a4a);
+    --rm-violet:  var(--brand, #c2185b);
+    --rm-cyan:    var(--brand-light, #f4a5b0);
+    --rm-amber:   #92400e;
+    --rm-green:   var(--green, #166534);
     --rm-surface: var(--bg-card, #ffffff);
-    --rm-glass:   rgba(0, 94, 208, 0.04);
-    --rm-border:  var(--border, #c6c6c9);
-    --rm-text:    var(--text-primary, #1a1c1e);
-    --rm-dim:     var(--text-secondary, #454749);
-    --rm-muted:   var(--text-muted, #5d5e61);
+    --rm-glass:   rgba(194, 24, 91, 0.04);
+    --rm-border:  var(--border, #f0c8d0);
+    --rm-text:    var(--text-primary, #1f0f15);
+    --rm-dim:     var(--text-secondary, #5c3347);
+    --rm-muted:   var(--text-muted, #9a6080);
 }
 
 /* ── Form Wrap ────────────────────────────────────────────────── */
