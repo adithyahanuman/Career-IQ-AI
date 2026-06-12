@@ -247,7 +247,8 @@
         vy: (Math.random() - 0.5) * 0.3,
         r: Math.random() * 1.5 + 0.5,
         opacity: Math.random() * 0.4 + 0.1,
-        color: Math.random() > 0.5 ? '212,245,0' : '163,230,53'
+        // use two rose-gold variants
+        color: Math.random() > 0.5 ? '244,165,176' : '255,215,222'
       });
 
       const init = () => {
@@ -277,7 +278,10 @@
               ctx.beginPath();
               ctx.moveTo(a.x, a.y);
               ctx.lineTo(b.x, b.y);
-              ctx.strokeStyle = `rgba(175, 198, 255, ${0.08 * (1 - dist / 120)})`;
+              // read the live CSS variable for line colour
+              const lineRgb = getComputedStyle(document.documentElement)
+                .getPropertyValue('--particle-line-rgb').trim() || '244, 165, 176';
+              ctx.strokeStyle = `rgba(${lineRgb}, ${0.08 * (1 - dist / 120)})`;
               ctx.lineWidth = 0.5;
               ctx.stroke();
             }
@@ -461,17 +465,26 @@
   const ReadingProgress = {
     init() {
       const bar = document.createElement('div');
+      bar.id = 'readingProgressBar';
       bar.style.cssText = `
         position: fixed;
         top: 0; left: 0;
         height: 3px;
-        background: linear-gradient(90deg, #005ed0, #d9e2ff, #d9e2ff);
+        background: var(--progress-bar-bg, linear-gradient(90deg, #c2185b, #ffd7de, #f4a5b0));
         z-index: 9999;
         width: 0%;
         transition: width 0.1s linear;
-        box-shadow: 0 0 8px rgba(0, 94, 208, 0.6);
+        box-shadow: 0 0 8px rgba(var(--progress-glow-rgb, 194, 24, 91), 0.6);
       `;
       document.body.appendChild(bar);
+
+      // Keep glow in sync with theme changes
+      const syncGlow = () => {
+        const rgb = getComputedStyle(document.documentElement)
+          .getPropertyValue('--progress-glow-rgb').trim() || '194, 24, 91';
+        bar.style.boxShadow = `0 0 8px rgba(${rgb}, 0.6)`;
+      };
+      new MutationObserver(syncGlow).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
       window.addEventListener('scroll', () => {
         const scrollTop = window.scrollY;
@@ -533,14 +546,14 @@
         width: 52px;
         height: 52px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #005ed0, #afc6ff);
-        color: #dfe3e7;
+        background: var(--chatbot-bg, linear-gradient(135deg, #c2185b, #f4a5b0));
+        color: var(--on-brand, #fff);
         border: none;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 20px rgba(175, 198, 255, 0.45);
+        box-shadow: 0 4px 20px rgba(var(--chatbot-glow-rgb, 244,165,176), 0.45);
         z-index: 900;
         transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
         font-family: var(--font-sans);
@@ -553,8 +566,8 @@
           right: 60px;
           top: 50%;
           transform: translateY(-50%);
-          background: var(--bg-card, #1b2023);
-          color: var(--text-primary, #dfe3e7);
+          background: var(--bg-card, #281d26);
+          color: var(--text-primary, #f4eff2);
           border: 1px solid var(--border, rgba(255,255,255,0.08));
           border-radius: 8px;
           padding: 6px 12px;
@@ -567,7 +580,7 @@
           box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         #chatBotBtn:hover .chat-tooltip { opacity: 1; }
-        #chatBotBtn:hover { transform: translateY(-4px) scale(1.1); box-shadow: 0 8px 28px rgba(175, 198, 255, 0.55); }
+        #chatBotBtn:hover { transform: translateY(-4px) scale(1.1); box-shadow: 0 8px 28px rgba(var(--chatbot-glow-rgb, 244,165,176), 0.55); }
         #chatBotBtn:active { transform: scale(0.95); }
       `;
       document.head.appendChild(tooltip);
@@ -637,7 +650,9 @@
     init() {
       document.querySelectorAll('.pricing-card').forEach(card => {
         card.addEventListener('mouseenter', () => {
-          card.style.boxShadow = '0 20px 60px rgba(0, 94, 208, 0.15), 0 0 0 1px rgba(0, 94, 208, 0.2)';
+          card.style.boxShadow = getComputedStyle(document.documentElement)
+            .getPropertyValue('--pricing-hover-shadow').trim() ||
+            '0 20px 60px rgba(194, 24, 91, 0.18), 0 0 0 1px rgba(194, 24, 91, 0.25)';
         });
         card.addEventListener('mouseleave', () => {
           card.style.boxShadow = '';

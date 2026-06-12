@@ -51,7 +51,7 @@
 
     function gradeColor(grade) {
         if (!grade) return '#9a6080';
-        const g = grade.replace('−','-');
+        const g = grade.replace('-', '-');
         if (g.startsWith('A')) return '#e8a0b0';
         if (g === 'B+') return '#f4a5b0';
         if (g === 'B')  return '#f4a5b0';
@@ -230,7 +230,7 @@
                     ${top3.slice(0,3).map((r, i) => {
                         const color = gradeColor(r.grade);
                         return `
-                        <div class="bench-podium-card rank-${i+1}" style="border-color:${color}22;">
+                        <div class="bench-podium-card rank-${i+1}" style="border-color:${color}22; cursor:pointer;" onclick="window.benchExpandCard('brc-${r.role_name.replace(/\W/g,'_')}')">
                             <div class="bench-podium-rank">${podiumEmoji(i)}</div>
                             <div class="bench-podium-role">${r.role_name}</div>
                             <div class="bench-podium-score-row">
@@ -326,8 +326,8 @@
 
     // ── Interactions ──────────────────────────────────────────────────────────
     window.benchExpandCard = (id) => {
-        const r = allResults.find(x => `brc-${x.role_name.replace(/\\W/g,'_')}` === id);
-        if (!r) return;
+        const r = allResults.find(x => `brc-${x.role_name.replace(/\W/g,'_')}` === id);
+        if (!r) { alert('Card data not found!'); return; }
         
         const det = r.detailed_analysis || {};
         const isFresh = Object.keys(det).length > 0;
@@ -422,7 +422,7 @@
 
         const overlay = document.getElementById('benchModalOverlay');
         const content = document.getElementById('benchModalContent');
-        if (overlay && content) {
+        if (!overlay) alert('Modal element missing from page!'); if (overlay && content) {
             content.innerHTML = contentHtml;
             overlay.classList.add('active');
         }

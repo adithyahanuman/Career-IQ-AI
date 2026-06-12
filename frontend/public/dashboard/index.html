@@ -14,16 +14,16 @@
                 if (saved) document.documentElement.setAttribute('data-theme', saved);
             })();
         </script>
-        <link rel="stylesheet" href="../auth/auth.css" />
+        <link rel="stylesheet" href="../auth/auth.css?v=12" />
         <!-- Dashboard layout & sidebar styles -->
-        <link rel="stylesheet" href="dashboard.css" />
+        <link rel="stylesheet" href="dashboard.css?v=12" />
         <!-- Tab-specific styles -->
-        <link rel="stylesheet" href="tabs/resume-analysis/resume-analysis.css" />
-        <link rel="stylesheet" href="tabs/career-roadmap/career-roadmap.css" />
+        <link rel="stylesheet" href="tabs/resume-analysis/resume-analysis.css?v=12" />
+        <link rel="stylesheet" href="tabs/career-roadmap/career-roadmap.css?v=12" />
         <!-- PlacementIQ Dashboard Styles -->
-        <link rel="stylesheet" href="placementiq.css" />
+        <link rel="stylesheet" href="placementiq.css?v=12" />
         <!-- Benchmarking Tab Styles -->
-        <link rel="stylesheet" href="tabs/benchmarking/benchmarking.css" />
+        <link rel="stylesheet" href="tabs/benchmarking/benchmarking_v3.css" />
         <!-- pdf.js for PDF text extraction (required by browser-resume-extractor.js) -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
         <!-- Chart.js for analytics -->
@@ -466,7 +466,7 @@
                                 Upload Resume
                             </button>
                             <!-- Analyze button in the analysis tab -->
-                            <button class="ra-btn-upload" id="analyzeResumeBtnRA" style="display:none; margin-top:12px; background: linear-gradient(135deg, #005ed0, #afc6ff); border:none; color:#dfe3e7; cursor:pointer;">
+                            <button class="ra-btn-upload" id="analyzeResumeBtnRA" style="display:none; margin-top:12px; background: var(--gradient-brand); border:none; color:var(--on-brand); cursor:pointer;">
                                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <circle cx="12" cy="12" r="10" /><path d="M12 8v4l3 3" />
                                 </svg>
@@ -846,15 +846,15 @@
         <!-- Auth helper -->
         <script src="../auth/auth.js"></script>
         <!-- Resume extractor -->
-        <script src="browser-resume-extractor.js"></script>
+        <script src="browser-resume-extractor.js?v=12"></script>
         <!-- Gemini API client -->
-        <script src="gemini-client.js"></script>
+        <script src="gemini-client.js?v=12"></script>
         <!-- Main Dashboard JS -->
-        <script src="dashboard.js"></script>
+        <script src="dashboard.js?v=12"></script>
         <!-- PlacementIQ Dashboard JS -->
-        <script src="placementiq.js"></script>
+        <script src="placementiq.js?v=12"></script>
         <!-- Benchmarking Tab JS -->
-        <script src="tabs/benchmarking/benchmarking.js"></script>
+        <script src="tabs/benchmarking/benchmarking_v6.js"></script>
     </body>
     <!-- Benchmark tooltip (shared, outside scroll container) -->
     <div class="bench-tooltip" id="benchTooltip"></div>

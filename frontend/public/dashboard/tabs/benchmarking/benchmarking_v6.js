@@ -51,7 +51,7 @@
 
     function gradeColor(grade) {
         if (!grade) return '#9a6080';
-        const g = grade.replace('−','-');
+        const g = grade.replace('-', '-');
         if (g.startsWith('A')) return '#e8a0b0';
         if (g === 'B+') return '#f4a5b0';
         if (g === 'B')  return '#f4a5b0';
@@ -171,10 +171,10 @@
         const hiddenCount = filtered.length - TOP_N;
 
         const headerHtml = `
-            <div class="bench-header">
+            <div class="bench-header" style="margin-bottom: 24px;">
                 <div class="bench-header-left">
-                    <h2>Role Fit Benchmarking</h2>
-                    <p>Your AI fit scores across all ${tierLabel(courseTier)} placement roles — ${runDate}.</p>
+                    <h2>Benchmarking among your batch</h2>
+                    <p>Compare your overall AI fit score against your peers.</p>
                 </div>
                 <div class="bench-header-right">
                     ${courseTier ? `<span class="bench-course-tag">${tierLabel(courseTier)}</span>` : ''}
@@ -183,6 +183,14 @@
                         <div class="bench-spin"></div>
                         Refresh
                     </button>
+                </div>
+            </div>`;
+
+        const roleHeaderHtml = `
+            <div class="bench-header" style="margin-top: 40px; margin-bottom: 20px;">
+                <div class="bench-header-left">
+                    <h2>Role Fit Benchmarking</h2>
+                    <p>Your AI fit scores across all ${tierLabel(courseTier)} placement roles — ${runDate}.</p>
                 </div>
             </div>`;
 
@@ -230,7 +238,7 @@
                     ${top3.slice(0,3).map((r, i) => {
                         const color = gradeColor(r.grade);
                         return `
-                        <div class="bench-podium-card rank-${i+1}" style="border-color:${color}22;">
+                        <div class="bench-podium-card rank-${i+1}" style="border-color:${color}22; cursor:pointer;" onclick="window.benchExpandCard('brc-${r.role_name.replace(/\W/g,'_')}')">
                             <div class="bench-podium-rank">${podiumEmoji(i)}</div>
                             <div class="bench-podium-role">${r.role_name}</div>
                             <div class="bench-podium-score-row">
@@ -295,7 +303,7 @@
             </div>
         `;
 
-        setRoot(headerHtml + metricsHtml + podiumHtml + controlsHtml + gridHtml + modalHtml);
+        setRoot(headerHtml + metricsHtml + roleHeaderHtml + podiumHtml + controlsHtml + gridHtml + modalHtml);
 
         const inp = document.getElementById('benchSearchInput');
         if (inp && searchQuery) { inp.focus(); inp.setSelectionRange(9999,9999); }
@@ -326,8 +334,8 @@
 
     // ── Interactions ──────────────────────────────────────────────────────────
     window.benchExpandCard = (id) => {
-        const r = allResults.find(x => `brc-${x.role_name.replace(/\\W/g,'_')}` === id);
-        if (!r) return;
+        const r = allResults.find(x => `brc-${x.role_name.replace(/\W/g,'_')}` === id);
+        if (!r) { alert('Card data not found!'); return; }
         
         const det = r.detailed_analysis || {};
         const isFresh = Object.keys(det).length > 0;
@@ -347,6 +355,7 @@
                     
                     <div class="bench-expanded-metrics">
                         <div class="match-badge">${r.fit_score}% match</div>
+                        ${r.role_rank ? `<div>Rank: <span style="font-weight:800;">#${r.role_rank}</span> <span style="font-size: 0.9em; opacity: 0.8;">of ${r.total_role_peers}</span></div>` : ''}
                         <div>Readiness: <span style="font-weight:800;">${det.readiness_score}/100</span></div>
                         <div>Growth: <span style="color:var(--brand);font-weight:800;">${det.growth_potential}</span></div>
                     </div>
@@ -422,7 +431,7 @@
 
         const overlay = document.getElementById('benchModalOverlay');
         const content = document.getElementById('benchModalContent');
-        if (overlay && content) {
+        if (!overlay) alert('Modal element missing from page!'); if (overlay && content) {
             content.innerHTML = contentHtml;
             overlay.classList.add('active');
         }

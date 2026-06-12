@@ -12,10 +12,10 @@
 
     // Color helpers
     function scoreColor(s) {
-        if (s >= 80) return '#afc6ff';
-        if (s >= 65) return '#afc6ff';
+        if (s >= 80) return '#f4a5b0';
+        if (s >= 65) return '#e8607a';
         if (s >= 50) return '#ffb3b0';
-        return '#ffb4ab';
+        return '#c2185b';
     }
 
     // ── Draw readiness trend chart ────────────────────────────────────────────
@@ -38,12 +38,12 @@
         data[months - 1] = currentScore; // last point = actual score
 
         const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        const gridColor = isLight ? 'rgba(175, 198, 255, 0.08)' : 'rgba(255,255,255,0.05)';
-        const tickColor = isLight ? '#c5c6ca' : '#c5c6ca';
+        const gridColor = isLight ? 'rgba(194, 24, 91, 0.08)' : 'rgba(244, 165, 176, 0.06)';
+        const tickColor = isLight ? '#9a6080' : '#d4bfca';
 
         const gradient = canvas.getContext('2d').createLinearGradient(0, 0, 0, 120);
-        gradient.addColorStop(0, 'rgba(0, 94, 208, 0.3)');
-        gradient.addColorStop(1, 'rgba(0, 94, 208, 0)');
+        gradient.addColorStop(0, 'rgba(244, 165, 176, 0.30)');
+        gradient.addColorStop(1, 'rgba(244, 165, 176, 0)');
 
         trendChart = new Chart(canvas.getContext('2d'), {
             type: 'line',
@@ -51,10 +51,10 @@
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                 datasets: [{
                     data: data,
-                    borderColor: '#005ed0',
+                    borderColor: '#f4a5b0',
                     borderWidth: 2,
                     backgroundColor: gradient,
-                    pointBackgroundColor: '#005ed0',
+                    pointBackgroundColor: '#c2185b',
                     pointRadius: 3,
                     pointHoverRadius: 5,
                     tension: 0.4,
@@ -157,10 +157,10 @@
 
         const roleIcons = ['💻', '📊', '🤖', '🎨', '🔧', '📱', '🌐', '⚡'];
         const roleColors = [
-            'linear-gradient(135deg,#005ed0,#afc6ff)',
-            'linear-gradient(135deg,#afc6ff,#afc6ff)',
-            'linear-gradient(135deg,#ffb3b0,#ffb4ab)',
-            'linear-gradient(135deg,#afc6ff,#afc6ff)',
+            'linear-gradient(135deg,#f4a5b0,#c2185b)',
+            'linear-gradient(135deg,#ffd7de,#f4a5b0)',
+            'linear-gradient(135deg,#e8607a,#c2185b)',
+            'linear-gradient(135deg,#ffb3b0,#e8607a)',
         ];
 
         el.innerHTML = '';
@@ -268,7 +268,7 @@
         // ── Extract projects (for Step 2 tags) ───────────────────────────────
         const aiSuggestions = projD.projects_suggestions || [];
         const PROJECT_ICONS = ['🌐','🤖','⚙️','📊','🏗️','🔗'];
-        const PROJECT_COLORS = ['#005ed0','#afc6ff','#afc6ff','#ffb3b0','#c6c6c9','#ffb4ab'];
+        const PROJECT_COLORS = ['#f4a5b0','#e8607a','#ffd7de','#ffb3b0','#c2185b','#f9c9d0'];
         const FALLBACK_PROJECTS = [
             { title: 'Full-Stack SaaS App' },
             { title: 'ML Prediction Pipeline' },
@@ -357,7 +357,7 @@
             },
             {
                 icon:  '🛠️',
-                color: '#005ed0',
+                color: '#f4a5b0',
                 label: 'STEP 2',
                 title: 'Required Projects',
                 time:  '4–8 weeks',
@@ -367,7 +367,7 @@
             },
             {
                 icon:  '📝',
-                color: '#afc6ff',
+                color: '#ffd7de',
                 label: 'STEP 3',
                 title: 'Resume Changes Required',
                 time:  '1 week',
@@ -377,7 +377,7 @@
             },
             {
                 icon:  '🎯',
-                color: '#c6c6c9',
+                color: '#c2185b',
                 label: 'STEP 4',
                 title: 'Apply for Jobs / Internships',
                 time:  'Ongoing',
@@ -493,7 +493,7 @@
         const atsVal = { low: 85, medium: 68, high: 45, critical: 25 }[atsRisk] || 68;
         if (atsScore) {
             atsScore.textContent = `${atsVal}/100`;
-            atsScore.style.color = atsRisk === 'low' ? '#afc6ff' : atsRisk === 'medium' ? '#ffb3b0' : '#ffb4ab';
+            atsScore.style.color = atsRisk === 'low' ? '#f4a5b0' : atsRisk === 'medium' ? '#ffd7de' : '#c2185b';
         }
         if (atsSub) {
             const fixes = D.action_plan?.critical_fixes?.length || 0;
@@ -528,8 +528,8 @@
         ];
         const softSkills = D.skills.soft_skills || [];
 
-        buildSkillBars(techSkills, 'piqTechSkills', '#005ed0');
-        buildSkillBars(softSkills, 'piqSoftSkills', '#afc6ff');
+        buildSkillBars(techSkills, 'piqTechSkills', '#c2185b');
+        buildSkillBars(softSkills, 'piqSoftSkills', '#f4a5b0');
 
         // Missing skills
         const missingSection = document.getElementById('piqMissingSkillsSection');

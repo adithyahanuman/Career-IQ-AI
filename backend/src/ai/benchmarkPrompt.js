@@ -159,10 +159,17 @@ Return a single valid JSON array. Each element represents one candidate-role pai
   "student_name": "<name>",
   "student_id": "<id>",
   "role_name": "<job role>",
+  "role_description": "<one or two sentences describing the role and why this candidate fits it>",
   "fit_score": <0-100, integer>,
   "grade": "<letter grade>",
   "major_strength": "<one line: the single strongest signal this candidate has for this specific role>",
-  "improvement_suggestion": "<one line: the single highest-impact thing they can do to improve their fit for this role>"
+  "improvement_suggestion": "<one line: the single highest-impact thing they can do to improve their fit for this role>",
+  "readiness_score": <0-100, integer representing technical readiness>,
+  "growth_potential": "<High, Medium, or Low>",
+  "required_skills": ["<skill1>", "<skill2>", "... up to 5 key skills the candidate HAS"],
+  "missing_competencies": ["<missing1>", "<missing2>", "... up to 3 missing skills or gaps"],
+  "common_projects": ["<project1>", "<project2>", "... up to 3 typical projects they should build"],
+  "recommended_certifications": ["<cert1>", "<cert2>", "... up to 3 relevant certifications"]
 }
 
 The array must contain exactly ${resumes.length * jobRoles.length} objects (${resumes.length} candidates × ${jobRoles.length} roles).

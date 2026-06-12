@@ -97,7 +97,7 @@
 }
 
 .piq-upload-btn:hover {
-    background: #005ed0;
+    background: var(--brand-dark);
     transform: translateY(-1px);
 }
 
@@ -329,8 +329,9 @@
 }
 
 .piq-icon-blue {
-    background: rgba(0, 94, 208, 0.12);
+    background: var(--bg-glass);
     color: var(--brand);
+    border: 1px solid var(--border);
 }
 
 .piq-icon-yellow {
@@ -339,8 +340,8 @@
 }
 
 .piq-icon-green {
-    background: rgba(198, 198, 201, 0.12);
-    color: #afc6ff;
+    background: rgba(134, 239, 172, 0.12);
+    color: var(--brand-light);
 }
 
 .piq-metric-value {
@@ -604,7 +605,7 @@
 }
 
 .piq-label-green {
-    color: #afc6ff;
+    color: var(--brand-light);
 }
 
 .piq-strength-item {
@@ -618,7 +619,7 @@
 }
 
 .piq-strength-icon {
-    color: #afc6ff;
+    color: var(--brand-light);
     flex-shrink: 0;
     margin-top: 2px;
 }
@@ -665,7 +666,7 @@
     position: absolute;
     inset: -2px;
     border-radius: 18px;
-    background: linear-gradient(135deg, rgba(0, 94, 208, 0.3), rgba(175, 198, 255, 0.2), rgba(175, 198, 255, 0.15));
+    background: linear-gradient(135deg, var(--bg-glass-hover), var(--bg-glass));
     z-index: -1;
     opacity: 0;
     transition: opacity 0.3s;
@@ -704,8 +705,8 @@
 }
 
 .piq-growth-panel:hover {
-    border-color: rgba(0, 94, 208, 0.25);
-    box-shadow: 0 4px 20px rgba(0, 94, 208, 0.06);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-glow-sm);
 }
 
 /* Panel header row */
@@ -732,8 +733,9 @@
 }
 
 .piq-icon-violet {
-    background: rgba(0, 94, 208, 0.12);
+    background: var(--bg-glass);
     color: var(--brand);
+    border: 1px solid var(--border);
 }
 
 .piq-growth-panel-title {
@@ -757,9 +759,9 @@
 }
 
 .piq-badge-violet {
-    background: rgba(0, 94, 208, 0.1);
+    background: var(--bg-glass);
     color: var(--brand);
-    border-color: rgba(0, 94, 208, 0.2);
+    border-color: var(--border-strong);
 }
 
 /* Missing skill chips */
@@ -807,7 +809,7 @@
 }
 
 .piq-project-card:hover {
-    border-color: rgba(0, 94, 208, 0.25);
+    border-color: var(--border-strong);
     transform: translateX(3px);
 }
 
@@ -855,17 +857,17 @@
     font-weight: 600;
     padding: 2px 7px;
     border-radius: 4px;
-    background: rgba(0, 94, 208, 0.08);
+    background: var(--bg-glass);
     color: var(--brand);
-    border: 1px solid rgba(0, 94, 208, 0.15);
+    border: 1px solid var(--border-strong);
 }
 
 .piq-project-impact {
     font-size: 10px;
     font-weight: 700;
-    color: #afc6ff;
-    background: rgba(198, 198, 201, 0.08);
-    border: 1px solid rgba(198, 198, 201, 0.18);
+    color: var(--brand-light);
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
     padding: 2px 7px;
     border-radius: 6px;
     white-space: nowrap;
@@ -905,8 +907,9 @@
 }
 
 .piq-icon-teal {
-    background: rgba(198, 198, 201, 0.12);
-    color: #afc6ff;
+    background: var(--bg-glass);
+    color: var(--brand-light);
+    border: 1px solid var(--border);
 }
 
 .piq-road-list {
@@ -928,11 +931,11 @@
 }
 
 .piq-road-step:hover {
-    background: rgba(0, 94, 208, 0.04);
+    background: var(--bg-glass);
 }
 
 .piq-road-step:focus-visible {
-    box-shadow: 0 0 0 2px rgba(0, 94, 208, 0.4);
+    box-shadow: 0 0 0 2px var(--brand);
 }
 
 /* Left column: node + vertical connector */
@@ -968,7 +971,7 @@
     width: 2px;
     flex: 1;
     min-height: 16px;
-    background: linear-gradient(to bottom, rgba(0, 94, 208, 0.25), rgba(0, 94, 208, 0.05));
+    background: linear-gradient(to bottom, var(--border-strong), transparent);
     margin: 4px 0;
     border-radius: 1px;
 }
@@ -1046,9 +1049,9 @@
 .piq-road-impact {
     font-size: 11px;
     font-weight: 600;
-    color: #afc6ff;
-    background: rgba(198, 198, 201, 0.07);
-    border: 1px solid rgba(198, 198, 201, 0.18);
+    color: var(--brand-light);
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
     border-radius: 6px;
     padding: 4px 10px;
     display: inline-block;
@@ -1056,7 +1059,7 @@
 
 /* Active/open step gets a left accent */
 .piq-road-step.piq-road-open {
-    background: rgba(0, 94, 208, 0.04);
+    background: var(--bg-glass);
     border-left: 2px solid var(--brand);
     padding-left: 6px;
 }
@@ -1086,9 +1089,9 @@
 }
 
 .piq-road-tag-violet {
-    background: rgba(0, 94, 208, 0.1);
-    border-color: rgba(0, 94, 208, 0.3);
-    color: #afc6ff;
+    background: var(--bg-glass);
+    border-color: var(--border-strong);
+    color: var(--brand-light);
 }
 
 .piq-road-tag-amber {
@@ -1105,7 +1108,7 @@
 .piq-road-tag-teal {
     background: rgba(198, 198, 201, 0.08);
     border-color: rgba(198, 198, 201, 0.25);
-    color: #c6c6c9;
+    color: #e8a0b0;
 }
 
 /* Compact impact pill in step header */
@@ -1184,8 +1187,8 @@
 }
 
 .piq-ai-prompt:hover {
-    background: rgba(0, 94, 208, 0.06);
-    border-color: rgba(0, 94, 208, 0.2);
+    background: var(--bg-glass-hover);
+    border-color: var(--border-strong);
     color: var(--text-primary);
 }
 
@@ -1237,7 +1240,7 @@
 }
 
 .piq-ai-send:hover {
-    background: #005ed0;
+    background: var(--brand-dark);
     transform: scale(1.05);
 }
 
@@ -1256,7 +1259,8 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: rgba(0, 94, 208, 0.1);
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1289,8 +1293,8 @@
 }
 
 .piq-upload-cta-btn:hover {
-    background: rgba(0, 94, 208, 0.06);
-    border-color: rgba(0, 94, 208, 0.3);
+    background: var(--bg-glass-hover);
+    border-color: var(--border-strong);
 }
 
 .piq-upload-cta-hint {

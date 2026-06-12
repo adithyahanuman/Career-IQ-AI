@@ -85,6 +85,92 @@
   /* Typography */
   --font-sans:         'Hanken Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono:         'Geist', 'Geist Mono', monospace;
+
+  /* ── Chart / Graph / UI Accent tokens (dark) ── */
+  --accent-1:          #f4a5b0;   /* primary accent = brand rose */
+  --accent-1-rgb:      244, 165, 176;
+  --accent-2:          #ffd7de;   /* lighter rose */
+  --accent-2-rgb:      255, 215, 222;
+  --accent-glass:      rgba(244, 165, 176, 0.10);
+  --accent-glass-md:   rgba(244, 165, 176, 0.18);
+  --accent-glass-lg:   rgba(244, 165, 176, 0.30);
+  --accent-glow-sm:    0 0 14px  rgba(244, 165, 176, 0.35);
+  --accent-glow-md:    0 0 28px  rgba(244, 165, 176, 0.45);
+  --accent-glow-lg:    0 8px 28px rgba(244, 165, 176, 0.55);
+  /* chart bar palette */
+  --chart-bar-1:       linear-gradient(180deg, #f4a5b0, #c2185b);
+  --chart-bar-2:       linear-gradient(180deg, #ffd7de, #f4a5b0);
+  --chart-bar-3:       linear-gradient(180deg, #fbbf24, #b45309);
+  --chart-bar-4:       linear-gradient(180deg, #86efac, #16a34a);
+  /* company logo accents */
+  --logo-a:            linear-gradient(135deg, #c2185b, #f4a5b0);
+  --logo-b:            linear-gradient(135deg, #880e4f, #c2185b);
+  /* particle / canvas accent */
+  --particle-rgb:      244, 165, 176;
+  --particle-line-rgb: 244, 165, 176;
+  /* reading progress bar */
+  --progress-bar-bg:   linear-gradient(90deg, #c2185b, #ffd7de, #f4a5b0);
+  --progress-glow-rgb: 194, 24, 91;
+  /* chatbot button */
+  --chatbot-bg:        linear-gradient(135deg, #c2185b, #f4a5b0);
+  --chatbot-glow-rgb:  244, 165, 176;
+  /* pricing card hover */
+  --pricing-hover-shadow: 0 20px 60px rgba(194, 24, 91, 0.18), 0 0 0 1px rgba(194, 24, 91, 0.25);
+  /* section badge / tag */
+  --badge-bg:          rgba(244, 165, 176, 0.10);
+  --badge-border:      rgba(244, 165, 176, 0.22);
+  --tag-bg:            rgba(244, 165, 176, 0.10);
+  --tag-border:        rgba(244, 165, 176, 0.20);
+  /* mockup hover / ring */
+  --mockup-hover-bg:   rgba(244, 165, 176, 0.04);
+  --mockup-hover-border: rgba(244, 165, 176, 0.30);
+  --mockup-outer-glow: rgba(244, 165, 176, 0.08);
+  --mockup-ring-glow:  rgba(244, 165, 176, 0.12);
+  /* sidebar active */
+  --sidebar-active-bg: rgba(244, 165, 176, 0.10);
+  /* step/faq open accent */
+  --step-card-hover-border: rgba(244, 165, 176, 0.30);
+  --faq-open-bg:       rgba(244, 165, 176, 0.12);
+  --faq-open-border:   rgba(244, 165, 176, 0.28);
+  /* testimonial featured */
+  --featured-card-bg:  linear-gradient(135deg, rgba(244, 165, 176, 0.06), rgba(255, 215, 222, 0.04));
+  --featured-card-border: rgba(244, 165, 176, 0.22);
+  /* plan-popular */
+  --popular-card-bg:   linear-gradient(135deg, rgba(244, 165, 176, 0.08), rgba(255, 215, 222, 0.05));
+  --popular-card-border: rgba(244, 165, 176, 0.35);
+  /* toggle active */
+  --toggle-badge-bg:   rgba(244, 165, 176, 0.12);
+  /* user chat bubble */
+  --user-msg-bg:       rgba(244, 165, 176, 0.12);
+  /* node pulse */
+  --node-pulse-color:  rgba(244, 165, 176, 0.30);
+  /* mini-step in-progress glow */
+  --mini-node-glow:    rgba(244, 165, 176, 0.40);
+  /* cta orbs */
+  --cta-orb-1-color:   rgba(244, 165, 176, 0.16);
+  --cta-orb-2-color:   rgba(255, 215, 222, 0.15);
+  /* pricing orb */
+  --pricing-orb-color: rgba(244, 165, 176, 0.06);
+  /* hero orbs */
+  --hero-orb-1:        rgba(244, 165, 176, 0.18);
+  --hero-orb-2:        rgba(255, 215, 222, 0.14);
+  --hero-orb-3:        rgba(244, 165, 176, 0.12);
+  /* grid overlay */
+  --grid-line-color:   rgba(244, 165, 176, 0.04);
+  /* step-number glow */
+  --step-number-glow:  rgba(244, 165, 176, 0.35);
+  /* scroll-top glow */
+  --scroll-top-glow:   rgba(244, 165, 176, 0.35);
+  --scroll-top-glow-hover: rgba(244, 165, 176, 0.50);
+  /* plan-cta */
+  --plan-cta-glow:     rgba(244, 165, 176, 0.30);
+  --plan-cta-glow-hover: rgba(244, 165, 176, 0.42);
+  /* feature icon hover */
+  --feature-icon-hover-bg: rgba(244, 165, 176, 0.18);
+  --feature-icon-hover-glow: rgba(244, 165, 176, 0.18);
+  /* testimonial metric */
+  --metric-bg:         rgba(244, 165, 176, 0.10);
+  --metric-border:     rgba(244, 165, 176, 0.22);
 }
 
 [data-theme="light"] {
@@ -146,6 +232,92 @@
   --shadow-xl:         0 16px 48px rgba(31, 15, 21, 0.14);
   --shadow-glow:       0 0 24px rgba(194, 24, 91, 0.18);
   --shadow-glow-sm:    0 0 12px rgba(194, 24, 91, 0.12);
+
+  /* ── Chart / Graph / UI Accent tokens (light) ── */
+  --accent-1:          #c2185b;
+  --accent-1-rgb:      194, 24, 91;
+  --accent-2:          #880e4f;
+  --accent-2-rgb:      136, 14, 79;
+  --accent-glass:      rgba(194, 24, 91, 0.08);
+  --accent-glass-md:   rgba(194, 24, 91, 0.14);
+  --accent-glass-lg:   rgba(194, 24, 91, 0.25);
+  --accent-glow-sm:    0 0 14px  rgba(194, 24, 91, 0.25);
+  --accent-glow-md:    0 0 28px  rgba(194, 24, 91, 0.32);
+  --accent-glow-lg:    0 8px 28px rgba(194, 24, 91, 0.38);
+  /* chart bar palette */
+  --chart-bar-1:       linear-gradient(180deg, #c2185b, #880e4f);
+  --chart-bar-2:       linear-gradient(180deg, #f4a5b0, #c2185b);
+  --chart-bar-3:       linear-gradient(180deg, #d97706, #92400e);
+  --chart-bar-4:       linear-gradient(180deg, #22c55e, #166534);
+  /* company logo accents */
+  --logo-a:            linear-gradient(135deg, #880e4f, #c2185b);
+  --logo-b:            linear-gradient(135deg, #c2185b, #f4a5b0);
+  /* particle / canvas accent */
+  --particle-rgb:      194, 24, 91;
+  --particle-line-rgb: 194, 24, 91;
+  /* reading progress bar */
+  --progress-bar-bg:   linear-gradient(90deg, #880e4f, #c2185b, #f4a5b0);
+  --progress-glow-rgb: 194, 24, 91;
+  /* chatbot button */
+  --chatbot-bg:        linear-gradient(135deg, #880e4f, #c2185b);
+  --chatbot-glow-rgb:  194, 24, 91;
+  /* pricing card hover */
+  --pricing-hover-shadow: 0 20px 60px rgba(194, 24, 91, 0.15), 0 0 0 1px rgba(194, 24, 91, 0.20);
+  /* section badge / tag */
+  --badge-bg:          rgba(194, 24, 91, 0.08);
+  --badge-border:      rgba(194, 24, 91, 0.20);
+  --tag-bg:            rgba(194, 24, 91, 0.08);
+  --tag-border:        rgba(194, 24, 91, 0.18);
+  /* mockup hover / ring */
+  --mockup-hover-bg:   rgba(194, 24, 91, 0.03);
+  --mockup-hover-border: rgba(194, 24, 91, 0.25);
+  --mockup-outer-glow: rgba(194, 24, 91, 0.06);
+  --mockup-ring-glow:  rgba(194, 24, 91, 0.10);
+  /* sidebar active */
+  --sidebar-active-bg: rgba(194, 24, 91, 0.08);
+  /* step/faq open accent */
+  --step-card-hover-border: rgba(194, 24, 91, 0.25);
+  --faq-open-bg:       rgba(194, 24, 91, 0.10);
+  --faq-open-border:   rgba(194, 24, 91, 0.22);
+  /* testimonial featured */
+  --featured-card-bg:  linear-gradient(135deg, rgba(194, 24, 91, 0.05), rgba(244, 165, 176, 0.03));
+  --featured-card-border: rgba(194, 24, 91, 0.18);
+  /* plan-popular */
+  --popular-card-bg:   linear-gradient(135deg, rgba(194, 24, 91, 0.06), rgba(244, 165, 176, 0.04));
+  --popular-card-border: rgba(194, 24, 91, 0.30);
+  /* toggle active */
+  --toggle-badge-bg:   rgba(194, 24, 91, 0.10);
+  /* user chat bubble */
+  --user-msg-bg:       rgba(194, 24, 91, 0.10);
+  /* node pulse */
+  --node-pulse-color:  rgba(194, 24, 91, 0.25);
+  /* mini-step in-progress glow */
+  --mini-node-glow:    rgba(194, 24, 91, 0.35);
+  /* cta orbs */
+  --cta-orb-1-color:   rgba(194, 24, 91, 0.12);
+  --cta-orb-2-color:   rgba(244, 165, 176, 0.10);
+  /* pricing orb */
+  --pricing-orb-color: rgba(194, 24, 91, 0.05);
+  /* hero orbs */
+  --hero-orb-1:        rgba(194, 24, 91, 0.14);
+  --hero-orb-2:        rgba(244, 165, 176, 0.10);
+  --hero-orb-3:        rgba(194, 24, 91, 0.09);
+  /* grid overlay */
+  --grid-line-color:   rgba(194, 24, 91, 0.06);
+  /* step-number glow */
+  --step-number-glow:  rgba(194, 24, 91, 0.30);
+  /* scroll-top glow */
+  --scroll-top-glow:   rgba(194, 24, 91, 0.30);
+  --scroll-top-glow-hover: rgba(194, 24, 91, 0.45);
+  /* plan-cta */
+  --plan-cta-glow:     rgba(194, 24, 91, 0.25);
+  --plan-cta-glow-hover: rgba(194, 24, 91, 0.38);
+  /* feature icon hover */
+  --feature-icon-hover-bg: rgba(194, 24, 91, 0.14);
+  --feature-icon-hover-glow: rgba(194, 24, 91, 0.14);
+  /* testimonial metric */
+  --metric-bg:         rgba(194, 24, 91, 0.08);
+  --metric-border:     rgba(194, 24, 91, 0.18);
 }
 
 /* ---- Reset ---- */
@@ -237,7 +409,7 @@ textarea {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #afc6ff, #005ed0);
+  background: var(--gradient-brand);
   opacity: 0;
   transition: opacity var(--transition);
 }
@@ -269,11 +441,11 @@ textarea {
 
   0%,
   100% {
-    box-shadow: 0 4px 16px rgba(175, 198, 255, 0.3);
+    box-shadow: var(--accent-glow-sm);
   }
 
   50% {
-    box-shadow: 0 4px 32px rgba(175, 198, 255, 0.55), 0 0 0 6px rgba(175, 198, 255, 0.12);
+    box-shadow: var(--accent-glow-md), 0 0 0 6px var(--accent-glass);
   }
 }
 
@@ -560,7 +732,7 @@ textarea {
 .orb-1 {
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(175, 198, 255, 0.18), transparent 70%);
+  background: radial-gradient(circle, var(--hero-orb-1), transparent 70%);
   top: -100px;
   left: -100px;
   animation-delay: 0s;
@@ -569,7 +741,7 @@ textarea {
 .orb-2 {
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(217, 226, 255, 0.14), transparent 70%);
+  background: radial-gradient(circle, var(--hero-orb-2), transparent 70%);
   top: 100px;
   right: -100px;
   animation-delay: -3s;
@@ -578,7 +750,7 @@ textarea {
 .orb-3 {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(175, 198, 255, 0.12), transparent 70%);
+  background: radial-gradient(circle, var(--hero-orb-3), transparent 70%);
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
@@ -605,8 +777,8 @@ textarea {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(175, 198, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(175, 198, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(var(--grid-line-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: radial-gradient(ellipse at center top, rgba(0, 0, 0, 0.5) 0%, transparent 70%);
 }
@@ -797,7 +969,7 @@ textarea {
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   overflow: hidden;
-  box-shadow: var(--shadow-xl), 0 0 0 1px rgba(175, 198, 255, 0.12), 0 0 80px rgba(175, 198, 255, 0.08);
+  box-shadow: var(--shadow-xl), 0 0 0 1px var(--mockup-ring-glow), 0 0 80px var(--mockup-outer-glow);
 }
 
 .mockup-titlebar {
@@ -907,7 +1079,7 @@ textarea {
 
 .sidebar-item.active {
   color: var(--brand-light);
-  background: rgba(175, 198, 255, 0.1);
+  background: var(--sidebar-active-bg);
 }
 
 .mockup-main {
@@ -929,8 +1101,8 @@ textarea {
 }
 
 .mockup-card:hover {
-  border-color: rgba(175, 198, 255, 0.3);
-  background: rgba(175, 198, 255, 0.04);
+  border-color: var(--mockup-hover-border);
+  background: var(--mockup-hover-bg);
 }
 
 .card-header {
@@ -954,18 +1126,18 @@ textarea {
 }
 
 .card-badge-purple {
-  background: rgba(175, 198, 255, 0.12);
-  color: #afc6ff;
+  background: var(--badge-bg);
+  color: var(--brand-light);
 }
 
 .card-badge-green {
-  background: rgba(198, 198, 201, 0.15);
-  color: #c6c6c9;
+  background: rgba(134, 239, 172, 0.12);
+  color: var(--green);
 }
 
 .card-badge-blue {
-  background: rgba(217, 226, 255, 0.15);
-  color: #afc6ff;
+  background: var(--badge-bg);
+  color: var(--brand-light);
 }
 
 .career-match-card {
@@ -1039,10 +1211,10 @@ textarea {
 .tag {
   font-size: 9px;
   padding: 2px 7px;
-  background: rgba(175, 198, 255, 0.1);
+  background: var(--tag-bg);
   color: var(--brand-light);
   border-radius: var(--radius-full);
-  border: 1px solid rgba(175, 198, 255, 0.2);
+  border: 1px solid var(--tag-border);
 }
 
 .skill-bars {
@@ -1093,7 +1265,7 @@ textarea {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: rgba(175, 198, 255, 0.15);
+  background: var(--accent-glass);
   border: 2px solid var(--brand);
   display: flex;
   align-items: center;
@@ -1115,7 +1287,7 @@ textarea {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: rgba(175, 198, 255, 0.3);
+  background: var(--node-pulse-color);
   animation: pulse 2s infinite;
 }
 
@@ -1292,7 +1464,7 @@ textarea {
   display: inline-flex;
   align-items: center;
   padding: 6px 14px;
-  background: rgba(175, 198, 255, 0.1);
+  background: var(--badge-bg);
   color: var(--brand-light);
   border-radius: var(--radius-full);
   font-size: 12px;
@@ -1300,7 +1472,7 @@ textarea {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   margin-bottom: 20px;
-  border: 1px solid rgba(175, 198, 255, 0.22);
+  border: 1px solid var(--badge-border);
 }
 
 .section-title {
@@ -1347,7 +1519,7 @@ textarea {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(175, 198, 255, 0.12), rgba(217, 226, 255, 0.08));
+  background: linear-gradient(135deg, var(--accent-glass-md), var(--accent-glass));
   opacity: 0;
   transition: opacity var(--transition-md);
   border-radius: inherit;
@@ -1399,8 +1571,8 @@ textarea {
 .feature-icon {
   width: 52px;
   height: 52px;
-  background: rgba(175, 198, 255, 0.1);
-  border: 1px solid rgba(175, 198, 255, 0.2);
+  background: var(--accent-glass);
+  border: 1px solid var(--accent-glass-md);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -1411,37 +1583,37 @@ textarea {
 }
 
 .feature-card:hover .feature-icon {
-  background: rgba(175, 198, 255, 0.18);
-  box-shadow: 0 0 20px rgba(175, 198, 255, 0.18);
+  background: var(--feature-icon-hover-bg);
+  box-shadow: 0 0 20px var(--feature-icon-hover-glow);
 }
 
 .feature-icon-cyan {
-  background: rgba(217, 226, 255, 0.1);
-  border-color: rgba(217, 226, 255, 0.22);
-  color: var(--cyan);
+  background: var(--accent-glass);
+  border-color: var(--badge-border);
+  color: var(--brand-light);
 }
 
 .feature-icon-purple {
-  background: rgba(175, 198, 255, 0.1);
-  border-color: rgba(175, 198, 255, 0.22);
-  color: var(--lime);
+  background: var(--accent-glass);
+  border-color: var(--badge-border);
+  color: var(--brand);
 }
 
 .feature-icon-green {
-  background: rgba(198, 198, 201, 0.1);
-  border-color: rgba(198, 198, 201, 0.2);
+  background: rgba(134, 239, 172, 0.10);
+  border-color: rgba(134, 239, 172, 0.20);
   color: var(--green);
 }
 
 .feature-icon-orange {
-  background: rgba(255, 179, 176, 0.1);
-  border-color: rgba(255, 179, 176, 0.2);
+  background: rgba(251, 191, 36, 0.10);
+  border-color: rgba(251, 191, 36, 0.20);
   color: var(--orange);
 }
 
 .feature-icon-pink {
-  background: rgba(224, 84, 86, 0.1);
-  border-color: rgba(224, 84, 86, 0.2);
+  background: var(--accent-glass);
+  border-color: var(--badge-border);
   color: var(--pink);
 }
 
@@ -1599,7 +1771,7 @@ textarea {
 }
 
 .user-msg {
-  background: rgba(175, 198, 255, 0.12);
+  background: var(--user-msg-bg);
   color: var(--brand-light);
   align-self: flex-end;
   border-radius: 10px 10px 2px 10px;
@@ -1708,11 +1880,11 @@ textarea {
 }
 
 .g-logo {
-  background: linear-gradient(135deg, #005ed0, #c6c6c9);
+  background: var(--logo-a);
 }
 
 .m-logo {
-  background: linear-gradient(135deg, #005ed0, #afc6ff);
+  background: var(--logo-b);
 }
 
 .job-match-info {
@@ -1778,7 +1950,7 @@ textarea {
 .mini-step.in-progress .mini-node {
   border-color: var(--brand);
   background: var(--brand);
-  box-shadow: 0 0 10px rgba(175, 198, 255, 0.4);
+  box-shadow: 0 0 10px var(--mini-node-glow);
 }
 
 .mini-line {
@@ -1810,7 +1982,7 @@ textarea {
   left: 12.5%;
   right: 12.5%;
   height: 2px;
-  background: linear-gradient(90deg, var(--brand), var(--lime), var(--cyan), var(--green));
+  background: var(--gradient-brand);
   z-index: 0;
   opacity: 0.3;
 }
@@ -1829,14 +2001,14 @@ textarea {
   height: 48px;
   border-radius: 50%;
   background: var(--gradient-brand);
-  color: #dfe3e7;
+  color: var(--on-brand);
   font-size: 14px;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 24px;
-  box-shadow: 0 4px 20px rgba(175, 198, 255, 0.35);
+  box-shadow: 0 4px 20px var(--step-number-glow);
   letter-spacing: -0.03em;
 }
 
@@ -1850,7 +2022,7 @@ textarea {
 
 .step-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(175, 198, 255, 0.3);
+  border-color: var(--step-card-hover-border);
   box-shadow: var(--shadow-md), var(--shadow-glow-sm);
 }
 
@@ -1858,8 +2030,8 @@ textarea {
   width: 48px;
   height: 48px;
   border-radius: var(--radius-md);
-  background: rgba(175, 198, 255, 0.1);
-  border: 1px solid rgba(175, 198, 255, 0.2);
+  background: var(--accent-glass);
+  border: 1px solid var(--badge-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1868,20 +2040,20 @@ textarea {
 }
 
 .step-icon-purple {
-  background: rgba(175, 198, 255, 0.1);
-  border-color: rgba(175, 198, 255, 0.2);
-  color: var(--lime);
+  background: var(--accent-glass);
+  border-color: var(--badge-border);
+  color: var(--brand);
 }
 
 .step-icon-cyan {
-  background: rgba(217, 226, 255, 0.1);
-  border-color: rgba(217, 226, 255, 0.2);
-  color: var(--cyan);
+  background: var(--accent-glass);
+  border-color: var(--badge-border);
+  color: var(--brand-light);
 }
 
 .step-icon-green {
-  background: rgba(198, 198, 201, 0.1);
-  border-color: rgba(198, 198, 201, 0.2);
+  background: rgba(134, 239, 172, 0.10);
+  border-color: rgba(134, 239, 172, 0.20);
   color: var(--green);
 }
 
@@ -1942,15 +2114,15 @@ textarea {
 }
 
 .testimonial-card:hover {
-  border-color: rgba(175, 198, 255, 0.3);
+  border-color: var(--step-card-hover-border);
   transform: translateY(-4px);
   box-shadow: var(--shadow-md), var(--shadow-glow-sm);
 }
 
 .featured-testimonial {
   grid-column: span 2;
-  background: linear-gradient(135deg, rgba(175, 198, 255, 0.06), rgba(217, 226, 255, 0.04));
-  border-color: rgba(175, 198, 255, 0.22);
+  background: var(--featured-card-bg);
+  border-color: var(--featured-card-border);
 }
 
 .testimonial-stars {
@@ -2007,13 +2179,13 @@ textarea {
 }
 
 .testimonial-metric {
-  background: rgba(175, 198, 255, 0.1);
+  background: var(--metric-bg);
   color: var(--brand-light);
   font-size: 12px;
   font-weight: 700;
   padding: 4px 10px;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(175, 198, 255, 0.22);
+  border: 1px solid var(--metric-border);
   white-space: nowrap;
 }
 
@@ -2037,7 +2209,7 @@ textarea {
   width: 800px;
   height: 800px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(175, 198, 255, 0.06), transparent 70%);
+  background: radial-gradient(circle, var(--pricing-orb-color), transparent 70%);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -2058,7 +2230,7 @@ textarea {
 }
 
 .toggle-badge {
-  background: rgba(175, 198, 255, 0.12);
+  background: var(--toggle-badge-bg);
   color: var(--brand-light);
   font-size: 10px;
   font-weight: 700;
@@ -2123,8 +2295,8 @@ textarea {
 }
 
 .plan-popular {
-  background: linear-gradient(135deg, rgba(175, 198, 255, 0.08), rgba(217, 226, 255, 0.05));
-  border-color: rgba(175, 198, 255, 0.35);
+  background: var(--popular-card-bg);
+  border-color: var(--popular-card-border);
   transform: scale(1.03);
   box-shadow: var(--shadow-lg), var(--shadow-glow-sm);
 }
@@ -2237,14 +2409,14 @@ textarea {
 
 .plan-cta-primary {
   background: var(--gradient-brand);
-  color: #dfe3e7;
+  color: var(--on-brand);
   font-weight: 700;
-  box-shadow: 0 4px 20px rgba(175, 198, 255, 0.3);
+  box-shadow: 0 4px 20px var(--plan-cta-glow);
 }
 
 .plan-cta-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(175, 198, 255, 0.42);
+  box-shadow: 0 8px 28px var(--plan-cta-glow-hover);
 }
 
 .plan-cta-outline {
@@ -2293,7 +2465,7 @@ textarea {
 }
 
 .faq-item.open {
-  border-color: rgba(175, 198, 255, 0.3);
+  border-color: var(--step-card-hover-border);
 }
 
 .faq-question {
@@ -2328,8 +2500,8 @@ textarea {
 }
 
 .faq-item.open .faq-icon {
-  background: rgba(175, 198, 255, 0.12);
-  border-color: rgba(175, 198, 255, 0.28);
+  background: var(--faq-open-bg);
+  border-color: var(--faq-open-border);
   color: var(--brand-light);
   transform: rotate(180deg);
 }
@@ -2375,7 +2547,7 @@ textarea {
 .cta-orb-1 {
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(175, 198, 255, 0.16), transparent);
+  background: radial-gradient(circle, var(--cta-orb-1-color), transparent);
   top: -100px;
   left: -100px;
 }
@@ -2383,7 +2555,7 @@ textarea {
 .cta-orb-2 {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(217, 226, 255, 0.15), transparent);
+  background: radial-gradient(circle, var(--cta-orb-2-color), transparent);
   bottom: -100px;
   right: -100px;
 }
@@ -2543,11 +2715,11 @@ textarea {
   height: 44px;
   border-radius: 50%;
   background: var(--gradient-brand);
-  color: #dfe3e7;
+  color: var(--on-brand);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(175, 198, 255, 0.35);
+  box-shadow: 0 4px 16px var(--scroll-top-glow);
   z-index: 900;
   opacity: 0;
   pointer-events: none;
@@ -2563,7 +2735,7 @@ textarea {
 
 .scroll-top:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(175, 198, 255, 0.5);
+  box-shadow: 0 8px 24px var(--scroll-top-glow-hover);
 }
 
 /* ======================================================
@@ -2817,12 +2989,12 @@ textarea {
 
 [data-theme="light"] .grid-overlay {
   background-image:
-    linear-gradient(rgba(175, 198, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(175, 198, 255, 0.08) 1px, transparent 1px);
+    linear-gradient(var(--grid-line-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
 }
 
 [data-theme="light"] .mockup-window {
-  box-shadow: var(--shadow-xl), 0 0 0 1px rgba(175, 198, 255, 0.15);
+  box-shadow: var(--shadow-xl), 0 0 0 1px var(--mockup-ring-glow);
 }
 
 [data-theme="light"] .mockup-sidebar {
@@ -2838,7 +3010,7 @@ textarea {
 }
 
 [data-theme="light"] .user-msg {
-  background: rgba(175, 198, 255, 0.1);
+  background: var(--user-msg-bg);
 }
 
 [data-theme="light"] .resume-score-circle::before {

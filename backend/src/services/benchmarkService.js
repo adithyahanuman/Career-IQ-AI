@@ -89,13 +89,85 @@ async function _getLatestDoneSession(studentId, hash = null, currentJobRoles = n
     }
   }
 
-  const { rows: results } = await query(
-    `SELECT * FROM benchmark_results WHERE session_id = $1 ORDER BY fit_score DESC`,
-    [session.id],
-  );
+  const { rows: results } = await query(`
+    WITH unique_resumes AS (
+      SELECT DISTINCT ON (resume_text_hash) id
+      FROM benchmark_sessions
+      WHERE status = 'done'
+      ORDER BY resume_text_hash, created_at DESC
+    ),
+    peer_results AS (
+      SELECT r.role_name, r.fit_score
+      FROM benchmark_results r
+      JOIN unique_resumes ur ON r.session_id = ur.id
+    )
+    SELECT 
+      my_res.*,
+      (
+        SELECT COUNT(*) + 1 
+        FROM peer_results pr 
+        WHERE pr.role_name = my_res.role_name AND pr.fit_score > my_res.fit_score
+      ) AS role_rank,
+      (
+        SELECT COUNT(*)
+        FROM resumes
+        WHERE status = 'done'
+      ) AS total_role_peers
+    FROM benchmark_results my_res
+    WHERE my_res.session_id = $1
+    ORDER BY my_res.fit_score DESC
+  `, [session.id]);
 
   return { ...session, results };
 }
+
+/**
+ * Calculate accurate rankings, peer counts, and top score gaps from the DB.
+ */
+async function _getStudentMetrics(studentId) {
+  const sql = `
+    WITH my_branch AS (
+      SELECT branch FROM students WHERE id = $1
+    ),
+    scores AS (
+      SELECT r.id, r.student_id, r.is_primary, COALESCE(CAST(r.overall_analysis->>'overall_score' AS numeric), 0) AS score
+      FROM resumes r
+      JOIN students s ON s.id = r.student_id
+      WHERE r.status = 'done' AND s.branch IS NOT DISTINCT FROM (SELECT branch FROM my_branch)
+    )
+    SELECT
+      (SELECT COUNT(*) FROM scores) AS total_peers,
+      (SELECT MAX(score) FROM scores) AS top_score,
+      (SELECT score FROM scores WHERE student_id = $1 AND is_primary = TRUE LIMIT 1) AS my_score,
+      (SELECT COUNT(*) + 1 FROM scores WHERE score > (SELECT score FROM scores WHERE student_id = $1 AND is_primary = TRUE LIMIT 1)) AS my_rank
+  `;
+  try {
+    const { rows } = await query(sql, [studentId]);
+    if (!rows || !rows.length) return null;
+    const row = rows[0];
+    
+    const totalPeers = Number(row.total_peers) || 0;
+    const topScore = Number(row.top_score) || 0;
+    const myScore = Number(row.my_score) || 0;
+    const myRank = Number(row.my_rank) || 0;
+  
+    const gap = topScore - myScore;
+    const percentile = totalPeers > 1 ? Math.round(((totalPeers - myRank) / (totalPeers - 1)) * 100) : 100;
+    
+    return {
+      total_peers: totalPeers,
+      top_score: topScore,
+      my_score: myScore,
+      my_rank: myRank,
+      top_gap: gap > 0 ? gap : 0,
+      percentile: Math.max(0, percentile)
+    };
+  } catch (e) {
+    console.warn('[benchmark] Error calculating student metrics:', e.message);
+    return null;
+  }
+}
+
 
 /**
  * Extract a plain degree/course string.
@@ -177,7 +249,8 @@ const getMyRoleFit = async (studentId) => {
   const exactMatch = await _getLatestDoneSession(studentId, currentHash, currentJobRoles);
   if (exactMatch) {
     console.log('[benchmark] Cache HIT (hash match) — returning DB data');
-    return { ...exactMatch, status: 'done', cache: 'hash_match' };
+    const metrics = await _getStudentMetrics(studentId);
+    return { ...exactMatch, status: 'done', cache: 'hash_match', metrics };
   }
 
   // ── Step 5: in-progress session? tell caller to poll ──────────────────────
@@ -191,11 +264,13 @@ const getMyRoleFit = async (studentId) => {
     [studentId],
   );
   if (running) {
-    return { status: 'running', session_id: running.id, results: [] };
+    return { status: 'running', session_id: running.id, results: [], metrics: await _getStudentMetrics(studentId) };
   }
 
   // ── Step 6: nothing at all → run AI ───────────────────────────────────────
-  return _runAI(studentId, studentRow, rawText, currentHash, currentJobRoles, tier);
+  const runResult = await _runAI(studentId, studentRow, rawText, currentHash, currentJobRoles, tier);
+  runResult.metrics = await _getStudentMetrics(studentId);
+  return runResult;
 };
 
 /**
@@ -214,13 +289,10 @@ const refreshMyRoleFit = async (studentId) => {
   return getMyRoleFit(studentId);
 };
 
-/**
- * Lightweight status check — never triggers AI.
- */
 const getMyStatus = async (studentId) => {
-  const done = await _getLatestDoneSession(studentId, null);
-  if (done) return { status: 'done', ...done };
+  const metrics = await _getStudentMetrics(studentId);
 
+  // 1. If there's an active running session, we must return 'running' so the UI keeps polling
   const { rows: [running] } = await query(
     `SELECT id FROM benchmark_sessions
      WHERE  created_by = $1 
@@ -229,9 +301,13 @@ const getMyStatus = async (studentId) => {
      ORDER  BY created_at DESC LIMIT 1`,
     [studentId],
   );
-  if (running) return { status: 'running', session_id: running.id, results: [] };
+  if (running) return { status: 'running', session_id: running.id, results: [], metrics };
 
-  return { status: 'none', results: [] };
+  // 2. Otherwise return the latest completed session
+  const done = await _getLatestDoneSession(studentId, null);
+  if (done) return { status: 'done', ...done, metrics };
+
+  return { status: 'none', results: [], metrics };
 };
 
 /** Load most-recent completed session (public helper). */
@@ -282,10 +358,23 @@ async function _runAI(studentId, studentRow, rawText, resumeHash, jobRoles, tier
     if (!results.length) throw new Error('AI returned an empty response.');
 
     for (const r of results) {
+      const detailedAnalysis = {
+        role_description: r.role_description || '',
+        readiness_score: r.readiness_score || 0,
+        growth_potential: r.growth_potential || '',
+        required_skills: Array.isArray(r.required_skills) ? r.required_skills : [],
+        missing_competencies: Array.isArray(r.missing_competencies) ? r.missing_competencies : [],
+        common_projects: Array.isArray(r.common_projects) ? r.common_projects : [],
+        recommended_certifications: Array.isArray(r.recommended_certifications) ? r.recommended_certifications : []
+      };
+
+      // Attach it to the result object so the API response has it!
+      r.detailed_analysis = detailedAnalysis;
+
       await query(
         `INSERT INTO benchmark_results
-           (session_id, student_id, student_name, role_name, fit_score, grade, major_strength, improvement_suggestion)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+           (session_id, student_id, student_name, role_name, fit_score, grade, major_strength, improvement_suggestion, detailed_analysis)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
         [
           session.id,
           studentId,
@@ -295,6 +384,7 @@ async function _runAI(studentId, studentRow, rawText, resumeHash, jobRoles, tier
           r.grade        || 'F',
           r.major_strength         || null,
           r.improvement_suggestion || null,
+          JSON.stringify(detailedAnalysis)
         ],
       );
     }
