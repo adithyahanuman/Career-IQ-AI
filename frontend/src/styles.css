@@ -1971,7 +1971,7 @@ textarea {
 .steps-container {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   align-items: start;
 }
@@ -2618,7 +2618,7 @@ textarea {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr;
   gap: 40px;
   margin-bottom: 64px;
 }
@@ -2806,7 +2806,7 @@ textarea {
   }
 
   .footer-brand {
-    grid-column: span 3;
+    grid-column: span 2;
   }
 }
 
